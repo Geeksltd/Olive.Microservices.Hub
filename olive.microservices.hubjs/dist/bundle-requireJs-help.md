@@ -1,0 +1,6 @@
+Please use this bundle in the RequireJs config, if you want to use the 'bundle.js' file:
+```bash
+bundles: {
+        "olive.mvc/dist/bundle": ["src/app/src/appappContent","src/app/src/appappPage","src/app/src/appbadgeNumber","src/app/src/appbundle-built","src/app/src/appbundle-built.min","src/app/src/apperror\errorTemplates","src/app/src/apperror\errorViewsNavigator","src/app/src/appexpandCollapse","src/app/src/appextensions","src/app/src/appfeaturesMenu\breadcrumbMenu","src/app/src/appfeaturesMenu\featuresMenu","src/app/src/appfeaturesMenu\featuresMenuNavigationManager","src/app/src/appfeaturesMenu\FullMenuFiltering","src/app/src/apphub","src/app/src/apphubInstantSearch","src/app/src/apphubModal","src/app/src/apphubServices","src/app/src/appmodel\service","src/app/src/appoverrides\hubAjaxRedirect","src/app/src/appoverrides\hubForm","src/app/src/appoverrides\hubUrl","src/app/src/appservice-worker","src/app/src/apptoggleCheckbox","src/app/src/appwebForms","src/app/src/appwidgetModule"]
+    }
+```
