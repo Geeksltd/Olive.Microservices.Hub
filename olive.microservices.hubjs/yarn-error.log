@@ -1,8 +1,8 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Users\Ali\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js install
+  C:\Program Files\nodejs\node.exe C:\Users\Ali\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js publish
 
 PATH: 
-  C:\WINDOWS\system32\;C:\WINDOWS\;C:\WINDOWS\System32\Wbem\;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\Git\cmd\;C:\Program Files (x86)\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files (x86)\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Users\Ali\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\Scripts\;C:\Users\Ali\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\Scripts\fandogh.exe\;C:\Program Files\dotnet\;C:\Program Files (x86)\dotnet\;C:\Program Files\TortoiseGit\bin\;C:\Program Files\Azure Data Studio\bin\;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\;C:\nuget\;C:\Windows\Microsoft.NET\Framework\v4.0.30319\;C:\Users\Ali\AppData\Local\Microsoft\WindowsApps\;C:\Program Files\nodejs\;C:\Users\Ali\AppData\Roaming\npm\;\;C:\ProgramData\chocolatey\bin\;C:\Users\Ali\.dotnet\tools\;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\WINDOWS\system32\;C:\WINDOWS\;C:\WINDOWS\System32\Wbem\;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\Git\cmd\;C:\Program Files (x86)\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files (x86)\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Users\Ali\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\Scripts\;C:\Users\Ali\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\Scripts\fandogh.exe\;C:\Program Files\dotnet\;C:\Program Files (x86)\dotnet\;C:\Program Files\TortoiseGit\bin\;C:\Program Files\Azure Data Studio\bin\;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\;C:\nuget\;C:\Windows\Microsoft.NET\Framework\v4.0.30319\;C:\Users\Ali\AppData\Local\Microsoft\WindowsApps\;C:\Program Files\nodejs\;C:\Users\Ali\AppData\Roaming\npm\;\;C:\ProgramData\chocolatey\bin\;C:\Users\Ali\.dotnet\tools\;C:\Users\Ali\.dotnet\tools;C:\Users\Ali\AppData\Local\Programs\Microsoft VS Code\bin
+  C:\WINDOWS\system32\;C:\WINDOWS\;C:\WINDOWS\System32\Wbem\;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\Git\cmd\;C:\Program Files (x86)\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files (x86)\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Users\Ali\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\Scripts\;C:\Users\Ali\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\Scripts\fandogh.exe\;C:\Program Files\dotnet\;C:\Program Files (x86)\dotnet\;C:\Program Files\TortoiseGit\bin\;C:\Program Files\Azure Data Studio\bin\;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\;C:\nuget\;C:\Windows\Microsoft.NET\Framework\v4.0.30319\;C:\Users\Ali\AppData\Local\Microsoft\WindowsApps\;C:\Program Files\nodejs\;C:\Users\Ali\AppData\Roaming\npm\;\;C:\ProgramData\chocolatey\bin\;C:\Users\Ali\.dotnet\tools\;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files\TortoiseGit\bin;C:\WINDOWS\system32\;C:\WINDOWS\;C:\WINDOWS\System32\Wbem\;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\Git\cmd\;C:\Program Files (x86)\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files (x86)\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Users\Ali\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\Scripts\;C:\Users\Ali\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.8_qbz5n2kfra8p0\LocalCache\local-packages\Python38\Scripts\fandogh.exe\;C:\Program Files\dotnet\;C:\Program Files (x86)\dotnet\;C:\Program Files\TortoiseGit\bin\;C:\Program Files\Azure Data Studio\bin\;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\;C:\nuget\;C:\Windows\Microsoft.NET\Framework\v4.0.30319\;C:\Users\Ali\AppData\Local\Microsoft\WindowsApps\;C:\Program Files\nodejs\;C:\Users\Ali\AppData\Roaming\npm\;\;C:\ProgramData\chocolatey\bin\;C:\Users\Ali\.dotnet\tools\;C:\Users\Ali\.dotnet\tools;C:\Users\Ali\AppData\Local\Programs\Microsoft VS Code\bin
 
 Yarn version: 
   1.22.10
@@ -14,30 +14,30 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/fortawesome%2ffontawesome-free: Request "https://registry.yarnpkg.com/fortawesome%2ffontawesome-free" returned a 405
-      at Request.params.callback [as _callback] (C:\Users\Ali\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:66997:18)
-      at Request.self.callback (C:\Users\Ali\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:140662:22)
-      at Request.emit (node:events:378:20)
-      at Request.<anonymous> (C:\Users\Ali\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141634:10)
-      at Request.emit (node:events:378:20)
-      at IncomingMessage.<anonymous> (C:\Users\Ali\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141556:12)
-      at Object.onceWrapper (node:events:484:28)
-      at IncomingMessage.emit (node:events:390:22)
-      at endReadableNT (node:internal/streams/readable:1307:12)
-      at processTicksAndRejections (node:internal/process/task_queues:81:21)
+  Error: canceled
+      at Interface.<anonymous> (C:\Users\Ali\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:136216:13)
+      at Interface.emit (node:events:378:20)
+      at Interface._ttyWrite (node:readline:973:16)
+      at ReadStream.onkeypress (node:readline:259:10)
+      at ReadStream.emit (node:events:378:20)
+      at emitKeys (node:internal/readline/utils:358:14)
+      at emitKeys.next (<anonymous>)
+      at ReadStream.onData (node:readline:1242:36)
+      at ReadStream.emit (node:events:378:20)
+      at addChunk (node:internal/streams/readable:313:12)
 
 npm manifest: 
   {
     "name": "ali8465testhubjs",
     "author": "ali8465 Ltd",
-    "version": "2.4.1",
+    "version": "2.6.2",
     "license": "GPL-3.0",
     "private": false,
     "engines": {
       "yarn": ">= 1.0.0"
     },
-    "dependencies": {
-      "fortawesome/fontawesome-free": "@fortawesome/fontawesome-free@^5.4.2",
+    "devDependencies": {
+      "@fortawesome/fontawesome-free": "npm:@fortawesome/fontawesome-free@^5.4.2",
       "alertify": "fabien-d/alertify.js-shim#~0.3.10",
       "alertify-bootstrap-3": "dbtek/alertify-bootstrap-3#~1.1.1",
       "alertifyjs": "alertifyjs/alertify.js#~0.3.18",
@@ -46,16 +46,20 @@ npm manifest:
       "blueimp-tmpl": "blueimp/JavaScript-Templates#>=2.5.4",
       "bootstrap": "twbs/bootstrap#>=4.0.0",
       "bootstrap-filestyle": "markusslima/bootstrap-filestyle#2.1.0",
+      "bootstrap-select": "1.13.12",
       "bootstrap-spinedit": "BrandyMint/bootstrap-spinedit#*",
       "bootstrap-toggle": "minhur/bootstrap-toggle#*",
+      "chosen-js": "1.8.7",
       "ckeditor": "ckeditor/ckeditor-releases#full/4.6.x",
       "combodate": "vitalets/combodate#*",
       "eonasdan-bootstrap-datetimepicker": "Eonasdan/bootstrap-datetimepicker#~4.7.14",
+      "flickity": "metafizzy/flickity#2.2.1",
       "hammer.js": "hammerjs/hammer.js#^2.0.8",
       "hammerjs": "EightMedia/hammer.js#^2.0.0",
       "handlebars": "components/handlebars.js#^4.0.11",
       "jquery": "jquery/jquery-dist#3.2.1",
       "jquery-file-upload": "blueimp/jQuery-File-Upload#*",
+      "jquery-mentions-input": "^1.6.0",
       "jquery-typeahead": "running-coder/jquery-typeahead#2.10.4",
       "jquery-ui": "components/jqueryui#^1.12.1",
       "jquery-validation": "jzaefferer/jquery-validation#1.19.1",
@@ -65,22 +69,17 @@ npm manifest:
       "modernizr": "Modernizr/Modernizr#*",
       "moment": "moment/moment#2.8.0",
       "muuri": "haltu/muuri#^0.5.4",
-      "olive.mvc": "Geeksltd/Olive.MvcJs#2.0.66",
+      "olive.mvc": "Geeksltd/Olive.MvcJs#2.0.61",
       "popper.js": "^1.14.4",
       "pwstrength-bootstrap": "ablanco/jquery.pwstrength.bootstrap#~1.2.7",
       "requirejs": "jrburke/requirejs-bower#*",
       "seiyria-bootstrap-slider": "seiyria/bootstrap-slider#11.0.2",
       "smartmenus": "vadikom/smartmenus#1.0.0-beta1",
+      "underscore": "1.8.3",
       "web-animations-js": "web-animations/web-animations-js#^2.0.9",
       "which-pm-runs": "^1.0.0",
-      "zxcvbn": "dropbox/zxcvbn#^4.2.0",
-      "bootstrap-select": "1.13.12",
-      "jquery-mentions-input": "^1.6.0",
-      "chosen-js": "1.8.7",
-      "flickity": "metafizzy/flickity#2.2.1",
-      "underscore": "1.8.3"
-    },
-    "main": "index.js"
+      "zxcvbn": "dropbox/zxcvbn#^4.2.0"
+    }
   }
 
 yarn manifest: 
@@ -90,6 +89,11 @@ Lockfile:
   # THIS IS AN AUTOGENERATED FILE. DO NOT EDIT THIS FILE DIRECTLY.
   # yarn lockfile v1
   
+  
+  "@fortawesome/fontawesome-free@npm:@fortawesome/fontawesome-free@^5.4.2", "fontawesome-free@npm:@fortawesome/fontawesome-free@^5.4.2":
+    version "5.15.3"
+    resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.15.3.tgz#c36ffa64a2a239bf948541a97b6ae8d729e09a9a"
+    integrity sha512-rFnSUN/QOtnOAgqFRooTA3H57JLDm0QEG/jPdk+tLQNL/eWd+Aok8g3qCI+Q1xuDPWpGW/i9JySpJVsq8Q0s9w==
   
   alertify-bootstrap-3@dbtek/alertify-bootstrap-3#~1.1.1:
     version "0.0.0"
@@ -102,6 +106,53 @@ Lockfile:
   alertifyjs@alertifyjs/alertify.js#~0.3.18:
     version "0.3.18"
     resolved "https://codeload.github.com/alertifyjs/alertify.js/tar.gz/92b4996a4d4c0a2a99f93e168a8dc8ac35166669"
+  
+  ali8465testhubjs@2.4.0:
+    version "2.4.0"
+    resolved "https://registry.yarnpkg.com/ali8465testhubjs/-/ali8465testhubjs-2.4.0.tgz#476f3c15838115aa0e96a9828b8fbd3538bdc54c"
+    integrity sha512-CUX8GoWvsz/DVNoTdQOldGE4Q5EstrgSHiCJRzVBmauK/jnu1ot++EmcPD5XhAbWBfyJtaCigCP1XXpXZDSwSA==
+    dependencies:
+      alertify fabien-d/alertify.js-shim#~0.3.10
+      alertify-bootstrap-3 dbtek/alertify-bootstrap-3#~1.1.1
+      alertifyjs alertifyjs/alertify.js#~0.3.18
+      blueimp-canvas-to-blob blueimp/JavaScript-Canvas-to-Blob#>=2.1.1
+      blueimp-load-image blueimp/JavaScript-Load-Image#>=1.13.0
+      blueimp-tmpl blueimp/JavaScript-Templates#>=2.5.4
+      bootstrap twbs/bootstrap#>=4.0.0
+      bootstrap-filestyle markusslima/bootstrap-filestyle#2.1.0
+      bootstrap-spinedit BrandyMint/bootstrap-spinedit#*
+      bootstrap-toggle minhur/bootstrap-toggle#*
+      chosen-js "1.8.7"
+      ckeditor ckeditor/ckeditor-releases#full/4.6.x
+      combodate vitalets/combodate#*
+      eonasdan-bootstrap-datetimepicker Eonasdan/bootstrap-datetimepicker#~4.7.14
+      flickity metafizzy/flickity#2.2.1
+      fontawesome-free "npm:@fortawesome/fontawesome-free@^5.4.2"
+      hammer.js hammerjs/hammer.js#^2.0.8
+      hammerjs EightMedia/hammer.js#^2.0.0
+      handlebars components/handlebars.js#^4.0.11
+      jquery jquery/jquery-dist#3.2.1
+      jquery-file-upload blueimp/jQuery-File-Upload#*
+      jquery-mentions-input "^1.6.0"
+      jquery-typeahead running-coder/jquery-typeahead#2.10.4
+      jquery-ui components/jqueryui#^1.12.1
+      jquery-validation jzaefferer/jquery-validation#1.19.1
+      jquery-validation-bootstrap-tooltip Thrilleratplay/jquery-validation-bootstrap-tooltip#*
+      jquery-validation-unobtrusive aspnet/jquery-validation-unobtrusive#3.2.11
+      js-cookie js-cookie/js-cookie#^2.2.0
+      modernizr Modernizr/Modernizr#*
+      moment moment/moment#2.8.0
+      muuri haltu/muuri#^0.5.4
+      olive.mvc Geeksltd/Olive.MvcJs#2.0.61
+      popper.js "^1.14.4"
+      pwstrength-bootstrap ablanco/jquery.pwstrength.bootstrap#~1.2.7
+      requirejs jrburke/requirejs-bower#*
+      seiyria-bootstrap-slider seiyria/bootstrap-slider#11.0.2
+      smartmenus vadikom/smartmenus#1.0.0-beta1
+      underscore "1.8.3"
+      web-animations-js web-animations/web-animations-js#^2.0.9
+      which-pm-runs "^1.0.0"
+      zxcvbn dropbox/zxcvbn#^4.2.0
   
   ansi-regex@^5.0.0:
     version "5.0.0"
@@ -274,11 +325,6 @@ Lockfile:
       get-size "^2.0.3"
       unidragger "^2.3.0"
       unipointer "^2.3.0"
-  
-  "fontawesome-free@npm:@fortawesome/fontawesome-free@^5.4.2":
-    version "5.15.3"
-    resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.15.3.tgz#c36ffa64a2a239bf948541a97b6ae8d729e09a9a"
-    integrity sha512-rFnSUN/QOtnOAgqFRooTA3H57JLDm0QEG/jPdk+tLQNL/eWd+Aok8g3qCI+Q1xuDPWpGW/i9JySpJVsq8Q0s9w==
   
   get-caller-file@^2.0.1:
     version "2.0.5"

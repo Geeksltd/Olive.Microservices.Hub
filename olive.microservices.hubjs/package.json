@@ -1,13 +1,14 @@
 {
-  "name": "ali8465testhubjs",
-  "author": "ali8465 Ltd",
-  "version": "2.5.2",
+  "name": "hubjs",
+  "author": "Geeks Ltd",
+  "version": "1.0.0",
   "license": "GPL-3.0",
   "private": false,
   "engines": {
     "yarn": ">= 1.0.0"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "npm:@fortawesome/fontawesome-free@^5.4.2",
     "alertify": "fabien-d/alertify.js-shim#~0.3.10",
     "alertify-bootstrap-3": "dbtek/alertify-bootstrap-3#~1.1.1",
     "alertifyjs": "alertifyjs/alertify.js#~0.3.18",
@@ -24,7 +25,6 @@
     "combodate": "vitalets/combodate#*",
     "eonasdan-bootstrap-datetimepicker": "Eonasdan/bootstrap-datetimepicker#~4.7.14",
     "flickity": "metafizzy/flickity#2.2.1",
-    "fontawesome-free": "npm:@fortawesome/fontawesome-free@^5.4.2",
     "hammer.js": "hammerjs/hammer.js#^2.0.8",
     "hammerjs": "EightMedia/hammer.js#^2.0.0",
     "handlebars": "components/handlebars.js#^4.0.11",
@@ -50,7 +50,5 @@
     "web-animations-js": "web-animations/web-animations-js#^2.0.9",
     "which-pm-runs": "^1.0.0",
     "zxcvbn": "dropbox/zxcvbn#^4.2.0"
-  },
-  "main": "index.js",
-  "types": "dist/main.d.ts"
+  }
 }

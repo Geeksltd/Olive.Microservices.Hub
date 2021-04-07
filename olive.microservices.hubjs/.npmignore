@@ -13,6 +13,7 @@ lib
 src
 npm-debug.log
 tsconfig.json
+wwwroot
 #!lib/olive.mvc
 #!lib/olive.mvc/
 #!lib/olive.mvc/*
