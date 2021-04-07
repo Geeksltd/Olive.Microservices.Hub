@@ -1,3 +1,0 @@
-interface String {
-    trimHttpProtocol(): string;
-}
