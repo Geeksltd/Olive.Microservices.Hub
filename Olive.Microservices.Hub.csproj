@@ -1,22 +1,43 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Authors>Geeks Ltd</Authors>
-    <Company>Geeks Ltd</Company>
-    <Product>Olive.Microservices.Hub</Product>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <Copyright>Copyright ©2021 Geeks Ltd - All rights reserved.</Copyright>
-    <Version>1.0.1</Version>
+    <Company>Geeks Ltd</Company>
+    <Authors>Geeks Ltd</Authors>
     <RepositoryUrl>https://github.com/Geeksltd/Olive.Microservices.Hub/tree/master/Olive.Microservices.Hub</RepositoryUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <Version>1.0.6</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Olive" Version="2.1.239" />
-    <PackageReference Include="Olive.Entities" Version="2.1.152" />
-    <PackageReference Include="Olive.Entities.Data" Version="2.1.166" />
-    <PackageReference Include="Olive.Mvc" Version="3.1.121" />
-    <PackageReference Include="Olive.PassiveBackgroundTasks" Version="1.0.18" />
-    <PackageReference Include="Olive.Web" Version="3.1.106" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AppContentService.HubApi" Version="180720.11.4435" />
+    <PackageReference Include="EmailService.SendEmailCommand.EventBusCommand" Version="191220.12.2936" />
+    <PackageReference Include="FS.Shared.Website" Version="1.0.43" />
+    <PackageReference Include="Hangfire.Core" Version="1.7.18" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.14" />
+    <PackageReference Include="Olive" Version="2.1.250" />
+    <PackageReference Include="Olive.Entities" Version="2.1.156" />
+    <PackageReference Include="Olive.Entities.Data" Version="2.1.170" />
+    <PackageReference Include="Olive.Entities.Data.Replication" Version="2.1.160" />
+    <PackageReference Include="Olive.GlobalSearch.Source" Version="1.0.41" />
+    <PackageReference Include="Olive.Mvc" Version="3.1.124" />
+    <PackageReference Include="Olive.Mvc.Testing" Version="3.1.104" />
+    <PackageReference Include="Olive.PassiveBackgroundTasks" Version="1.0.19" />
+    <PackageReference Include="PeopleService.HubEndPoint" Version="190417.10.2652" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\Ali\Downloads\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
 
 </Project>

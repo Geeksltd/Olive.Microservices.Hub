@@ -1,0 +1,14 @@
+﻿@model ViewModel.TimesSheetModule
+@(Layout = null)
+
+<!-- «Start| TimesSheetModule» -->
+<div data-module="TimesSheetModule">
+   @Html.StartupActionsJson()
+   <div id='timesheets-container'
+   data-src='@Microservice.Of("TimesSheets").Url()widget/my-open-timesheet/'>
+      <div class='module-content'>
+      </div>
+   </div>
+</div>
+<!-- «End| TimesSheetModule» -->
+

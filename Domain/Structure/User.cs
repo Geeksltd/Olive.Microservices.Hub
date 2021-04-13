@@ -15,7 +15,7 @@
     [EscapeGCop("Auto generated code.")]
     public partial class User : GuidEntity
     {
-        CachedReference<UserInfo> cachedInfo = new CachedReference<UserInfo>();
+        CachedReference<PeopleService.UserInfo> cachedInfo = new CachedReference<PeopleService.UserInfo>();
 
         /// <summary>Gets or sets the value of Email on this User instance.</summary>
         [System.ComponentModel.DataAnnotations.StringLength(200)]
@@ -25,7 +25,7 @@
         public Guid? InfoId { get; set; }
 
         /// <summary>Gets or sets the value of Info on this User instance.</summary>
-        public UserInfo Info
+        public PeopleService.UserInfo Info
         {
             get => cachedInfo.GetOrDefault(InfoId);
             set => InfoId = value?.ID;

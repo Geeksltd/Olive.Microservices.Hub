@@ -1,4 +1,4 @@
-﻿namespace Olive.Microservices.Hub
+﻿namespace PeopleService
 {
     using System;
     using System.Collections;
@@ -9,6 +9,7 @@
     using Olive;
     using Olive.Entities;
     using Olive.Entities.Data;
+    using Olive.Microservices.Hub;
 
     /// <summary>Represents an instance of User info entity type.</summary>
     [SoftDelete]
