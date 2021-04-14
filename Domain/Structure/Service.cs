@@ -12,7 +12,7 @@
     
     /// <summary>Represents an instance of Service entity type.</summary>
     [TransientEntity]
-    [EscapeGCop("Auto generated code.")]
+    
     public partial class Service : GuidEntity
     {
         /// <summary>Initializes a new instance of the Service class.</summary>

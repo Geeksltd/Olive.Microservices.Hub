@@ -26,7 +26,7 @@ using Olive.Microservices.Hub;
 namespace Controllers
 {
     [Authorize(Roles = "Employee")]
-    [EscapeGCop("Auto generated code.")]
+    
     #pragma warning disable
     public partial class ClientBoardController : BaseController
     {

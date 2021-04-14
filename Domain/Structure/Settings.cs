@@ -12,7 +12,7 @@
     
     /// <summary>Represents an instance of Settings entity type.</summary>
     [TableName("Settings")]
-    [EscapeGCop("Auto generated code.")]
+    
     public partial class Settings : GuidEntity
     {
         /// <summary>Stores a cache for the Current Settings object.</summary>

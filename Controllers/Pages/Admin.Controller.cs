@@ -25,7 +25,7 @@ using vm = ViewModel;
 namespace Controllers
 {
     [Authorize(Roles = "Director")]
-    [EscapeGCop("Auto generated code.")]
+    
     #pragma warning disable
     public partial class AdminController : BaseController
     {

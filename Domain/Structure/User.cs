@@ -12,7 +12,7 @@
 
     /// <summary>Represents an instance of User entity type.</summary>
     [SoftDelete]
-    [EscapeGCop("Auto generated code.")]
+    
     public partial class User : GuidEntity
     {
         CachedReference<PeopleService.UserInfo> cachedInfo = new CachedReference<PeopleService.UserInfo>();

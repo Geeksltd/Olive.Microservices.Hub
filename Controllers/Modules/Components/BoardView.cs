@@ -25,7 +25,7 @@ using Olive.Microservices.Hub;
 
 namespace ViewComponents
 {
-    [EscapeGCop("Auto generated code.")]
+    
 #pragma warning disable
     public partial class BoardView : ViewComponent
     {
@@ -38,7 +38,7 @@ namespace ViewComponents
 
 namespace Controllers
 {
-    [EscapeGCop("Auto generated code.")]
+    
 #pragma warning disable
     public partial class BoardViewController : BaseController
     {
@@ -47,7 +47,7 @@ namespace Controllers
 
 namespace ViewModel
 {
-    [EscapeGCop("Auto generated code.")]
+    
 #pragma warning disable
     [BindingController(typeof(Controllers.BoardViewController))]
     public partial class BoardView : IViewModel

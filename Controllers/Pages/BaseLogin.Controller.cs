@@ -26,19 +26,21 @@ using Olive.Microservices.Hub;
 
 namespace Controllers
 {
-    [EscapeGCop("Auto generated code.")]
+
 #pragma warning disable
-    public partial class LoginController : BaseController
+    public abstract class BaseLoginController : BaseController
     {
+        public abstract Task<IActionResult> OnLoggedOut();
+
         Microsoft.AspNetCore.Hosting.IWebHostEnvironment Environment;
 
-        public LoginController(Microsoft.AspNetCore.Hosting.IWebHostEnvironment environment)
+        public BaseLoginController(Microsoft.AspNetCore.Hosting.IWebHostEnvironment environment)
         {
             Environment = environment;
         }
 
         [Route("login/{item:Guid?}")]
-        public async Task<ActionResult> Index(vm.ManualLogin manualLogin, vm.LoginForm loginForm)
+        public async Task<ActionResult> Index(vm.ManualLogin manualLogin, ViewModel.LoginForm loginForm)
         {
             if (Request.Param("returnUrl").IsEmpty())
             {
@@ -53,10 +55,12 @@ namespace Controllers
             return View(loginForm);
         }
 
-        [HttpPost("LoginForm/Login")]
-        public async Task<ActionResult> Login(vm.LoginForm info)
+        [HttpGet, Route("logout")]
+        public async Task<IActionResult> Logout(ViewModel.LoginForm _)
         {
-            return null;// await LoginWithEmail(info);
+            return await OnLoggedOut();
+            //await HttpContext.SignOutAsync();
+            //return Redirect(Microservice.Of("Dashboard").Url("/login/logout.aspx"));
         }
 
         [HttpPost("LoginForm/LoginByGoogle")]
@@ -67,28 +71,15 @@ namespace Controllers
             return JsonActions(info);
         }
 
-        [NonAction, OnBound]
-        public async Task OnBound(vm.LoginForm info)
-        {
-            info.Item = info.Item ?? new User();
 
-            // Clear cookies
-            var alreadyDead = new Microsoft.AspNetCore.Http.CookieOptions
-            {
-                Expires = LocalTime.Today.AddDays(-1)
-            };
 
-            foreach (var c in Request.Cookies)
-                Response.Cookies.Append(c.Key, string.Empty, alreadyDead);
 
-            if (Request.IsGet()) await info.Item.CopyDataTo(info);
-        }
     }
 }
 
 namespace ViewModel
 {
-    [EscapeGCop("Auto generated code.")]
+
 #pragma warning disable
     public partial class LoginForm : IViewModel
     {

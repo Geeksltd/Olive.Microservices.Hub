@@ -14,7 +14,7 @@
     /// <summary>Represents an instance of User info entity type.</summary>
     [SoftDelete]
     [Schema("PeopleService")]
-    [EscapeGCop("Auto generated code.")]
+    
     public partial class UserInfo : GuidEntity
     {
         /// <summary>Initializes a new instance of the UserInfo class.</summary>

@@ -3,6 +3,7 @@
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
     using Olive.Logging;
+    using Olive.Mvc;
 
     public class Program
     {
@@ -14,7 +15,7 @@
                 .ConfigureLogging(p => p.AddEventBus())
                 .UseSetting("detailedErrors", "true")
                 .CaptureStartupErrors(true)
-                .UseStartup(typeof(HubStartup).Assembly.FullName);
+                .UseStartup(typeof(HubStartup<ITaskManager>).Assembly.FullName);
         }
 
         // static void ConfigureLogging(WebHostBuilderContext context, ILoggingBuilder logging) { }

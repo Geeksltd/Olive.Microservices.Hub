@@ -11,7 +11,7 @@
     using Olive.Entities.Data;
 
     /// <summary>Represents an instance of Background task entity type.</summary>
-    [EscapeGCop("Auto generated code.")]
+    
     public partial class BackgroundTask : GuidEntity, Olive.PassiveBackgroundTasks.IBackgourndTask
     {
         /// <summary>Gets or sets the value of ExecutingInstance on this Background task instance.</summary>

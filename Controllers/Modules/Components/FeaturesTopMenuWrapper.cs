@@ -25,7 +25,7 @@ using Olive.Microservices.Hub;
 
 namespace ViewComponents
 {
-    [EscapeGCop("Auto generated code.")]
+    
 #pragma warning disable
     public partial class FeaturesTopMenuWrapper : ViewComponent
     {
@@ -38,7 +38,7 @@ namespace ViewComponents
 
 namespace Controllers
 {
-    [EscapeGCop("Auto generated code.")]
+    
 #pragma warning disable
     public partial class FeaturesTopMenuWrapperController : BaseController
     {
@@ -54,7 +54,7 @@ namespace Controllers
 
 namespace ViewModel
 {
-    [EscapeGCop("Auto generated code.")]
+    
 #pragma warning disable
     [BindingController(typeof(Controllers.FeaturesTopMenuWrapperController))]
     public partial class FeaturesTopMenuWrapper : IViewModel

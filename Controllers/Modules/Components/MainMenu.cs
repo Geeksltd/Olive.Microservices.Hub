@@ -24,7 +24,7 @@ using vm = ViewModel;
 
 namespace ViewComponents
 {
-    [EscapeGCop("Auto generated code.")]
+    
     #pragma warning disable
     public partial class MainMenu : ViewComponent
     {
@@ -37,7 +37,7 @@ namespace ViewComponents
 
 namespace Controllers
 {
-    [EscapeGCop("Auto generated code.")]
+    
     #pragma warning disable
     public partial class MainMenuController : BaseController
     {
@@ -57,7 +57,7 @@ namespace Controllers
 
 namespace ViewModel
 {
-    [EscapeGCop("Auto generated code.")]
+    
     #pragma warning disable
     [BindingController(typeof(Controllers.MainMenuController))]
     public partial class MainMenu : IViewModel

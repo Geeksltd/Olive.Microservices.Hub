@@ -26,7 +26,7 @@ using Olive.Microservices.Hub;
 namespace Controllers
 {
     [Authorize(Roles = "Director, HeadPM")]
-    [EscapeGCop("Auto generated code.")]
+    
 #pragma warning disable
     public partial class AdminServicesHealthCheckController : BaseController
     {
@@ -57,7 +57,7 @@ namespace Controllers
 
 namespace ViewModel
 {
-    [EscapeGCop("Auto generated code.")]
+    
 #pragma warning disable
     public partial class ServicesHealthCheckTiles : IViewModel
     {

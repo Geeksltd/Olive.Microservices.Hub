@@ -25,7 +25,7 @@ using Olive.Microservices.Hub;
 
 namespace Controllers
 {
-    [EscapeGCop("Auto generated code.")]
+    
 #pragma warning disable
     public partial class SSOController : BaseController
     {
@@ -64,7 +64,7 @@ namespace Controllers
 
 namespace ViewModel
 {
-    [EscapeGCop("Auto generated code.")]
+    
 #pragma warning disable
     public partial class SingleSignOn : IViewModel
     {

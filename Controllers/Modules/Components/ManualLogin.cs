@@ -21,11 +21,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using vm = ViewModel;
 using Olive.Microservices.Hub;
+using PeopleService;
 
 namespace ViewComponents
 {
-    [EscapeGCop("Auto generated code.")]
-#pragma warning disable
+
     public partial class ManualLogin : ViewComponent
     {
         public async Task<IViewComponentResult> InvokeAsync(vm.ManualLogin info)
@@ -37,7 +37,7 @@ namespace ViewComponents
 
 namespace Controllers
 {
-    [EscapeGCop("Auto generated code.")]
+
 #pragma warning disable
     public partial class ManualLoginController : BaseController
     {
@@ -61,7 +61,7 @@ namespace Controllers
             if (Request.IsGet())
             {
                 // Set default roles
-                info.RoleNames = @"Employee,Dev,JuniorDev,SeniorDev,LeadDev,HeadDev,QA,JuniorQA,SeniorQA,LeadQA,HeadQA,BA,JuniorBA,SeniorBA,LeadBA,HeadBA,PM,JuniorPM,SeniorPM,LeadPM,HeadPM,AM,JuniorAM,SeniorAM,LeadAM,HeadAM,Director,JuniorDirector,SeniorDirector,LeadDirector,HeadDirector,Designer,JuniorDesigner,SeniorDesigner,LeadDesigner,HeadDesigner,IT,JuniorIT,SeniorIT,LeadIT,HeadIT,Reception,JuniorReception,SeniorReception,LeadReception,HeadReception,PA,JuniorPA,SeniorPA,LeadPA,HeadPA,Sales,JuniorSales,SeniorSales,LeadSales,HeadSales,DevOps,JuniorDevOps,SeniorDevOps,LeadDevOps,HeadDevOps";
+                info.RoleNames = Config.Get("Authentication:SimulateLogin:Roles");
             }
         }
 
@@ -74,7 +74,7 @@ namespace Controllers
 
             if (Request.IsGet()) await info.Item.CopyDataTo(info);
 
-            info.DisplayName = "Jack Smith";
+            info.DisplayName = Config.Get("Authentication:SimulateLogin:DisplayName");
 
             info.DisplayName_Visible = info.IsVisible;
             info.Email_Visible = info.IsVisible;
@@ -85,7 +85,7 @@ namespace Controllers
             if (Request.IsGet())
             {
                 // Set email
-                info.Email = "jack.smith@geeks.ltd";
+                info.Email = Config.Get("Authentication:SimulateLogin:Email");
             }
         }
     }
@@ -93,7 +93,6 @@ namespace Controllers
 
 namespace ViewModel
 {
-    [EscapeGCop("Auto generated code.")]
 #pragma warning disable
     [BindingController(typeof(Controllers.ManualLoginController))]
     public partial class ManualLogin : IViewModel
@@ -110,7 +109,7 @@ namespace ViewModel
         }
 
         [ValidateNever]
-        public PeopleService.UserInfo Item { get; set; }
+        public UserInfo Item { get; set; }
 
         [CustomBound]
         public string DisplayName { get; set; }

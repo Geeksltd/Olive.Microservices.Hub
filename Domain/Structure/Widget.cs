@@ -12,7 +12,7 @@
     
     /// <summary>Represents an instance of Widget entity type.</summary>
     [TransientEntity]
-    [EscapeGCop("Auto generated code.")]
+    
     public partial class Widget : GuidEntity, IComparable<Widget>, ISortable
     {
         /// <summary>The associated Board.</summary>

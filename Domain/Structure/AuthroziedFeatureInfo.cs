@@ -12,7 +12,7 @@
     
     /// <summary>Represents an instance of Authrozied feature info entity type.</summary>
     [TransientEntity]
-    [EscapeGCop("Auto generated code.")]
+    
     public partial class AuthroziedFeatureInfo : GuidEntity
     {
         /// <summary>Gets or sets a value indicating whether this Authrozied feature info instance Is disabled.</summary>

@@ -18,7 +18,7 @@
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="#42AAA9">
-    <meta name="apple-mobile-web-app-title" content="Geeks Hub Application">
+    <meta name="apple-mobile-web-app-title" content="Hub Application">
 
     <link rel="mask-icon" href="/images/fav/safari-pinned-tab.svg" color="#5bbad5" style="user-select: text;">
     <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" href="/img/pwa/splash/iphonexsmax_splash.png" style="user-select: text;">
@@ -99,10 +99,10 @@
                 </div>
             </div>
 
-            @if (leftMenu.HasValue())
+            @*@if (leftMenu.HasValue())
             {
                 @(await Component.InvokeAsync<SideBarRightModule>())
-            }
+            }*@
         </div>
     </div>
     @Html.DevCommandsWidget()

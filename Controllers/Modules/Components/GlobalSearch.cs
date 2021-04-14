@@ -24,7 +24,7 @@ using vm = ViewModel;
 
 namespace ViewComponents
 {
-    [EscapeGCop("Auto generated code.")]
+    
     #pragma warning disable
     public partial class GlobalSearch : ViewComponent
     {
@@ -37,7 +37,7 @@ namespace ViewComponents
 
 namespace Controllers
 {
-    [EscapeGCop("Auto generated code.")]
+    
     #pragma warning disable
     public partial class GlobalSearchController : BaseController
     {
@@ -46,7 +46,7 @@ namespace Controllers
 
 namespace ViewModel
 {
-    [EscapeGCop("Auto generated code.")]
+    
     #pragma warning disable
     [BindingController(typeof(Controllers.GlobalSearchController))]
     public partial class GlobalSearch : IViewModel

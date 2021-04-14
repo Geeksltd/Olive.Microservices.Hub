@@ -11,7 +11,7 @@
     using Olive.Entities.Data;
     
     /// <summary>Represents an instance of Email claim entity type.</summary>
-    [EscapeGCop("Auto generated code.")]
+    
     public partial class EmailClaim : GuidEntity
     {
         /// <summary>Initializes a new instance of the EmailClaim class.</summary>

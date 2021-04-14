@@ -13,7 +13,7 @@
     /// <summary>Represents an instance of Feature entity type.</summary>
     [TransientEntity]
     [SkipAutoSort]
-    [EscapeGCop("Auto generated code.")]
+    
     public partial class Feature : GuidEntity, IComparable<Feature>, IHierarchy, ISortable
     {
         /// <summary>Stores the associated Features for Children property.</summary>

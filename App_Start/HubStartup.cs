@@ -4,7 +4,6 @@
     using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
-    using AppStart;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Google;
     using Microsoft.AspNetCore.Builder;
@@ -17,11 +16,11 @@
     using Olive.Microservices.Hub;
     using Olive.PassiveBackgroundTasks;
 
-    public abstract class HubStartup : FS.Shared.Website.Startup<ReferenceData, BackgroundTask, TaskManager>
+    public abstract class HubStartup<TTaskManager> : FS.Shared.Website.Startup<ReferenceData, BackgroundTask, TTaskManager> where TTaskManager : BackgroundJobsPlan, new()
     {
         protected HubStartup(IWebHostEnvironment env, IConfiguration config, ILoggerFactory factory) : base(env, config, factory)
         {
-            Subdomains = config["GeeksSubdomain"]?.Split(",") ?? new string[0];
+            Subdomains = config["HubSubdomain"]?.Split(",") ?? new string[0];
         }
 
         protected virtual bool IsProduction() => false;
@@ -96,11 +95,11 @@
         {
             await Context.Current.Database().Save(new PeopleService.UserInfo
             {
-                Email = "jack.smith@geeks.ltd",
-                DisplayName = "Jack Smith",
+                Email = Config.Get("Authentication:SimulateLogin:Email"),
+                DisplayName = Config.Get("Authentication:SimulateLogin:DisplayName"),
                 IsActive = true,
-                ID = "5C832BDB-145D-4DD6-8A28-379CC504B5EA".To<Guid>(),
-                Roles = "Employee,Dev,JuniorDev,SeniorDev,LeadDev,HeadDev,QA,JuniorQA,SeniorQA,LeadQA,HeadQA,BA,JuniorBA,SeniorBA,LeadBA,HeadBA,PM,JuniorPM,SeniorPM,LeadPM,HeadPM,AM,JuniorAM,SeniorAM,LeadAM,HeadAM,Director,JuniorDirector,SeniorDirector,LeadDirector,HeadDirector,Designer,JuniorDesigner,SeniorDesigner,LeadDesigner,HeadDesigner,IT,JuniorIT,SeniorIT,LeadIT,HeadIT,Reception,JuniorReception,SeniorReception,LeadReception,HeadReception,PA,JuniorPA,SeniorPA,LeadPA,HeadPA,Sales,JuniorSales,SeniorSales,LeadSales,HeadSales,DevOps,JuniorDevOps,SeniorDevOps,LeadDevOps,HeadDevOps"
+                ID = Config.Get("Authentication:SimulateLogin:Id").To<Guid>(),
+                Roles = Config.Get("Authentication:SimulateLogin:Roles")
             });
         }
     }

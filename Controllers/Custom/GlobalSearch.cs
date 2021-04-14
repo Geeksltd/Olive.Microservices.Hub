@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 using Olive;
 using Olive.Microservices.Hub;
@@ -9,15 +10,27 @@ namespace ViewModel
     {
         public string GetSearchSources()
         {
-            var olive = "Hub,Tasks,People,Projects".Split(',')
+            var globalSearchConfig = AppDomain.CurrentDomain.WebsiteRoot().GetFile("global-search.json")?.ReadAllText();
+            var globalSearchConfigModel = Newtonsoft.Json.JsonConvert.DeserializeObject<GlobalSearchModel>(globalSearchConfig);
+            if (globalSearchConfigModel == null)
+                throw new Exception("The global-search.json file was not found!");
+
+            var olive = globalSearchConfigModel.Olive.Split(',')
                 .Select(Service.FindByName)
                 .Select(s => $"{s.GetAbsoluteImplementationUrl("/api/global-search")}#{s.Icon}");
 
-            var webForms = "Accounting,HR,CRM,CaseStudies,Training".Split(',')
+            var webForms = globalSearchConfigModel.WebForms.Split(',')
                 .Select(Service.FindByName)
-                .Select(s => $"{s.GetAbsoluteImplementationUrl("/global-search.axd")}#{s.Icon}");
+                .Select(s => $"{s.GetAbsoluteImplementationUrl(globalSearchConfigModel.Url)}#{s.Icon}");
 
             return olive.Concat(webForms).ToString(";");
+        }
+
+        public class GlobalSearchModel
+        {
+            public string Olive { get; set; }
+            public string WebForms { get; set; }
+            public string Url { get; set; }
         }
     }
 }

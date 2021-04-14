@@ -25,7 +25,7 @@ using Olive.Microservices.Hub;
 
 namespace Controllers
 {
-    [EscapeGCop("Auto generated code.")]
+    
     #pragma warning disable
     public partial class FeaturechildrenController : BaseController
     {
@@ -82,7 +82,7 @@ namespace Controllers
 
 namespace ViewModel
 {
-    [EscapeGCop("Auto generated code.")]
+    
     #pragma warning disable
     public partial class ChildFeaturesList : IViewModel
     {
