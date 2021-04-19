@@ -3,7 +3,7 @@
 <form data-module="FeaturesList" method="get" action="@Url.Current()" data-redirect="ajax">
    @Html.StartupActionsJson()
    <h2>Features</h2>
-   <div class="search">
+   <div class="search d-none d-lg-block">
       <div class="form-group row">
          <div class="group-control">
             <input type="text" asp-for="InstantSearch" class="form-control" placeholder="Search..." />

@@ -25,7 +25,7 @@ using Olive.Microservices.Hub;
 
 namespace Controllers
 {
-    
+
 #pragma warning disable
     public partial class EverythingController : BaseController
     {
@@ -47,14 +47,15 @@ namespace Controllers
         {
             info.Markup = await AuthroziedFeatureInfo.RenderFullMenu();
             // Load Javascript file
-            JavaScript(JavascriptModule.Relative("/scripts/featuresMenu/FullMenuFiltering.js"), "run()");
+            //JavaScript(JavascriptModule.Relative("app/featuresMenu/fullMenuFiltering"), "run()");
+            //JavaScript(JavascriptModule.Relative("/scripts/featuresMenu/FullMenuFiltering.js"), "run()");
         }
     }
 }
 
 namespace ViewModel
 {
-    
+
 #pragma warning disable
     public partial class EverythingPage_Everything : IViewModel
     {

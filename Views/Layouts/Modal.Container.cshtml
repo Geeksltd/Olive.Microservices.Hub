@@ -9,7 +9,9 @@
     <link rel='stylesheet' href="~/styles/theme.min.css?v=%APP_VERSION%" type='text/css' />
 </head>
 <body>
-    <script src="~/lib/requirejs/require.js" data-main="/scripts/bundle-built@(".min".OnlyWhen(Request?.Query["jsdebug"].ToString() != "true")).js?v=%APP_VERSION%"></script>
+    @*<script src="~/lib/requirejs/require.js" data-main="/scripts/bundle-built@(".min".OnlyWhen(Request?.Query["jsdebug"].ToString() != "true")).js?v=%APP_VERSION%"></script>*@
+    <script src="~/lib/requirejs/require.js" data-main="/scripts/config.js"></script>
+
     <service of="hub">
         @RenderBody()
     </service>

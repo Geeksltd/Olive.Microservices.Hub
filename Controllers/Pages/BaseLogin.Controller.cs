@@ -39,21 +39,21 @@ namespace Controllers
             Environment = environment;
         }
 
-        [Route("login/{item:Guid?}")]
-        public async Task<ActionResult> Index(vm.ManualLogin manualLogin, ViewModel.LoginForm loginForm)
-        {
-            if (Request.Param("returnUrl").IsEmpty())
-            {
-                return Redirect(Url.Index("Login", new { ReturnUrl = "/" }));
-            }
+        //[Route("login/{item:Guid?}")]
+        //public async Task<ActionResult> Index(vm.ManualLogin manualLogin, ViewModel.LoginForm loginForm)
+        //{
+        //    if (Request.Param("returnUrl").IsEmpty())
+        //    {
+        //        return Redirect(Url.Index("Login", new { ReturnUrl = "/" }));
+        //    }
 
-            // Remove initial validation messages as well as unintended injected data
-            ModelState.Clear();
+        //    // Remove initial validation messages as well as unintended injected data
+        //    ModelState.Clear();
 
-            ViewBag.ManualLogin = manualLogin;
+        //    ViewBag.ManualLogin = manualLogin;
 
-            return View(loginForm);
-        }
+        //    return View(loginForm);
+        //}
 
         [HttpGet, Route("logout")]
         public async Task<IActionResult> Logout(ViewModel.LoginForm _)

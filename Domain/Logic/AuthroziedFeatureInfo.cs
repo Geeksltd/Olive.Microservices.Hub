@@ -69,7 +69,7 @@
                     });
 
                     div.Add(ul);
-                    div.Add(new XElement("h3", new XAttribute("class", "full-menu-text"), 
+                    div.Add(new XElement("h3", new XAttribute("class", "full-menu-text"),
                         new XElement("a", item.Title, new XAttribute("href", item.LoadUrl))));
                 }
                 else
