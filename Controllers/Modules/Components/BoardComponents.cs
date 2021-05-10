@@ -21,28 +21,38 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 using vm = ViewModel;
-using Olive.Microservices.Hub;
+using Olive.Microservices.Hub.BoardComponent;
+
+namespace ViewComponents
+{
+
+#pragma warning disable
+    public partial class BoardComponents : ViewComponent
+    {
+        public async Task<IViewComponentResult> InvokeAsync(vm.BoardComponents info)
+        {
+            return View(await Bind<vm.BoardComponents>(info));
+        }
+    }
+}
 
 namespace Controllers
 {
-    [Authorize(Roles = "Employee")]
-    
+
 #pragma warning disable
-    public partial class PersonBoardController : BaseController
+    public partial class BoardComponentsController : BaseController
     {
-        [Route("person/{featureId}")]
-        public async Task<ActionResult> Index(vm.BoardView info)
-        {
-            ViewBag.Info = info;
-            ViewData["LeftMenu"] = "FeaturesSideMenu";
+    }
+}
 
-            return View(ViewBag);
-        }
+namespace ViewModel
+{
 
-        [NonAction, OnPreBound]
-        public async Task OnBinding(vm.BoardView info)
-        {
-            info.Item = Board.Parse("Person");
-        }
+#pragma warning disable
+    [BindingController(typeof(Controllers.BoardComponentsController))]
+    public partial class BoardComponents : IViewModel
+    {
+        public string FeatureId { get; set; }
+        public string Type { get; set; }
     }
 }

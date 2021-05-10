@@ -50,6 +50,7 @@
 
         public override void Configure(IApplicationBuilder app)
         {
+            AppContentService.HubApi.DefaultConfig(config => config.Cache(CachePolicy.CacheOrFreshOrNull));
             app.UseResponseCompression();
 
             if (Subdomains.Any())
@@ -63,13 +64,11 @@
             Service.DataProvider.Register();
             Board.DataProvider.Register();
 
-            AppContentService.HubApi.DefaultConfig(config => config.Cache(CachePolicy.CacheOrFreshOrNull));
         }
 
         protected override void ConfigureMiddlewares(IApplicationBuilder app)
         {
             base.ConfigureMiddlewares(app);
-            app.UseGlobalSearch<GlobalSearchSource>();
         }
 
         protected override void ConfigureRequestHandlers(IApplicationBuilder app)
@@ -78,6 +77,7 @@
 
             base.ConfigureRequestHandlers(app);
             app.Use(RedirectSmartPhone);
+            app.UseGlobalSearch<GlobalSearchSource>();
         }
         protected abstract void ConfigureDataProtectionProvider(GoogleOptions config);
 

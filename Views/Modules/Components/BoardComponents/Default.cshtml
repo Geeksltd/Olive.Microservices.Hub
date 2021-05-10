@@ -1,0 +1,24 @@
+﻿@model ViewModel.BoardComponents
+@(Layout = null)
+<div class="w-100">
+    <!-- «Start| GlobalSearch» -->
+    <div data-module="BoardComponents" class="no-print board-components "
+         data-id="@Model.FeatureId"
+         data-boardtype="@Model.Type"
+         data-board-source="@Model.GetBoardSources(Model.Type)">
+        @Html.StartupActionsJson()
+    </div>
+    <h3 class="border-components-view">
+        Board Components
+        <input type="text" class="board-components-filter" placeholder="Filter..." value="">
+    </h3>
+    <div class="board-components-result feature-children">
+
+    </div>
+    <div class="board-addable-items-container " style="display:none">
+
+    </div>
+
+</div>
+
+<!-- «End| GlobalSearch» -->
