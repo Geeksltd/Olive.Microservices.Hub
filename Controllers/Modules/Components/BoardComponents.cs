@@ -54,5 +54,6 @@ namespace ViewModel
     {
         public string FeatureId { get; set; }
         public string Type { get; set; }
+        public string Title { get; set; }
     }
 }
