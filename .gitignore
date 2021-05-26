@@ -193,3 +193,4 @@ Website/yarn.lock
 /PrivatePackages_
 /Website/Blob/Person.ProfilePhoto
 M#/lib/netcoreapp3.1/
+*.nupkg
