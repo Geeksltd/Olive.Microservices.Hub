@@ -8,7 +8,7 @@
     <Authors>Geeks Ltd</Authors>
     <RepositoryUrl>https://github.com/Geeksltd/Olive.Microservices.Hub/tree/master/Olive.Microservices.Hub</RepositoryUrl>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>1.2.118</Version>
+    <Version>1.2.120</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="C:\Users\Ali\Downloads\icon.png">
+    <None Include="icon.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>

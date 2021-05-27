@@ -16,17 +16,17 @@
          {{#Children}}
          <li class="feature-menu-item" data-nodeid="{{ID}}">
             <i class="{{Icon}}" aria-hidden="true"></i>
-            <a href="{{LoadUrl}}" data-service="" {{#if UseIframe}} {{else}} data-redirect="ajax" {{/if}}>{{Title}}</a>
+            <a href="{{LoadUrl}}" data-service=""  {{#if UseModal}}  target="$modal" {{/if}} {{#if UseIframe}} {{else}} data-redirect="ajax" {{/if}}>{{Title}}</a>
             <ul>
                {{#Children}}
                <li class="feature-menu-item" data-nodeid="{{ID}}">
                   <i class="{{Icon}}" aria-hidden="true"></i>
-                  <a href="{{LoadUrl}}" data-service="" {{#if UseIframe}} {{else}} data-redirect="ajax" {{/if}}>{{Title}}</a>
+                  <a href="{{LoadUrl}}" data-service=""  {{#if UseModal}}  target="$modal" {{/if}} {{#if UseIframe}} {{else}} data-redirect="ajax" {{/if}}>{{Title}}</a>
                   <ul>
                      {{#Children}}
                      <li class="feature-menu-item" data-nodeid="{{ID}}">
                         <i class="fa {{Icon}}" aria-hidden="true"></i>
-                        <a href="{{LoadUrl}}" data-service="" {{#if UseIframe}} {{else}} data-redirect="ajax" {{/if}}>{{Title}}</a>
+                        <a href="{{LoadUrl}}" data-service=""  {{#if UseModal}}  target="$modal" {{/if}} {{#if UseIframe}} {{else}} data-redirect="ajax" {{/if}}>{{Title}}</a>
                      </li>
                      {{/Children}}
                   </ul>
