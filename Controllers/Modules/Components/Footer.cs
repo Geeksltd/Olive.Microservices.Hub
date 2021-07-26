@@ -24,21 +24,30 @@ using vm = ViewModel;
 
 namespace ViewComponents
 {
-    
-    #pragma warning disable
+
+#pragma warning disable
     public partial class Footer : ViewComponent
     {
         public async Task<IViewComponentResult> InvokeAsync(vm.Footer info)
         {
-            return View(await Bind<vm.Footer>(info));
+            var email = Context.Current.User().GetEmail();
+
+            var user = await Context.Current.Database().FirstOrDefault<PeopleService.UserInfo>(x => x.Email == email);
+            info = new vm.Footer()
+            {
+                Email = email,
+                UserImage = user.ImageUrl
+            };
+
+            return View(info);
         }
     }
 }
 
 namespace Controllers
 {
-    
-    #pragma warning disable
+
+#pragma warning disable
     public partial class FooterController : BaseController
     {
     }
@@ -46,10 +55,12 @@ namespace Controllers
 
 namespace ViewModel
 {
-    
-    #pragma warning disable
+
+#pragma warning disable
     [BindingController(typeof(Controllers.FooterController))]
     public partial class Footer : IViewModel
     {
+        public string Email { get; set; }
+        public string UserImage { get; set; }
     }
 }

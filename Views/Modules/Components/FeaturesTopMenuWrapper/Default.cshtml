@@ -13,7 +13,7 @@
             {{#menus}}
             <ul class="nav navbar-nav">
                 {{#Children}}
-                <li class="feature-menu-item  {{#if IsSelected}} active {{/if}}" data-nodeid="{{ID}}">
+                <li class="feature-menu-item {{CssClass}} {{#if IsSelected}} active {{/if}}" data-nodeid="{{ID}}">
 
                     <a href="{{LoadUrl}}" data-service="" {{#if UseModal}} conditional-redirect target="$modal" {{/if}} {{#if UseIframe}} {{else UseModal}} {{else}} data-redirect="ajax" {{/if}}><i class="{{Icon}}" aria-hidden="true"></i> {{Title}}</a>
                     {{#if IsRemovable}}
@@ -37,6 +37,9 @@
                     </ul>
                 </li>
                 {{/Children}}
+                <li class="feature-menu-item feature-top-menu-more ">
+                    <a href="#" data-service="" ><i class="fa fa-angle-down d-inline-block" aria-hidden="true"></i> </a>
+                </li>
             </ul>
             {{/menus}}
         </script>

@@ -68,16 +68,15 @@
 
         protected override void ConfigureMiddlewares(IApplicationBuilder app)
         {
+            app.UseGlobalSearch<GlobalSearchSource>();
+            //app.Use(RedirectSmartPhone);
             base.ConfigureMiddlewares(app);
         }
 
         protected override void ConfigureRequestHandlers(IApplicationBuilder app)
         {
             StructureDeserializer.Load();
-
             base.ConfigureRequestHandlers(app);
-            app.Use(RedirectSmartPhone);
-            app.UseGlobalSearch<GlobalSearchSource>();
         }
         protected abstract void ConfigureDataProtectionProvider(GoogleOptions config);
 
