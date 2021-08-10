@@ -7,13 +7,13 @@
 <div data-module="BoardView" class="gridster-holder">
    @Html.StartupActionsJson()
    <div data-module='BoardView'>
-      <input type="text" class="border-view" placeholder="Filter..." id="HubInstantSearch" name="HubInstantSearch" value="">
+      @*<input type="text" class="border-view" placeholder="Filter..." id="HubInstantSearch" name="HubInstantSearch" value="">*@
          @Html.StartupActionsJson()
          @foreach (var group in item.GetWidgets(User).GroupBy(x=>x.Group))
          {{
-         <h3 class="olive-instant-search-item">
+         @*<h3 class="olive-instant-search-item">
             @group.Key
-         </h3>
+         </h3>*@
          <div class='gridster'>
             <ul>
                @foreach (var widget in group)
