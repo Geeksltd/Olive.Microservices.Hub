@@ -70,7 +70,7 @@
         <div class="page row m-0">
             @if (leftMenu.HasValue())
             {
-                <div class="side-bar d-none d-lg-flex p-0">
+                <div class="side-bar d-none d-lg-flex p-0 @(Request.Cookies[".side-bar"].OrEmpty() == "collapsed" ? "collapsed" : string.Empty )">
                     @(await Component.InvokeAsync<ViewComponents.SideBarTopModule>())
                     @(await Component.InvokeAsync(leftMenu))
                     @(await Component.InvokeAsync<Footer>())

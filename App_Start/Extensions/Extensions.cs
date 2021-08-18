@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Olive;
 using Olive.Microservices.Hub;
 
@@ -41,5 +43,36 @@ namespace System
 
         public static bool IsUAT(this Microsoft.AspNetCore.Hosting.IWebHostEnvironment @this) => @this.EnvironmentName == "UAT";
         public static bool IsProduction(this Microsoft.AspNetCore.Hosting.IWebHostEnvironment @this) => @this.EnvironmentName == "Production";
+
+        private static string HeaderButtonTargetAttr(HeaderButton button)
+        {
+            if (button.Target == "PopUp")
+                return "target=\"$modal\"";
+            else if (button.Target == "NewWindow")
+                return "target=\"_blank\"";
+            return "";
+        }
+        private static string RenderHeaderButton(HeaderButton button)
+        {
+            var attr = HeaderButtonTargetAttr(button);
+
+            var url = button.Url.ToLower().StartsWith("http") ? button.Url : Microservice.Of("Hub").Url(button.Url);
+            return @$"
+        <a class="""" href=""{url}"" {attr}>
+            <i class=""{button.Icon}""></i>
+        </a>";
+
+        }
+        public static string RenderHeaderButtons(this IHtmlHelper htmlHelper)
+        {
+            var buttons = Config.Bind<List<HeaderButton>>("HeaderButtons:Buttons");
+            if (buttons == null || buttons.None())
+                return "";
+            var result = "";
+            foreach (var button in buttons)
+                result += RenderHeaderButton(button);
+
+            return $"<div class=\"sidebar-top-module-profile-buttons\">{result}</div>";
+        }
     }
 }

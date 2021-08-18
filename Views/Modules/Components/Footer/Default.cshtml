@@ -13,6 +13,7 @@
     <div class="sidebar-top-module-profile-text">
         Hi <a href="/person/@Model.Email">@User?.Identity.Name</a><br />
         <a name="SignOut" href="/logout" default-button="true">Sign out</a>
+        @Html.RenderHeaderButtons().Raw()
     </div>
 </form>
 <!-- «End| Footer» -->

@@ -3,10 +3,11 @@
 <!-- «Start| FeaturesTopMenuWrapper» -->
 @if (Model.IsVisible)
 {
-    <form data-module="FeaturesTopMenuWrapper">
+    <form data-module="FeaturesTopMenuWrapper" class="">
         @Html.StartupActionsJson()
         @info.Markup.Raw()
-        <button type="button" id="sidebarCollapse" class="navbar-btn d-none d-lg-block"><i class="fa fa-chevron-left" aria-hidden="true"></i></button>
+        <button type="button" id="sidebarCollapse" class="navbar-btn d-none d-lg-block @(Request.Cookies[".side-bar"].OrEmpty() == "collapsed" ? "collapse" : string.Empty )">
+            <i class="fa @(Request.Cookies[".side-bar"].OrEmpty() == "collapsed" ? "fa-chevron-right" : "fa-chevron-left")" aria-hidden="true"></i></button>
         <ul class='features-sub-menu feature-top-menu d-none d-lg-flex'>
         </ul>
         <script id="sumMenu-template" type="text/x-handlebars-template">
