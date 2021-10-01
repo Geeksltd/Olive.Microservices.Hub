@@ -40,10 +40,12 @@ namespace Controllers
             {
                 try
                 {
-                    await new ApiClient(item.ServiceUrl + "?awaitToken=" + info.Token.UrlEncode()).Get<string>();
+                    await (item.ServiceUrl + "?awaitToken=" + info.Token.UrlEncode()).AsUri().Download();
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Log.Error(ex, "Api call failed : " + item.ServiceUrl);
+
                     // No logging is needed
                     info.Errors += "<div style='background:#eba; margin:20px; width:100px; height:100px;'>" +
                         item.Item + " SSO Failed</div>";
