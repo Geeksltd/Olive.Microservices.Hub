@@ -1,41 +1,29 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Transactions;
-using System.Web;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Olive;
 using Olive.Entities;
-using Olive.Mvc;
-using Olive.Web;
-
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-
-using vm = ViewModel;
 using Olive.Microservices.Hub;
+using Olive.Mvc;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
+using vm = ViewModel;
 
 namespace Controllers
 {
-    
+
 #pragma warning disable
     public partial class SSOController : BaseController
     {
         [Route("sso")]
-        public async Task<ActionResult> Index(vm.SingleSignOn info)
+        public async Task<ActionResult> Index(vm.SingleSignOn info, string returnUrl = null)
         {
             if (!User.Identity.IsAuthenticated)
             {
                 return Redirect(Url.Index("Login", new { ReturnUrl = Url.Current() }));
             }
+            if (!returnUrl.IsEmpty()) return Redirect(returnUrl);
 
             return View(info);
         }
@@ -64,7 +52,7 @@ namespace Controllers
 
 namespace ViewModel
 {
-    
+
 #pragma warning disable
     public partial class SingleSignOn : IViewModel
     {

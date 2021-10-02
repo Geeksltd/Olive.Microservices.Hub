@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Olive;
 using Olive.Microservices.Hub;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace System
 {
@@ -50,6 +50,8 @@ namespace System
                 return "target=\"$modal\"";
             else if (button.Target == "NewWindow")
                 return "target=\"_blank\"";
+            else if (button.Target == "Ajax")
+                return "data-redirect=\"ajax\"";
             return "";
         }
         private static string RenderHeaderButton(HeaderButton button)
@@ -57,10 +59,11 @@ namespace System
             var attr = HeaderButtonTargetAttr(button);
 
             var url = button.Url.ToLower().StartsWith("http") ? button.Url : Microservice.Of("Hub").Url(button.Url);
+            var style = button.Colour.IsEmpty() ? "" : $"style='color:{button.Colour}'";
             return @$"
-        <a class="""" href=""{url}"" {attr}>
+        <a class="""" href=""{url}"" {attr} {style}>
             <i class=""{button.Icon}""></i>
-        </a>";
+        </a> ";
 
         }
         public static string RenderHeaderButtons(this IHtmlHelper htmlHelper)
