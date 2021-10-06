@@ -72,7 +72,8 @@ namespace System
             if (buttons == null || buttons.None())
                 return "";
             var result = "";
-            foreach (var button in buttons)
+            var user = Context.Current.User();
+            foreach (var button in buttons.Where(x => x.Roles.IsEmpty() || x.Roles.Split(",").ContainsAny(user.GetRoles().ToArray())))
                 result += RenderHeaderButton(button);
 
             return $"<div class=\"sidebar-top-module-profile-buttons\">{result}</div>";
