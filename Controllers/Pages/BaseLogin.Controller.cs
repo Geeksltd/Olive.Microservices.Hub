@@ -66,8 +66,21 @@ namespace Controllers
         [HttpPost("LoginForm/LoginByGoogle")]
         public async Task<ActionResult> LoginByGoogle(vm.LoginForm info)
         {
-            await OAuth.Instance.LoginBy("Google" + "OpenIdConnect".OnlyWhen(Environment.IsUAT()));
+            //await OAuth.Instance.LoginBy("Google" + "OpenIdConnect".OnlyWhen(Environment.IsUAT()));
 
+            var provider = "Google" + "OpenIdConnect".OnlyWhen(Environment.IsUAT());
+            if (Context.Current.Request().Param("ReturnUrl").IsEmpty())
+            {
+                // it's mandatory, otherwise Challenge() immediately returns to Login page
+                throw new InvalidOperationException("Request has no ReturnUrl.");
+            }
+
+            await Context.Current.Http().ChallengeAsync(provider, new AuthenticationProperties
+            {
+                RedirectUri = $"/ExternalLoginCallback?ReturnUrl={Context.Current.Request().Param("ReturnUrl")}",
+                Items = { new KeyValuePair<string, string>("LoginProvider", provider) }
+
+            });
             return JsonActions(info);
         }
 
