@@ -23,7 +23,7 @@ namespace Controllers
             {
                 return Redirect(Url.Index("Login", new { ReturnUrl = Url.Current() }));
             }
-            if (!returnUrl.IsEmpty()) return Redirect(returnUrl);
+            //if (!returnUrl.IsEmpty()) return Redirect(returnUrl);
 
             return View(info);
         }
