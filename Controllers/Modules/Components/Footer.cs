@@ -36,7 +36,7 @@ namespace ViewComponents
             info = new vm.Footer()
             {
                 Email = email,
-                UserImage = user.ImageUrl
+                UserImage = user?.ImageUrl
             };
 
             return View(info);
