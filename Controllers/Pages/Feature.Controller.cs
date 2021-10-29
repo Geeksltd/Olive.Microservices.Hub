@@ -40,10 +40,10 @@ namespace Controllers
         [Route("{l1}/{l2}/{l3}/{l4}/{l5}/{l6}/{l7}/{l8}")]
         public async Task<ActionResult> Index(vm.FeatureView info)
         {
-            //if (!User.Identity.IsAuthenticated)
-            //{
-            //    return Redirect(Url.Index("Login", new { ReturnUrl = Url.Current() }));
-            //}
+            if (!User.Identity.IsAuthenticated && ($"{Request.Path}".IsEmpty() || $"{Request.Path}" == "/"))
+            {
+                return Redirect(Url.Index("Login", new { ReturnUrl = Url.Current() }));
+            }
 
             return Execute(info);
 
