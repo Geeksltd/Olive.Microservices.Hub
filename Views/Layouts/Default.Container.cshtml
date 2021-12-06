@@ -68,7 +68,7 @@
 <body>
     <div class="container-fluid p-0">
         <div class="page row m-0">
-            @if (leftMenu.HasValue())
+            @if (leftMenu.HasValue() && User.Identity.IsAuthenticated)
             {
                 <div class="side-bar d-none d-lg-flex p-0 @(Request.Cookies[".side-bar"].OrEmpty() == "collapsed" ? "collapsed" : string.Empty )">
                     @(await Component.InvokeAsync<ViewComponents.SideBarTopModule>())
