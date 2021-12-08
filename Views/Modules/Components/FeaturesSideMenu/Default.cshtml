@@ -3,8 +3,11 @@
 
 <!-- «Start| FeaturesSideMenu» -->
 <div data-module="FeaturesSideMenu" class="features-side-menu">
-   @Html.StartupActionsJson()
-   @info.Markup.Raw()
+    @Html.StartupActionsJson()
+    @if (User.Identity.IsAuthenticated)
+    {
+        @info.Markup.Raw()
+    }
 </div>
 <!-- «End| FeaturesSideMenu» -->
 

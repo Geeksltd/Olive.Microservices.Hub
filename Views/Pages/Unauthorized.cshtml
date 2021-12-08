@@ -1,5 +1,4 @@
-﻿@model ViewModel.UnauthorizedAccess
-@{ Olive.Microservices.Hub.Feature item = Model.Item; }
+﻿@model Feature
 <!-- «Start| UnauthorizedAccess» -->
 <form data-module="UnauthorizedAccess" method="post" action="@Url.Current()" class="error unauthorized">
    @Html.AntiForgeryToken()
@@ -11,7 +10,7 @@
             <p>
                You do not appear to have access to
                <b>
-                  @info?.Item?.Title
+                 @Model?.Title
                </b>
                .
             </p>

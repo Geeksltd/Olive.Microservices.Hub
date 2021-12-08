@@ -22,30 +22,30 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 using vm = ViewModel;
 using Olive.Microservices.Hub;
+using ViewModel;
 
 namespace Controllers
 {
-    
+
 #pragma warning disable
     public partial class UnauthorizedController : BaseController
     {
         [Route("Unauthorized/{feature}")]
-        public async Task<ActionResult> Index(vm.UnauthorizedAccess info)
+        public async Task<ActionResult> Index(Guid? feature)
         {
             ViewData["LeftMenu"] = "FeaturesSideMenu";
-
-            return View(info);
+            var item = Feature.All.FirstOrDefault(x => x.ID == feature);
+            return View(item);
         }
     }
 }
 
 namespace ViewModel
 {
-    
+    [EscapeGCop("Auto generated code.")]
 #pragma warning disable
     public partial class UnauthorizedAccess : IViewModel
     {
-        [FromRequest("feature")]
         [ValidateNever]
         public Feature Item { get; set; }
     }
