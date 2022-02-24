@@ -104,6 +104,7 @@ namespace Olive.Microservices.Hub
 
                    foreach (var item in Feature.All)
                        item.Children = Feature.All.Where(x => x.Parent == item);
+                   RuntimeFeatureDeserializer.SetRuntimeFeatures();
                });
         }
 
