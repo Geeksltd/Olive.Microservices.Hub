@@ -12,10 +12,15 @@ namespace Olive.Microservices.Hub
         public static void Load()
         {
             LoadServices();
-            LoadFeatures();
+            LoadFeaturesFromCache();
             LoadBoards();
         }
-
+        public static void UpdateCachedFeatures()
+        {
+            LoadServices();
+            LoadFeatures();
+            RuntimeFeatureDeserializer.SetFeaturesFromMicroservice();
+        }
         static void LoadServices()
         {
             Run("LoadServices", () => Service.All == null, () =>
@@ -104,10 +109,18 @@ namespace Olive.Microservices.Hub
 
                    foreach (var item in Feature.All)
                        item.Children = Feature.All.Where(x => x.Parent == item);
-                   RuntimeFeatureDeserializer.SetRuntimeFeatures();
                });
         }
+        static void LoadFeaturesFromCache()
+        {
+            Run("LoadFeatures", () => Feature.All == null, () =>
+            {
+                Feature.All = RuntimeFeatureDeserializer.GetCachedFeatures();
 
+                foreach (var item in Feature.All)
+                    item.Children = Feature.All.Where(x => x.Parent == item);
+            });
+        }
         static void LoadBoards()
         {
             Run("LoadBoards", () => Board.All == null, () =>

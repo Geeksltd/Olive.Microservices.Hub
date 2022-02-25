@@ -173,7 +173,11 @@ namespace Olive.Microservices.Hub
                 return Task.FromResult((IEntity)All.First(x => x.ID == id));
             }
         }
-
+        public string GetLiniage()
+        {
+            if (Parent == null) return Title;
+            return Parent.GetLiniage() + "/" + Title;
+        }
         public override bool Equals(Entity other) => ReferenceEquals(this, other);
     }
 }
