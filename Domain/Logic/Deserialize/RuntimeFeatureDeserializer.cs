@@ -5,6 +5,8 @@ using System.Text;
 using Microsoft.Extensions.Caching.Memory;
 using Olive;
 using System.Linq;
+using System.Threading.Tasks;
+using Nito.AsyncEx.Synchronous;
 
 namespace Olive.Microservices.Hub
 {
@@ -24,8 +26,12 @@ namespace Olive.Microservices.Hub
 
             try
             {
-                return (IEnumerable<Feature>)CachedFeatures.Get(Config.Get("Features:FeaturesBucketCacheName", "Features"));
-
+                using (var stream = new Amazon.S3.Transfer.TransferUtility().OpenStream(Config.GetOrThrow("Authentication:HubFeaturesBucket"), "Features"))
+                {
+                    var task = Task.Run(async () => await stream.ReadAllText());
+                    var result = task.WaitAndUnwrapException();
+                    return Newtonsoft.Json.JsonConvert.DeserializeObject<List<Feature>>(result);
+                }
             }
             catch (Exception ex)
             {
@@ -34,19 +40,30 @@ namespace Olive.Microservices.Hub
             }
 
         }
-        public static void SetFeaturesFromMicroservice()
+        public async static Task SetFeaturesFromMicroservice()
         {
+            var cachedFeatures = new List<Feature>();
+            try
+            {
+                using (var stream = new Amazon.S3.Transfer.TransferUtility().OpenStream(Config.GetOrThrow("Authentication:HubFeaturesBucket"), "Features"))
+                    cachedFeatures = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Feature>>(await stream.ReadAllText());
+
+            }
+            catch (Exception ex)
+            {
+                Log.For(typeof(RuntimeFeatureDeserializer)).Error(ex.ToString());
+            }
             foreach (var service in Service.All)
             {
                 try
                 {
                     var url = service.BaseUrl + "/olive/features";
                     var runtimeFeatures = Newtonsoft.Json.JsonConvert.DeserializeObject<RuntimeFeature[]>(new WebClient().DownloadString(url));
-                    var features = new List<Feature>();
                     foreach (var runtimeFeature in runtimeFeatures)
                     {
+
                         var leaf = runtimeFeature.Features.Split("/").LastOrDefault();
-                        var feature = Feature.All.FirstOrDefault(x => x.GetLiniage() == runtimeFeature.Features);
+                        var feature = Feature.All.FirstOrDefault(x => x.GetLiniage() == runtimeFeature.Features && x.ImplementationUrl == runtimeFeature.Url && x.Icon == runtimeFeature.Icon);
                         if (feature == null)
                         {
                             Feature parent = Feature.All.FirstOrDefault(x => x.GetLiniage() == runtimeFeature.Features.Remove("/" + leaf)); ;
@@ -65,15 +82,17 @@ namespace Olive.Microservices.Hub
                             if (parent != null) parent.Children.Append(feature);
                             Feature.All.Append(feature);
                         }
-                        features.Add(feature);
                     }
                 }
                 catch (Exception ex)
                 {
                     Log.For(typeof(RuntimeFeatureDeserializer)).Warning(ex.ToString());
+                    foreach (var feature in cachedFeatures.Where(x => x.Service == service))
+                        Feature.All.Append(feature);
                 }
             }
-            CachedFeatures.Set(Config.Get("Features:FeaturesBucketCacheName", "Features"), Feature.All, Config.Get("Features:FeaturesBucketCacheTime", 30).Minutes());
+            using (var stream = new System.IO.MemoryStream(Newtonsoft.Json.JsonConvert.SerializeObject(Feature.All).OrEmpty().ToBytes(System.Text.Encoding.UTF8)))
+                await new Amazon.S3.Transfer.TransferUtility().UploadAsync(stream, Config.Get("Features:FeaturesBucketCacheTime"), "Features");
         }
 
     }
