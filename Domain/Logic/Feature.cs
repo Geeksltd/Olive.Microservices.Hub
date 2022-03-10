@@ -190,6 +190,13 @@ namespace Olive.Microservices.Hub
             if (Parent != null) return Parent.GetPermissionsString();
             return "";
         }
+        internal bool HasSimilarChild(string url)
+        {
+            foreach (var child in children)
+                if (child.ImplementationUrl == url || child.HasSimilarChild(url)) return true;
+            return false;
+
+        }
         public override bool Equals(Entity other) => ReferenceEquals(this, other);
     }
 }

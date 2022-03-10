@@ -12,48 +12,22 @@ namespace Olive.Microservices.Hub
 {
     internal static class Features
     {
-        static IFeatureRepository Repository;
+        public static IFeatureRepository Repository;
 
-        [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
-
-        class FeatureDefinition : Mvc.Microservices.Feature
-        {
-
-            public string ServiceName;
-            public FeatureDefinition For(Service service)
-            {
-                ServiceName = service.Name;
-                return this;
-            }
-        }
         internal static void SetRepository(IFeatureRepository featureRepository) => Repository = featureRepository;
         internal async static Task RefreshServiceFeatures()
         {
-
-            foreach (var service in Service.All)
-            {
-                var runtimeFeatures = new Mvc.Microservices.Feature[] { };
-                try
-                {
-                    var url = (service.BaseUrl + "/olive/features").AsUri();
-                    runtimeFeatures = JsonConvert.DeserializeObject<Mvc.Microservices.Feature[]>(await url.Download());
-                }
-                catch (Exception ex)
-                {
-                    Log.For(typeof(Features)).Warning(ex.ToString());
-                }
-                await Repository.Write($"/features/services/{service.Name}.json", JsonConvert.SerializeObject(runtimeFeatures));
-            }
+            await Task.WhenAll(Service.All.Do(s => s.GetAndSaveFeaturesJson()));
             await RefreshFeatures();
         }
         internal async static Task RefreshFeatures()
         {
-            var features = GetXmlFeatures().ToList();
+            var features = FromLegacyXml().ToList();
             foreach (var service in Service.All)
             {
                 try
                 {
-                    var batch = JsonConvert.DeserializeObject<FeatureDefinition[]>(await Repository.Read($"/features/services/{service.Name}.json"));
+                    var batch = JsonConvert.DeserializeObject<FeatureDefinition[]>(await Repository.Read(service.FeaturesJsonPath()));
                     batch.Do(x => x.For(service));
                     features.AddRange(batch);
                 }
@@ -87,70 +61,51 @@ namespace Olive.Microservices.Hub
         }
         static Feature[] GetActualFeatures(FeatureDefinition[] featureDefinitions)
         {
-            var features = new List<Feature>();
-            foreach (var defenition in featureDefinitions)
+            var featuresDictionary = new Dictionary<string, List<Feature>>();
+            foreach (var definition in featureDefinitions)
             {
                 Feature parent = null;
-                foreach (var title in defenition.FullPath.Split("/"))
+                var path = "";
+                var titles = definition.FullPath.Split('/');
+                foreach (var title in titles)
                 {
-                    var feature = features.FirstOrDefault(x => x.Title.CompareTo(title) == 0);
-                    if (feature != null)
+                    if (path.HasValue()) path += "/";
+                    path += title;
+                    var feature = featuresDictionary.GetOrDefault(path)?.FirstOrDefault();
+                    if (definition.FullPath == path) feature = definition.CreateFeature(parent);
+                    else if (feature != null && feature.ImplementationUrl.IsEmpty())
                     {
                         parent = feature;
                         continue;
                     }
-                    var fullPath = title;
-                    if (parent != null) fullPath = parent.GetFullPathSlashSeperated() + "/" + title;
-                    var subfeatureDefenition = featureDefinitions.FirstOrDefault(x => x.FullPath.CompareTo(fullPath) == 0);
-                    if (defenition.FullPath.ToLower().EndsWith(title.ToLower())) feature = CreateFeature(defenition, parent);
-                    else if (subfeatureDefenition != null) feature = CreateFeature(subfeatureDefenition, parent);
-                    else
-                        feature = CreateFeature(
-                            new FeatureDefinition
-                            {
-                                FullPath = fullPath,
-                                Icon = "fas fa-folder",
-                                ServiceName = "Hub"
-                            }, parent);
+                    else feature = new FeatureDefinition { FullPath = path, Icon = "fas fa-folder", ServiceName = "Hub" }.CreateFeature(parent);
+                    var features = featuresDictionary.GetOrDefault(path);
+                    if (features == null)
+                    {
+                        features = new List<Feature>();
+                        featuresDictionary.Add(path, features);
+                    }
                     features.Add(feature);
+
                     if (parent != null) parent.Children.Append(feature);
                     parent = feature;
                 }
             }
-            return features.ToArray();
+            return featuresDictionary.Values.SelectMany(x => x).ToArray();
         }
-        static Feature CreateFeature(FeatureDefinition featureDefenition, Feature parent)
-        {
-            var feature = new Feature
-            {
-                Ref = featureDefenition.Refrance.OrEmpty(),
-                Title = featureDefenition.FullPath.Split("/").LastOrDefault(),
-                Description = featureDefenition.Description.OrEmpty(),
-                ImplementationUrl = featureDefenition.RelativeUrl.OrEmpty(),
-                BadgeUrl = featureDefenition.BadgeUrl,
-                Icon = featureDefenition.Icon.OrEmpty(),
-                ShowOnRight = featureDefenition.ShowOnRight,
-                Parent = parent,
-                Order = parent?.Children?.Count() * 10 + 10 ?? 10,
-                Permissions = featureDefenition.Permissions.OrEmpty().Split(",").Trim().ToArray(),
-                NotPermissions = new string[] { },
-                Service = Service.FindByName(featureDefenition.ServiceName),
-            };
-            if (feature.ImplementationUrl.IsEmpty())
-                feature.Service = Service.FindByName("Hub");
-            feature.LoadUrl = feature.FindLoadUrl().ToLower();
-            return feature;
-        }
-        static IEnumerable<FeatureDefinition> GetXmlFeatures()
+
+        static IEnumerable<FeatureDefinition> FromLegacyXml()
         {
             var featuresXml = GetXmlFeatureDefinitions()
                    .SelectMany(x => x.GetAllFeatures())
                    .ExceptNull()
                    .ToList();
+            foreach (var item in featuresXml)
+                item.Children = featuresXml.Where(x => x.Parent?.ID == item.ID);
             var featureDefenitions = new List<FeatureDefinition>();
             foreach (var featureXml in featuresXml)
             {
-
+                if (featureXml.HasSimilarChild(featureXml.ImplementationUrl)) continue;
                 var fullPath = featureXml.GetFullPathSlashSeperated();
                 if (featureXml.Title == "add") fullPath = fullPath + "/" + featureXml.Ref;
                 if (featureXml.ImplementationUrl.IsEmpty()) continue;

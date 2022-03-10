@@ -13,7 +13,7 @@ namespace Olive.Microservices.Hub
     public partial class Service
     {
         public static IEnumerable<Service> All { get; internal set; }
-
+        public string FeaturesJsonPath() => $"/features/services/{Name}.json";
         public static string ToJson()
         {
             var items = All
@@ -60,6 +60,20 @@ namespace Olive.Microservices.Hub
                 var id = objectID.ToString().To<Guid>();
                 return Task.FromResult((IEntity)All.First(x => x.ID == id));
             }
+        }
+        public async Task GetAndSaveFeaturesJson()
+        {
+            var runtimeFeatures = new Mvc.Microservices.Feature[0];
+            try
+            {
+                var url = (BaseUrl + "/olive/features").AsUri();
+                runtimeFeatures = JsonConvert.DeserializeObject<Mvc.Microservices.Feature[]>(await url.Download(timeOutSeconds: 10));
+            }
+            catch (Exception ex)
+            {
+                Log.For(typeof(Features)).Warning(ex.ToString());
+            }
+            await Features.Repository.Write(FeaturesJsonPath(), JsonConvert.SerializeObject(runtimeFeatures));
         }
     }
 }
