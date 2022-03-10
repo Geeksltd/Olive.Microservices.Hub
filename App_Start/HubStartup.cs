@@ -21,6 +21,9 @@
         protected HubStartup(IWebHostEnvironment env, IConfiguration config, ILoggerFactory factory) : base(env, config, factory)
         {
             Subdomains = config["HubSubdomain"]?.Split(",") ?? new string[0];
+
+            if (env.IsProduction()) Features.SetRepository(new S3FeatureRepository());
+            else Features.SetRepository(new IOFeatureRepository());
         }
 
         protected virtual bool IsProduction() => false;

@@ -173,10 +173,22 @@ namespace Olive.Microservices.Hub
                 return Task.FromResult((IEntity)All.First(x => x.ID == id));
             }
         }
-        public string GetLiniage()
+        internal string GetFullPathSlashSeperated()
         {
             if (Parent == null) return Title;
-            return Parent.GetLiniage() + "/" + Title;
+            return Parent.GetFullPathSlashSeperated() + "/" + Title;
+        }
+        internal Service GetNodeService()
+        {
+            if (Service != null) return Service;
+            if (Parent != null) return Parent.GetNodeService();
+            return Service.FindByName("Hub");
+        }
+        internal string GetPermissionsString()
+        {
+            if (Permissions.HasAny()) return string.Join(", ", Permissions);
+            if (Parent != null) return Parent.GetPermissionsString();
+            return "";
         }
         public override bool Equals(Entity other) => ReferenceEquals(this, other);
     }

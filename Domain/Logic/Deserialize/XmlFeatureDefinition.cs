@@ -6,20 +6,20 @@ using Olive;
 
 namespace Olive.Microservices.Hub
 {
-    class FeatureDefinition
+    class XmlFeatureDefinition
     {
         XElement Data;
         Feature Feature;
-        FeatureDefinition[] Children;
-        FeatureDefinition Parent;
+        XmlFeatureDefinition[] Children;
+        XmlFeatureDefinition Parent;
         public string Name { get; private set; }
 
-        public FeatureDefinition(FeatureDefinition parent, XElement data)
+        public XmlFeatureDefinition(XmlFeatureDefinition parent, XElement data)
         {
             Parent = parent;
             Data = data;
             Name = Data.GetCleanName();
-            Children = data.Elements().Select(x => new FeatureDefinition(this, x)).ToArray();
+            Children = data.Elements().Select(x => new XmlFeatureDefinition(this, x)).ToArray();
         }
 
         public override string ToString() => Parent?.ToString().WithSuffix(" > ") + Name;

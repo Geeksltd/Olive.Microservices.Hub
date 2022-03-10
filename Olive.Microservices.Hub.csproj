@@ -32,8 +32,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Olive" Version="2.1.287" />
-    <PackageReference Include="Olive.Entities" Version="2.1.161" />
+    <PackageReference Include="Olive" Version="2.1.302" />
+    <PackageReference Include="Olive.Entities" Version="2.1.167" />
     <PackageReference Include="Olive.Entities.Data" Version="2.1.178" />
     <PackageReference Include="Olive.Entities.Data.Replication" Version="2.1.168" />
     <PackageReference Include="Olive.GlobalSearch.Source" Version="1.0.41" />
