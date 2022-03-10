@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Olive;
 
@@ -13,8 +14,10 @@ namespace Olive.Microservices.Hub
         {
             LoadServices();
             LoadFeatures();
-            LoadBoards();
+            if (Feature.All.HasAny()) LoadBoards();
         }
+        public static async Task RefreshFeatures() => await Features.RefreshFeatures();
+        public static async Task RefreshServiceFeatures() => await Features.RefreshServiceFeatures();
 
         static void LoadServices()
         {
@@ -60,53 +63,15 @@ namespace Olive.Microservices.Hub
 
         static FileInfo GetFromRoot(string filename) => AppDomain.CurrentDomain.WebsiteRoot().GetFile(filename);
 
-        static FeatureDefinition[] GetFeatureDefinitions()
-        {
-            var start = LocalTime.Now;
-            var stepStart = LocalTime.Now;
-            void StartSet() => stepStart = LocalTime.Now;
-            var root = new FeatureDefinition(null, new XElement("ROOT"));
-
-            Log.For(typeof(StructureDeserializer))
-                .Info("finished FeatureDefinition in " + LocalTime.Now.Subtract(stepStart).ToNaturalTime());
-
-            StartSet();
-            var files = new[] { "Features.xml", "Features.Widgets.xml" }.Select(f => GetFromRoot(f));
-
-            Log.For(typeof(StructureDeserializer))
-                .Info("finished getting files in " + LocalTime.Now.Subtract(stepStart).ToNaturalTime());
-
-            StartSet();
-
-            var results = files
-                     .Select(x => ReadXml(x))
-                     .SelectMany(x => x)
-                     .Select(x => new FeatureDefinition(root, x))
-                     .ToArray();
-
-            Log.For(typeof(StructureDeserializer))
-                .Info("finished calculating the results in " + LocalTime.Now.Subtract(stepStart).ToNaturalTime());
-
-            Log.For(typeof(StructureDeserializer))
-                .Info("finished GetFeatureDefinitions in " + LocalTime.Now.Subtract(start).ToNaturalTime());
-
-            return results;
-        }
-
         static void LoadFeatures()
         {
             Run("LoadFeatures", () => Feature.All == null, () =>
-               {
-                   Feature.All = GetFeatureDefinitions()
-                   .SelectMany(x => x.GetAllFeatures())
-                   .ExceptNull()
-                   .ToList();
-
-                   foreach (var item in Feature.All)
-                       item.Children = Feature.All.Where(x => x.Parent == item);
-               });
+            {
+                Feature.All = Task.Factory.RunSync(Features.LoadFeatures);
+                foreach (var item in Feature.All)
+                    item.Children = Feature.All.Where(x => x.Parent?.ID == item.ID);
+            });
         }
-
         static void LoadBoards()
         {
             Run("LoadBoards", () => Board.All == null, () =>

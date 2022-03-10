@@ -1,110 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
-using Olive;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace Olive.Microservices.Hub
 {
-    class FeatureDefinition
+
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
+    class FeatureDefinition : Mvc.Microservices.Feature
     {
-        XElement Data;
-        Feature Feature;
-        FeatureDefinition[] Children;
-        FeatureDefinition Parent;
-        public string Name { get; private set; }
 
-        public FeatureDefinition(FeatureDefinition parent, XElement data)
+        public string ServiceName;
+        public FeatureDefinition For(Service service)
         {
-            Parent = parent;
-            Data = data;
-            Name = Data.GetCleanName();
-            Children = data.Elements().Select(x => new FeatureDefinition(this, x)).ToArray();
+            ServiceName = service.Name;
+            return this;
         }
-
-        public override string ToString() => Parent?.ToString().WithSuffix(" > ") + Name;
-
-        IEnumerable<string> GetPermissions(bool not = false)
+        public Feature CreateFeature(Feature parent)
         {
-            var result = new List<string>();
-
-            var info = Data.GetValue<string>("@permissions").OrEmpty().Split(',').Trim();
-
-            if (Parent != null)
+            var feature = new Feature
             {
-                // Always inherit "deny" settings.
-                // Inherit "grant" settings only when there is nothing explicit.
-                if (not || info.None())
-                {
-                    result.AddRange(Parent.GetPermissions(not));
-                }
-            }
-
-            foreach (var text in info)
-            {
-                var isNot = text.StartsWith("!");
-                if (not != isNot) continue;
-                var name = text.TrimStart("!");
-
-                result.Add(name);
-            }
-
-            return result;
-        }
-
-        Service GetService()
-        {
-            var serviceName = Data.GetValue<string>("@service");
-            if (serviceName.IsEmpty()) return Parent?.GetService();
-
-            return Service.FindByName(serviceName)
-                ?? throw new Exception("There is no service named: " + serviceName);
-        }
-
-        public IEnumerable<Feature> GetAllFeatures()
-        {
-            yield return GetDefinedFeature();
-
-            foreach (var c in Children.SelectMany(x => x.GetAllFeatures()))
-                yield return c;
-        }
-
-        Feature GetDefinedFeature()
-        {
-            if (Name.IsAnyOf("ROOT", "FOR")) return null;
-            if (Feature != null) return Feature;
-
-            var parent = Parent.GetEffectiveFeature();
-
-            Feature = new Feature
-            {
-                Ref = Data.GetValue<string>("@ref"),
-                Title = Name,
-                Description = Data.GetValue<string>("@desc"),
-                ImplementationUrl = Data.GetValue<string>("@url"),
-                BadgeUrl = Data.GetValue<string>("@badgeUrl"),
-                BadgeOptionalFor = Data.GetValue<string>("@badgeOptional"),
-                Icon = Data.GetValue<string>("@icon"),
-                ShowOnRight = Data.GetValue<bool?>("@showOnRight") ?? false,
+                Ref = Refrance.OrEmpty(),
+                Title = FullPath.Split("/").LastOrDefault(),
+                Description = Description.OrEmpty(),
+                ImplementationUrl = RelativeUrl.OrEmpty(),
+                BadgeUrl = BadgeUrl,
+                Icon = Icon.OrEmpty(),
+                ShowOnRight = ShowOnRight,
                 Parent = parent,
-                Order = Parent.Children.IndexOf(this) * 10 + 10,
-                Permissions = GetPermissions().ToArray(),
-                NotPermissions = GetPermissions(not: true).ToArray(),
-                Service = GetService() ?? Service.FindByName("Hub"),
-                Pass = Data.GetValue<string>("@pass"),
-                Hide = Data.GetValue<bool?>("@hide") ?? false
+                Order = parent?.Children?.Count() * 10 + 10 ?? 10,
+                Permissions = Permissions.OrEmpty().Split(",").Trim().ToArray(),
+                NotPermissions = new string[] { },
+                Service = Service.FindByName(ServiceName),
             };
-
-            Feature.UseIframe = Data.GetValue<bool?>("@iframe") ?? Feature.Service.UseIframe;
-
-            if (Feature.ImplementationUrl.IsEmpty())
-                Feature.Service = Service.FindByName("Hub");
-
-            Feature.LoadUrl = Feature.FindLoadUrl().ToLower();
-
-            return Feature;
+            if (feature.ImplementationUrl.IsEmpty())
+                feature.Service = Service.FindByName("Hub");
+            feature.LoadUrl = feature.FindLoadUrl().ToLower();
+            return feature;
         }
-
-        Feature GetEffectiveFeature() => GetDefinedFeature() ?? Parent?.GetEffectiveFeature();
     }
 }

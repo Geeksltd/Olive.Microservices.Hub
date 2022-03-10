@@ -20,10 +20,11 @@
 
             if (feature.Permissions.None())
             {
-                if (feature.Parent != null)
-                    return @this.CanSee(feature.Parent);
-
-                return true;
+                foreach (var child in feature.Children)
+                {
+                    if (CanSee(@this, child) && child.ImplementationUrl.HasValue()) return true;
+                }
+                return false;
             }
 
             return feature.Permissions.Any(p => @this.IsInRole(p));
