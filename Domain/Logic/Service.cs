@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Olive.Microservices.Hub.Utilities.UrlExtensions;
 using Newtonsoft.Json;
 using Olive;
 using Olive.Entities;
 using Olive.Entities.Data;
+using Olive.Microservices.Hub.Utilities.UrlExtensions;
 
 namespace Olive.Microservices.Hub
 {
@@ -14,6 +14,7 @@ namespace Olive.Microservices.Hub
     {
         public static IEnumerable<Service> All { get; internal set; }
         public string FeaturesJsonPath() => $"/features/services/{Name}.json";
+
         public static string ToJson()
         {
             var items = All
@@ -61,19 +62,20 @@ namespace Olive.Microservices.Hub
                 return Task.FromResult((IEntity)All.First(x => x.ID == id));
             }
         }
+
         public async Task GetAndSaveFeaturesJson()
         {
-            var runtimeFeatures = new Mvc.Microservices.Feature[0];
+            var url = (BaseUrl + "/olive/features").AsUri();
+
             try
             {
-                var url = (BaseUrl + "/olive/features").AsUri();
-                runtimeFeatures = JsonConvert.DeserializeObject<Mvc.Microservices.Feature[]>(await url.Download(timeOutSeconds: 10));
+                var runtimeFeatures = JsonConvert.DeserializeObject<Mvc.Microservices.Feature[]>(await url.Download(timeOutSeconds: 10));
+                await Features.Repository.Write(FeaturesJsonPath(), JsonConvert.SerializeObject(runtimeFeatures));
             }
             catch (Exception ex)
             {
-                Log.For(typeof(Features)).Warning(ex.ToString());
+                Log.For(typeof(Features)).Warning(url + " failed:\n" + ex.ToString());
             }
-            await Features.Repository.Write(FeaturesJsonPath(), JsonConvert.SerializeObject(runtimeFeatures));
         }
     }
 }

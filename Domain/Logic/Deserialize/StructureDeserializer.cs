@@ -16,7 +16,9 @@ namespace Olive.Microservices.Hub
             LoadFeatures();
             if (Feature.All.HasAny()) LoadBoards();
         }
+
         public static async Task RefreshFeatures() => await Features.RefreshFeatures();
+
         public static async Task RefreshServiceFeatures() => await Features.RefreshServiceFeatures();
 
         static void LoadServices()
@@ -68,10 +70,12 @@ namespace Olive.Microservices.Hub
             Run("LoadFeatures", () => Feature.All == null, () =>
             {
                 Feature.All = Task.Factory.RunSync(Features.LoadFeatures);
+
                 foreach (var item in Feature.All)
                     item.Children = Feature.All.Where(x => x.Parent?.ID == item.ID);
             });
         }
+
         static void LoadBoards()
         {
             Run("LoadBoards", () => Board.All == null, () =>

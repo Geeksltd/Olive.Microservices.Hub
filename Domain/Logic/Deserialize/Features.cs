@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
-using Olive;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using System.IO;
 using Newtonsoft.Json;
+using Olive;
 
 namespace Olive.Microservices.Hub
 {
@@ -15,14 +14,17 @@ namespace Olive.Microservices.Hub
         public static IFeatureRepository Repository;
 
         internal static void SetRepository(IFeatureRepository featureRepository) => Repository = featureRepository;
+
         internal async static Task RefreshServiceFeatures()
         {
             await Task.WhenAll(Service.All.Do(s => s.GetAndSaveFeaturesJson()));
             await RefreshFeatures();
         }
+
         internal async static Task RefreshFeatures()
         {
             var features = FromLegacyXml().ToList();
+
             foreach (var service in Service.All)
             {
                 try
@@ -34,15 +36,17 @@ namespace Olive.Microservices.Hub
                 catch (Exception ex)
                 {
                     Log.For(typeof(Features)).Warning(ex.ToString());
-
                 }
             }
+
             await Repository.Write("/features/features.json", JsonConvert.SerializeObject(features));
             Feature.All = await LoadFeatures();
         }
+
         internal static async Task<Feature[]> LoadFeatures()
         {
             var json = "";
+
             try
             {
                 json = await Repository.Read("/features/features.json");
@@ -52,26 +56,32 @@ namespace Olive.Microservices.Hub
                 Log.For(typeof(Feature)).Error(ex.ToString());
                 await RefreshFeatures();
             }
+
             if (json.HasValue())
             {
                 var featureDefinitions = JsonConvert.DeserializeObject<FeatureDefinition[]>(json);
                 return GetActualFeatures(featureDefinitions);
             }
+
             return Feature.All.ToArray();
         }
+
         static Feature[] GetActualFeatures(FeatureDefinition[] featureDefinitions)
         {
             var featuresDictionary = new Dictionary<string, List<Feature>>();
+
             foreach (var definition in featureDefinitions)
             {
                 Feature parent = null;
                 var path = "";
                 var titles = definition.FullPath.Split('/');
+
                 foreach (var title in titles)
                 {
                     if (path.HasValue()) path += "/";
                     path += title;
                     var feature = featuresDictionary.GetOrDefault(path)?.FirstOrDefault();
+
                     if (definition.FullPath == path) feature = definition.CreateFeature(parent);
                     else if (feature != null && feature.ImplementationUrl.IsEmpty())
                     {
@@ -79,18 +89,22 @@ namespace Olive.Microservices.Hub
                         continue;
                     }
                     else feature = new FeatureDefinition { FullPath = path, Icon = "fas fa-folder", ServiceName = "Hub" }.CreateFeature(parent);
+
                     var features = featuresDictionary.GetOrDefault(path);
+
                     if (features == null)
                     {
                         features = new List<Feature>();
                         featuresDictionary.Add(path, features);
                     }
+
                     features.Add(feature);
 
                     if (parent != null) parent.Children.Append(feature);
                     parent = feature;
                 }
             }
+
             return featuresDictionary.Values.SelectMany(x => x).ToArray();
         }
 
@@ -100,15 +114,19 @@ namespace Olive.Microservices.Hub
                    .SelectMany(x => x.GetAllFeatures())
                    .ExceptNull()
                    .ToList();
+
             foreach (var item in featuresXml)
                 item.Children = featuresXml.Where(x => x.Parent?.ID == item.ID);
+
             var featureDefenitions = new List<FeatureDefinition>();
+
             foreach (var featureXml in featuresXml)
             {
                 if (featureXml.HasSimilarChild(featureXml.ImplementationUrl)) continue;
                 var fullPath = featureXml.GetFullPathSlashSeperated();
                 if (featureXml.Title == "add") fullPath = fullPath + "/" + featureXml.Ref;
                 if (featureXml.ImplementationUrl.IsEmpty()) continue;
+
                 featureDefenitions.Add(new FeatureDefinition
                 {
                     Refrance = featureXml.Ref.OrEmpty(),
@@ -122,6 +140,7 @@ namespace Olive.Microservices.Hub
                     ShowOnRight = featureXml.ShowOnRight
                 });
             }
+
             return featureDefenitions;
         }
 
@@ -158,9 +177,9 @@ namespace Olive.Microservices.Hub
             return results;
         }
 
-        private static FileInfo GetFromRoot(string filename) => AppDomain.CurrentDomain.WebsiteRoot().GetFile(filename);
+        static FileInfo GetFromRoot(string filename) => AppDomain.CurrentDomain.WebsiteRoot().GetFile(filename);
 
-        private static IEnumerable<XElement> ReadXml(System.IO.FileInfo file)
+        static IEnumerable<XElement> ReadXml(System.IO.FileInfo file)
         {
             var start = LocalTime.Now;
             var result = file.ReadAllText().To<XDocument>().Root.Elements();

@@ -1,5 +1,5 @@
-﻿//namespace Olive.Microservices.Hub
-//{
+﻿// namespace Olive.Microservices.Hub
+// {
 //    using Microsoft.AspNetCore.Authentication;
 //    using Microsoft.AspNetCore.Hosting;
 //    using Microsoft.Extensions.Configuration;
@@ -30,4 +30,4 @@
 //            });
 //        }
 //    }
-//}
+// }

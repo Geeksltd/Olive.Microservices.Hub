@@ -21,9 +21,9 @@
             if (feature.Permissions.None())
             {
                 foreach (var child in feature.Children)
-                {
                     if (CanSee(@this, child) && child.ImplementationUrl.HasValue()) return true;
-                }
+
+
                 return false;
             }
 

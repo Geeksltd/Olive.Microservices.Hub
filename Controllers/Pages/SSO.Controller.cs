@@ -1,18 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Olive;
 using Olive.Entities;
 using Olive.Microservices.Hub;
 using Olive.Mvc;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 using vm = ViewModel;
 
 namespace Controllers
 {
-
 #pragma warning disable
     public partial class SSOController : BaseController
     {
@@ -23,7 +22,7 @@ namespace Controllers
             {
                 return Redirect(Url.Index("Login", new { ReturnUrl = Url.Current() }));
             }
-            //if (!returnUrl.IsEmpty()) return Redirect(returnUrl);
+            // if (!returnUrl.IsEmpty()) return Redirect(returnUrl);
 
             return View(info);
         }
@@ -43,7 +42,7 @@ namespace Controllers
         [NonAction]
         async Task<IEnumerable<Service>> GetSource(vm.SingleSignOn info)
         {
-            IEnumerable<Service> result = Service.All.Where(x => x.InjectSingleSignon);
+            var result = Service.All.Where(x => x.InjectSingleSignon);
 
             return result;
         }
@@ -52,7 +51,6 @@ namespace Controllers
 
 namespace ViewModel
 {
-
 #pragma warning disable
     public partial class SingleSignOn : IViewModel
     {
@@ -69,13 +67,7 @@ namespace ViewModel
             [ValidateNever]
             public Service Item { get; set; }
 
-            public string ServiceUrl
-            {
-                get
-                {
-                    return Item.GetAbsoluteImplementationUrl("@Services/SSO.ashx");
-                }
-            }
+            public string ServiceUrl => Item.GetAbsoluteImplementationUrl("@Services/SSO.ashx");
         }
     }
 }

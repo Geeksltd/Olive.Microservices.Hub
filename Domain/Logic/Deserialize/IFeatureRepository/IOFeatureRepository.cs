@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace Olive.Microservices.Hub
 {
@@ -17,7 +13,7 @@ namespace Olive.Microservices.Hub
             Directory.CreateDirectory(BaseDirectory + "/features/services");
         }
         public async Task Write(string key, string features) => File.WriteAllText(BaseDirectory + key, features);
-        public async Task<string> Read(string key) => File.ReadAllText(BaseDirectory + key);
 
+        public async Task<string> Read(string key) => File.ReadAllText(BaseDirectory + key);
     }
 }

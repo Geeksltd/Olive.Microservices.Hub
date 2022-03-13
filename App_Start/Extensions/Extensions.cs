@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Olive;
-using Olive.Microservices.Hub;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Olive;
+using Olive.Microservices.Hub;
 
 namespace System
 {
@@ -42,9 +42,10 @@ namespace System
         }
 
         public static bool IsUAT(this Microsoft.AspNetCore.Hosting.IWebHostEnvironment @this) => @this.EnvironmentName == "UAT";
+
         public static bool IsProduction(this Microsoft.AspNetCore.Hosting.IWebHostEnvironment @this) => @this.EnvironmentName == "Production";
 
-        private static string HeaderButtonTargetAttr(HeaderButton button)
+        static string HeaderButtonTargetAttr(HeaderButton button)
         {
             if (button.Target == "PopUp")
                 return "target=\"$modal\"";
@@ -52,9 +53,11 @@ namespace System
                 return "target=\"_blank\"";
             else if (button.Target == "Ajax")
                 return "data-redirect=\"ajax\"";
+
             return "";
         }
-        private static string RenderHeaderButton(HeaderButton button)
+
+        static string RenderHeaderButton(HeaderButton button)
         {
             var attr = HeaderButtonTargetAttr(button);
 
@@ -64,15 +67,15 @@ namespace System
         <a class="""" href=""{url}"" {attr} {style}>
             <i class=""{button.Icon}""></i>
         </a> ";
-
         }
+
         public static string RenderHeaderButtons(this IHtmlHelper htmlHelper)
         {
             var buttons = Config.Bind<List<HeaderButton>>("HeaderButtons:Buttons");
-            if (buttons == null || buttons.None())
-                return "";
+            if (buttons == null || buttons.None()) return "";
             var result = "";
             var user = Context.Current.User();
+
             foreach (var button in buttons.Where(x => x.Roles.IsEmpty() || x.Roles.Split(",").ContainsAny(user.GetRoles().ToArray())))
                 result += RenderHeaderButton(button);
 

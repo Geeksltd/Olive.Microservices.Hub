@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Olive;
@@ -63,7 +62,7 @@ namespace Controllers
 
         ActionResult Execute(ViewModel.FeatureView info)
         {
-            //if (info.RequestPath.StartsWith("/Hub/", caseSensitive: false))
+            // if (info.RequestPath.StartsWith("/Hub/", caseSensitive: false))
             //    return Redirect(info.RequestPath.Substring(4));
 
             ViewData["Title"] = info.Item?.GetFullPath();

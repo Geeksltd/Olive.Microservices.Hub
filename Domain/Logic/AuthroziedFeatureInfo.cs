@@ -46,6 +46,7 @@
         {
             var items = FeatureSecurityFilter.GetAuthorizedFeatures(Context.Current.User());
             var menuItems = await GetAllMenuItems(items);
+
             var sorted = menuItems
                 .OrderBy(x => x.Children == null ? 0 : x.Children.Sum(c => c.Children == null ? 1 : c.Children.Count() + 1))
                 .ToList();
@@ -69,6 +70,7 @@
                     });
 
                     div.Add(ul);
+
                     div.Add(new XElement("h3", new XAttribute("class", "full-menu-text"),
                         new XElement("a", item.Title, new XAttribute("href", item.LoadUrl))));
                 }
@@ -188,7 +190,6 @@
 
             if (Feature.Pass.HasAny() && query.Any())
             {
-
                 var queryStringItems = (from key in Feature.Pass.Split(",")
                                         where query.ContainsKey(key)
                                         select key + "=" + query[key]).ToString("&");

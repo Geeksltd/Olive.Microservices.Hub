@@ -1,5 +1,5 @@
-﻿//namespace Olive.Microservices.Hub
-//{
+﻿// namespace Olive.Microservices.Hub
+// {
 //    using System.Threading.Tasks;
 //    
 //    using Microsoft.AspNetCore.Authentication.Cookies;
@@ -54,4 +54,4 @@
 //            base.ConfigureMvc(mvc);
 //        }
 //    }
-//}
+// }

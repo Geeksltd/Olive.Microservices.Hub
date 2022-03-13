@@ -1,5 +1,4 @@
 ﻿using System;
-using Olive;
 
 namespace Olive.Microservices.Hub
 {

@@ -1,8 +1,4 @@
-﻿
-using Olive;
-using Olive.Microservices.Hub;
-
-namespace Olive.Microservices.Hub
+﻿namespace Olive.Microservices.Hub
 {
     public static class FeatureContext
     {

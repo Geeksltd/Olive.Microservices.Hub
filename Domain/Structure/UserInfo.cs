@@ -1,20 +1,16 @@
 ﻿namespace PeopleService
 {
-    using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using System.Xml.Serialization;
     using Olive;
     using Olive.Entities;
-    using Olive.Entities.Data;
     using Olive.Microservices.Hub;
 
     /// <summary>Represents an instance of User info entity type.</summary>
     [SoftDelete]
     [Schema("PeopleService")]
-    
+
     public partial class UserInfo : GuidEntity
     {
         /// <summary>Initializes a new instance of the UserInfo class.</summary>

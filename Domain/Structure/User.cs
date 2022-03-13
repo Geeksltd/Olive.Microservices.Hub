@@ -1,18 +1,15 @@
 ﻿namespace Olive.Microservices.Hub
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using System.Xml.Serialization;
     using Olive;
     using Olive.Entities;
-    using Olive.Entities.Data;
 
     /// <summary>Represents an instance of User entity type.</summary>
     [SoftDelete]
-    
+
     public partial class User : GuidEntity
     {
         CachedReference<PeopleService.UserInfo> cachedInfo = new CachedReference<PeopleService.UserInfo>();

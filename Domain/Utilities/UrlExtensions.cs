@@ -1,6 +1,4 @@
-﻿using Olive;
-
-namespace Olive.Microservices.Hub.Utilities.UrlExtensions
+﻿namespace Olive.Microservices.Hub.Utilities.UrlExtensions
 {
     public static class Extensions
     {

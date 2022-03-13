@@ -1,10 +1,8 @@
 ﻿namespace Olive.Microservices.Hub
 {
     using System;
-    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Google;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -13,8 +11,6 @@
     using Microsoft.Extensions.Logging;
     using Olive;
     using Olive.Entities.Data;
-    using Olive.Microservices.Hub;
-    using Olive.PassiveBackgroundTasks;
 
     public abstract class HubStartup<TTaskManager> : FS.Shared.Website.Startup<ReferenceData, BackgroundTask, TTaskManager> where TTaskManager : BackgroundJobsPlan, new()
     {
@@ -27,11 +23,13 @@
         }
 
         protected virtual bool IsProduction() => false;
+
         string[] Subdomains;
 
         public override void ConfigureServices(IServiceCollection services)
         {
             services.AddResponseCompression();
+
             if (Subdomains.Any())
                 services.AddCors(c => c.AddPolicy("AllowSubdomains", builder =>
                 {
@@ -66,13 +64,12 @@
             Feature.DataProvider.Register();
             Service.DataProvider.Register();
             Board.DataProvider.Register();
-
         }
 
         protected override void ConfigureMiddlewares(IApplicationBuilder app)
         {
             app.UseGlobalSearch<GlobalSearchSource>();
-            //app.Use(RedirectSmartPhone);
+            // app.Use(RedirectSmartPhone);
             base.ConfigureMiddlewares(app);
         }
 
@@ -81,6 +78,7 @@
             StructureDeserializer.Load();
             base.ConfigureRequestHandlers(app);
         }
+
         protected abstract void ConfigureDataProtectionProvider(GoogleOptions config);
 
         static async Task RedirectSmartPhone(Microsoft.AspNetCore.Http.HttpContext context, Func<Task> next)

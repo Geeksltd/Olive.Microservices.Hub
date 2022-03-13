@@ -1,9 +1,6 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Extensions.Configuration;
+﻿using System.Linq;
 using Olive;
 using Olive.Microservices.Hub;
-using Olive.Microservices.Hub.BoardComponent;
 
 namespace ViewModel
 {
@@ -13,6 +10,7 @@ namespace ViewModel
         {
             var boardSources = Config.Bind<GlobalSearchModel1>("BoardComponents:Sources");
             var sources = type == "Project" ? boardSources.Project : boardSources.Person;
+
             var urls = sources.Where(x => x.Contains("/"))
                 .Select(x => new
                 {
@@ -20,6 +18,7 @@ namespace ViewModel
                     Url = x.Substring(x.Split("/")[0].Length + 1)
                 })
                 .Select(x => $"{Service.FindByName(x.ServiceName).GetAbsoluteImplementationUrl(x.Url)}#{Service.FindByName(x.ServiceName).Icon}");
+
             return urls.ToString(";");
         }
         public class GlobalSearchModel1

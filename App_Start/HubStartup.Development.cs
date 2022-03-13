@@ -1,5 +1,5 @@
-﻿//namespace Olive.Microservices.Hub
-//{
+﻿// namespace Olive.Microservices.Hub
+// {
 //    using System;
 //    using System.Threading.Tasks;
 //    using Microsoft.AspNetCore.Builder;
@@ -18,7 +18,6 @@
 //        {
 //        }
 
-
 //        protected override void ConfigureDataProtectionProvider(Microsoft.AspNetCore.Authentication.Google.GoogleOptions config)
 //        {
 //            var key = Config.Get("Authentication:CookieDataProtectorKey");
@@ -31,4 +30,4 @@
 //            await new PeopleService.HubEndPoint(typeof(PeopleService.UserInfo).Assembly).Subscribe();
 //        }
 //    }
-//}
+// }

@@ -1,31 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Transactions;
-using System.Web;
-using Olive;
-using Olive.Entities;
-using Olive.Mvc;
-using Olive.Web;
-
-using Microsoft.AspNetCore.Authorization;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-
-using vm = ViewModel;
+using Olive;
 using Olive.Microservices.Hub;
+using Olive.Mvc;
+using vm = ViewModel;
 
 namespace Controllers
 {
-
 #pragma warning disable
     public partial class FeatureController : BaseController
     {
@@ -54,7 +36,6 @@ namespace Controllers
 
 namespace ViewModel
 {
-
 #pragma warning disable
     public partial class FeatureView : IViewModel
     {

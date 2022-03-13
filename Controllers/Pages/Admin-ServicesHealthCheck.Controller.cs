@@ -1,32 +1,19 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Transactions;
-using System.Web;
-using Olive;
-using Olive.Entities;
-using Olive.Mvc;
-using Olive.Web;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-
-using vm = ViewModel;
+using Olive;
 using Olive.Microservices.Hub;
+using Olive.Mvc;
+using vm = ViewModel;
 
 namespace Controllers
 {
     [Authorize(Roles = "Director, HeadPM")]
-    
+
 #pragma warning disable
     public partial class AdminServicesHealthCheckController : BaseController
     {
@@ -48,7 +35,7 @@ namespace Controllers
         [NonAction]
         async Task<IEnumerable<Service>> GetSource(vm.ServicesHealthCheckTiles info)
         {
-            IEnumerable<Service> result = Service.All;
+            var result = Service.All;
 
             return result;
         }
@@ -57,7 +44,6 @@ namespace Controllers
 
 namespace ViewModel
 {
-    
 #pragma warning disable
     public partial class ServicesHealthCheckTiles : IViewModel
     {

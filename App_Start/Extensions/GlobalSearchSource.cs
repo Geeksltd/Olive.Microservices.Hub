@@ -1,9 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
-
-using Olive;
 using Olive.GlobalSearch;
-using Olive.Microservices.Hub;
 
 namespace Olive.Microservices.Hub
 {

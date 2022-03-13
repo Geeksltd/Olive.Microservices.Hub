@@ -1,14 +1,11 @@
 ﻿namespace Olive.Microservices.Hub
 {
-    using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Xml.Serialization;
     using Olive;
     using Olive.Entities;
-    using Olive.Entities.Data;
 
     /// <summary>Represents an instance of Board entity type.</summary>
     [TransientEntity]
@@ -16,7 +13,7 @@
     public partial class Board : GuidEntity
     {
         /// <summary>The associated Widgets.</summary>
-        private IList<Widget> widgets = new List<Widget>();
+        IList<Widget> widgets = new List<Widget>();
 
         /// <summary>Gets or sets the value of Name on this Board instance.</summary>
         [System.ComponentModel.DataAnnotations.StringLength(200)]

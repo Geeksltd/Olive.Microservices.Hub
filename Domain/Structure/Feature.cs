@@ -1,23 +1,20 @@
 ﻿namespace Olive.Microservices.Hub
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using System.Xml.Serialization;
     using Olive;
     using Olive.Entities;
-    using Olive.Entities.Data;
 
     /// <summary>Represents an instance of Feature entity type.</summary>
     [TransientEntity]
     [SkipAutoSort]
-    
+
     public partial class Feature : GuidEntity, IComparable<Feature>, IHierarchy, ISortable
     {
         /// <summary>Stores the associated Features for Children property.</summary>
-        private IList<Feature> children = new List<Feature>();
+        IList<Feature> children = new List<Feature>();
 
         /// <summary>Initializes a new instance of the Feature class.</summary>
         public Feature() => Saving += (ev) => ev.Do(Feature_Saving);
@@ -118,12 +115,8 @@
         /// </returns>
         public int CompareTo(Feature other)
         {
-            if (other is null)
-                return 1;
-            else
-            {
-                return this.Order.CompareTo(other.Order);
-            }
+            if (other is null) return 1;
+            else return Order.CompareTo(other.Order);
         }
 
         /// <summary>Compares this Feature with another object of a compatible type.</summary>
@@ -199,10 +192,10 @@
             if (Title?.Length > 200)
                 result.Add("The provided Title is too long. A maximum of 200 characters is acceptable.");
 
-            if (this.GetParent() != null)
+            if (GetParent() != null)
             {
-                if (this.WithAllChildren().Contains(this.GetParent()))
-                    result.Add(string.Format("Invalid parent selected for this Feature. Setting {0} as the parent node of {1} will create an infinite loop.", this.GetParent(), this));
+                if (this.WithAllChildren().Contains(GetParent()))
+                    result.Add(string.Format("Invalid parent selected for this Feature. Setting {0} as the parent node of {1} will create an infinite loop.", GetParent(), this));
             }
 
             if (result.Any())

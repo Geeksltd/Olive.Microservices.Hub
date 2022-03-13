@@ -1,18 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc;
-using Olive;
-using Olive.Microservices.Hub;
-using vm = ViewModel;
-
-namespace Controllers
+﻿namespace Controllers
 {
     abstract partial class LoginController1
     {
-        //public delegate void OnLoggedOutEventHandler(object sender);
-        //async Task TryLogin(string email)
-        //{
+        // public delegate void OnLoggedOutEventHandler(object sender);
+        // async Task TryLogin(string email)
+        // {
         //    var user = await Database.FirstOrDefault<PeopleService.UserInfo>(p => p.Email == email);
 
         //    if (user == null)
@@ -27,11 +19,11 @@ namespace Controllers
         //        throw new Exception("<li>Your account is currently deactivated. It might be due to security concerns on your account. Please contact the system administrator to resolve this issue. We apologise for the inconvenience.</li>");
 
         //    await user.LogOn();
-        //}
+        // }
 
-        //[HttpGet, Route("ExternalLoginCallback")]
-        //public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
-        //{
+        // [HttpGet, Route("ExternalLoginCallback")]
+        // public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+        // {
         //    try
         //    {
         //        if (remoteError.HasValue())
@@ -70,18 +62,18 @@ namespace Controllers
         //        Log.Error(ex);
         //        throw;
         //    }
-        //}
+        // }
 
-        //[HttpGet, Route("logout")]
-        //public async Task<IActionResult> Logout(vm.LoginForm _)
-        //{
+        // [HttpGet, Route("logout")]
+        // public async Task<IActionResult> Logout(vm.LoginForm _)
+        // {
         //    OnLoggedOutEventHandler(null);
         //    await HttpContext.SignOutAsync();
         //    return Redirect(Microservice.Of("Dashboard").Url("/login/logout.aspx"));
-        //}
+        // }
 
-        //async Task<ActionResult> Error(string message)
-        //{
+        // async Task<ActionResult> Error(string message)
+        // {
         //    // throw new Exception();
         //    var manual = new vm.ManualLogin();
         //    await TryUpdateModelAsync(manual);
@@ -90,10 +82,10 @@ namespace Controllers
         //    await TryUpdateModelAsync(login);
 
         //    return await Index(manual, login);
-        //}
+        // }
 
-        //async Task<ActionResult> LoginWithEmail(vm.LoginForm info)
-        //{
+        // async Task<ActionResult> LoginWithEmail(vm.LoginForm info)
+        // {
         //    if (info.Email.IsEmpty())
         //        return await Error("Please type your email.");
 
@@ -129,11 +121,11 @@ namespace Controllers
         //        Log.Error(ex);
         //        return Content("There is an issue in the system. Please try again later, or contact support@geeks.ltd.uk.");
         //    }
-        //}
+        // }
 
-        //[HttpGet("claim/{token}")]
-        //public async Task<IActionResult> Claim(string token)
-        //{
+        // [HttpGet("claim/{token}")]
+        // public async Task<IActionResult> Claim(string token)
+        // {
         //    var claim = await EmailClaim.FindByToken(token);
 
         //    if (claim == null)
@@ -145,6 +137,6 @@ namespace Controllers
         //    await Database.Delete(claim);
         //    await TryLogin(claim.Email);
         //    return Redirect("/SSO");
-        //}
+        // }
     }
 }
