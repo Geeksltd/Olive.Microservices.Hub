@@ -10,13 +10,13 @@ jobs:
       matrix:
         configuration: [Release]
 
-    runs-on: windows-2019
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
 
     - name: Publish NuGet Package
-      uses: rohith/publish-nuget@v2
+      uses: alirezanet/publish-nuget@v3.0.0
       with:
         PROJECT_FILE_PATH: Olive.Microservices.Hub.csproj
         NUGET_KEY: ${{secrets.NUGET_API_KEY}}
