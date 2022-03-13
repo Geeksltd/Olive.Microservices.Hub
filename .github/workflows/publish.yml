@@ -1,0 +1,22 @@
+name: Publish Olive Packages
+
+on:
+  push:
+    branches: [ master ]
+    
+jobs:
+ build:
+    strategy:
+      matrix:
+        configuration: [Release]
+
+    runs-on: windows-2019
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Publish NuGet Package
+      uses: brandedoutcast/publish-nuget@v2
+      with:
+        PROJECT_FILE_PATH: Olive.Microservices.Hub.csproj
+        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
