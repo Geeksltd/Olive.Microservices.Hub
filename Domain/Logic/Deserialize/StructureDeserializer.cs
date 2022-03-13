@@ -67,13 +67,7 @@ namespace Olive.Microservices.Hub
 
         static void LoadFeatures()
         {
-            Run("LoadFeatures", () => Feature.All == null, () =>
-            {
-                Feature.All = Task.Factory.RunSync(Features.LoadFeatures);
-
-                foreach (var item in Feature.All)
-                    item.Children = Feature.All.Where(x => x.Parent?.ID == item.ID);
-            });
+            Run("LoadFeatures", () => Feature.All == null, () => Task.Factory.RunSync(Features.Load));
         }
 
         static void LoadBoards()

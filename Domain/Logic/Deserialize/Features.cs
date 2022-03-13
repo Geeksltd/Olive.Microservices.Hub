@@ -40,10 +40,10 @@ namespace Olive.Microservices.Hub
             }
 
             await Repository.Write("/features/features.json", JsonConvert.SerializeObject(features));
-            Feature.All = await LoadFeatures();
+            await Load();
         }
 
-        internal static async Task<Feature[]> LoadFeatures()
+        internal static async Task Load()
         {
             var json = "";
 
@@ -60,10 +60,11 @@ namespace Olive.Microservices.Hub
             if (json.HasValue())
             {
                 var featureDefinitions = JsonConvert.DeserializeObject<FeatureDefinition[]>(json);
-                return GetActualFeatures(featureDefinitions);
+                Feature.All = GetActualFeatures(featureDefinitions);
             }
 
-            return Feature.All.ToArray();
+            foreach (var item in Feature.All.OrEmpty())
+                item.Children = Feature.All.Where(x => x.Parent?.ID == item.ID);
         }
 
         static Feature[] GetActualFeatures(FeatureDefinition[] featureDefinitions)
