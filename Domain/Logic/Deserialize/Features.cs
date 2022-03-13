@@ -50,7 +50,7 @@ namespace Olive.Microservices.Hub
             catch (Exception ex)
             {
                 Log.For(typeof(Feature)).Error(ex.ToString());
-                await RefreshServiceFeatures();
+                await RefreshFeatures();
             }
             if (json.HasValue())
             {
