@@ -32,7 +32,7 @@ namespace Olive.Microservices.Hub
             };
 
             // Add prefixes:
-            feature.Permissions.Where(x => x.Lacks(":")).Select(x => $"{ServiceName}:{x}").Concat(feature.Permissions).ToArray();
+            feature.Permissions = feature.Permissions.Where(x => x.Lacks(":")).Select(x => $"{ServiceName}:{x}").Concat(feature.Permissions).ToArray();
 
             if (feature.ImplementationUrl.IsEmpty())
                 feature.Service = Service.FindByName("Hub");
