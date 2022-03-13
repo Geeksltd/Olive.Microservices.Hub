@@ -12,11 +12,11 @@ namespace Olive.Microservices.Hub
         public async Task Write(string key, string features)
         {
             using (var stream = new System.IO.MemoryStream(features.ToBytes(Encoding.UTF8)))
-                await new Amazon.S3.Transfer.TransferUtility().UploadAsync(stream, Config.GetOrThrow("Authentication:HubFeaturesBucket"), key);
+                await new Amazon.S3.Transfer.TransferUtility().UploadAsync(stream, Config.GetOrThrow("Blob:S3:Bucket"), key);
         }
         public async Task<string> Read(string key)
         {
-            using (var stream = new Amazon.S3.Transfer.TransferUtility().OpenStream(Config.GetOrThrow("Authentication:HubFeaturesBucket"), key))
+            using (var stream = new Amazon.S3.Transfer.TransferUtility().OpenStream(Config.GetOrThrow("Blob:S3:Bucket"), key))
                 return await stream.ReadAllText();
         }
     }
