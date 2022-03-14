@@ -1,4 +1,4 @@
-name: Publish Package
+name: Publish Olive Packages
 
 on:
   push:
@@ -10,15 +10,24 @@ jobs:
       matrix:
         configuration: [Release]
 
-
     runs-on: windows-2019
 
     steps:
-    - uses: actions/checkout@v2
+      - name: Check out Repo
+        uses: actions/checkout@v2
 
-    - name: Publish NuGet Package
-      uses: brandedoutcast/publish-nuget@v2
-      with:
-        PROJECT_FILE_PATH: Olive.Microservices.Hub.csproj
-        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+      - name: Setup dotnet 3
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
 
+      - name: Setup dotnet 5
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+
+      - name: Pack
+        run: dotnet pack Olive.Microservices.Hub.csproj -c Release
+
+      - name: Publish to GitHub packages 
+        run: dotnet nuget push bin/Release/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate`
