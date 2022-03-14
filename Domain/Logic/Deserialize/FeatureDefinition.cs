@@ -20,6 +20,7 @@ namespace Olive.Microservices.Hub
                 Ref = Refrance.OrEmpty(),
                 Title = FullPath.Split("/").LastOrDefault(),
                 Description = Description.OrEmpty(),
+                UseIframe = UseIframe,
                 ImplementationUrl = RelativeUrl.OrEmpty(),
                 BadgeUrl = BadgeUrl,
                 Icon = Icon.OrEmpty(),
