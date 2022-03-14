@@ -1,11 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
-	<configuration>
-	  <packageSources>
-		<add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
-		<add key="Geeks Microservice Apis" value="https://nuget.app.geeks.ltd/v3/index.json" protocolVersion="3"/>
-		<add key="Geeks Microservice Apis" value="http://nuget.geeksms.uat.co/nuget" />
-	  </packageSources>
-	</configuration>
+
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
