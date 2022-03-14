@@ -138,8 +138,10 @@ namespace Olive.Microservices.Hub
                     RelativeUrl = featureXml.ImplementationUrl,
                     BadgeUrl = featureXml.BadgeUrl,
                     Description = featureXml.Description,
-                    ShowOnRight = featureXml.ShowOnRight
+                    ShowOnRight = featureXml.ShowOnRight,
+                    Iframe = featureXml.UseIframe
                 });
+
             }
 
             return featureDefenitions;
