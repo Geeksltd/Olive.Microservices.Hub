@@ -122,7 +122,7 @@ namespace Olive.Microservices.Hub
             if (ImplementationUrl.HasValue())
                 ImplementationUrl = ImplementationUrl.EnsureStartsWith("/");
 
-            if (UseIframe && Service.Name != "Hub") return "/[" + Service.Name + "]" + ImplementationUrl;
+            if (Service.UseIframe && Service.Name != "Hub") return "/[" + Service.Name + "]" + ImplementationUrl;
 
             if (ImplementationUrl.HasValue())
                 return "/[" + Service.Name + "]" + ImplementationUrl;
