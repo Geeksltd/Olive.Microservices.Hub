@@ -10,6 +10,7 @@ namespace Olive.Microservices.Hub
 {
     public class StructureDeserializer
     {
+        static DateTime LastLoad;
         public static void Load()
         {
             LoadServices();
@@ -67,8 +68,15 @@ namespace Olive.Microservices.Hub
 
         static void LoadFeatures()
         {
-            Run("LoadFeatures", () => Feature.All == null, () => Task.Factory.RunSync(Features.Load));
+            Run("LoadFeatures", () => ShouldLoadFeatures(), () =>
+          {
+              LastLoad = LocalTime.Now;
+              Task.Factory.RunSync(Features.Load);
+          });
         }
+
+        private static bool ShouldLoadFeatures() => Feature.All == null || LastLoad == null || LastLoad < LocalTime.Now.AddMinutes(-2);
+
 
         static void LoadBoards()
         {
