@@ -69,6 +69,7 @@
         protected override void ConfigureMiddlewares(IApplicationBuilder app)
         {
             app.UseGlobalSearch<GlobalSearchSource>();
+            StructureDeserializer.ReloadFeatures();
             // app.Use(RedirectSmartPhone);
             base.ConfigureMiddlewares(app);
         }

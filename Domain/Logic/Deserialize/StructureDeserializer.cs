@@ -68,14 +68,21 @@ namespace Olive.Microservices.Hub
 
         static void LoadFeatures()
         {
-            Run("LoadFeatures", () => ShouldLoadFeatures(), () =>
-          {
-              LastLoad = LocalTime.Now;
-              Task.Factory.RunSync(Features.Load);
-          });
+            Run("LoadFeatures", () => Feature.All == null, () =>
+            {
+                Task.Factory.RunSync(Features.Load);
+                LastLoad = LocalTime.UtcNow;
+            });
         }
 
-        private static bool ShouldLoadFeatures() => Feature.All == null || LastLoad == null || LastLoad < LocalTime.Now.AddMinutes(-2);
+        internal static void ReloadFeatures()
+        {
+            if (LastLoad == null || LastLoad < LocalTime.UtcNow.AddMinutes(-2))
+            {
+                LastLoad = LocalTime.UtcNow;
+                Task.Factory.RunSync(Features.Load);
+            }
+        }
 
 
         static void LoadBoards()
