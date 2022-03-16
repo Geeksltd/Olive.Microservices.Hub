@@ -61,10 +61,10 @@
 
             Console.Title = Microservice.Me.Name;
 
+            app.Use(StructureDeserializer.ReloadFeatures);
             Feature.DataProvider.Register();
             Service.DataProvider.Register();
             Board.DataProvider.Register();
-            StructureDeserializer.ReloadFeatures();
 
         }
 

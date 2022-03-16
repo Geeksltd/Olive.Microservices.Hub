@@ -4,13 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Microsoft.AspNetCore.Http;
 using Olive;
 
 namespace Olive.Microservices.Hub
 {
     public class StructureDeserializer
     {
-        static DateTime LastLoad;
+        static DateTime LastLoad = LocalTime.UtcNow;
         public static void Load()
         {
             LoadServices();
@@ -75,13 +76,17 @@ namespace Olive.Microservices.Hub
             });
         }
 
-        internal static void ReloadFeatures()
+        internal static RequestDelegate ReloadFeatures(RequestDelegate next)
         {
-            if (LastLoad == null || LastLoad < LocalTime.UtcNow.AddMinutes(-2))
+            return async ctx =>
             {
-                LastLoad = LocalTime.UtcNow;
-                Task.Factory.RunSync(Features.Load);
-            }
+                if (LocalTime.UtcNow - LastLoad > 2.Minutes())
+                {
+                    LastLoad = LocalTime.UtcNow;
+                    await Features.Load();
+                }
+                await next(ctx);
+            };
         }
 
 
