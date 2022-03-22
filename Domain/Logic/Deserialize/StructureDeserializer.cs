@@ -97,5 +97,7 @@ namespace Olive.Microservices.Hub
                     Board.All = ReadXml(GetFromRoot("Boards.xml")).Select(x => new Board(x)).ToList();
                 });
         }
+        public static async Task<string> GetFeaturesJson() => await Features.Repository.Read("/features/features.json");
+
     }
 }
