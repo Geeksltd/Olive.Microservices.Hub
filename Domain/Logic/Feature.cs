@@ -189,7 +189,7 @@ namespace Olive.Microservices.Hub
 
         internal string GetPermissionsString()
         {
-            if (Permissions.HasAny()) return string.Join(", ", Permissions);
+            if (Permissions.HasAny()) return string.Join(", ", Permissions.Concat(NotPermissions.Select(x => "!" + x)));
             if (Parent != null) return Parent.GetPermissionsString();
             return "";
         }

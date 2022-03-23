@@ -65,7 +65,7 @@
             Feature.DataProvider.Register();
             Service.DataProvider.Register();
             Board.DataProvider.Register();
-
+            Task.Factory.RunSync(Features.Load);
         }
 
         protected override void ConfigureMiddlewares(IApplicationBuilder app)

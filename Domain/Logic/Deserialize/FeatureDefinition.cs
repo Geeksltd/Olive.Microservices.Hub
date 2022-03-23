@@ -26,8 +26,8 @@ namespace Olive.Microservices.Hub
                 ShowOnRight = ShowOnRight,
                 Parent = parent,
                 Order = parent?.Children?.Count() * 10 + 10 ?? 10,
-                Permissions = Permissions.OrEmpty().Split(",").Trim().ToArray(),
-                NotPermissions = new string[] { },
+                Permissions = Permissions.OrEmpty().Split(",").Trim().Where(x => !x.StartsWith("!")).ToArray(),
+                NotPermissions = Permissions.OrEmpty().Split(",").Trim().Where(x => x.StartsWith("!")).Select(x => x.TrimStart("!")).ToArray(),
                 Service = Service.FindByName(ServiceName),
                 UseIframe = Iframe
             };
