@@ -63,11 +63,8 @@ namespace Olive.Microservices.Hub
                 Feature.All = GetActualFeatures(featureDefinitions);
             }
 
-            foreach (var item in Feature.All.OrEmpty())
-            {
-                item.Children = Feature.All.Where(x => x.Parent?.ID == item.ID);
-                item.Order = item.GetOrder();
-            }
+            foreach (var item in Feature.All.OrEmpty()) item.Children = Feature.All.Where(x => x.Parent?.ID == item.ID);
+            foreach (var item in Feature.All.OrEmpty()) item.Order = item.GetOrder();
             Feature.All = Feature.All.OrderBy(x => x.Order);
         }
 
