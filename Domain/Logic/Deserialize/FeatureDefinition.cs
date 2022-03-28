@@ -14,6 +14,7 @@ namespace Olive.Microservices.Hub
         }
         public Feature CreateFeature(Feature parent)
         {
+            if (Order == null && (parent?.Children?.Select(x => x.Order).HasAny() ?? false)) Order = parent?.Children?.Select(x => x.Order).Max() + 10;
             var feature = new Feature
             {
                 Ref = Refrance.OrEmpty(),
@@ -24,7 +25,7 @@ namespace Olive.Microservices.Hub
                 Icon = Icon.OrEmpty(),
                 ShowOnRight = ShowOnRight,
                 Parent = parent,
-                Order = Order ?? parent?.Children?.Select(x => x.Order).Max() + 10 ?? 100,
+                Order = Order ?? 100,
                 Permissions = Permissions.OrEmpty().Split(",").Trim().Where(x => !x.StartsWith("!")).ToArray(),
                 NotPermissions = Permissions.OrEmpty().Split(",").Trim().Where(x => x.StartsWith("!")).Select(x => x.TrimStart("!")).ToArray(),
                 Service = Service.FindByName(ServiceName),
