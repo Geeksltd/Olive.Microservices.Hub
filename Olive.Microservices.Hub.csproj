@@ -8,7 +8,7 @@
 		<Authors>Geeks Ltd</Authors>
 		<RepositoryUrl>https://github.com/Geeksltd/Olive.Microservices.Hub/tree/master/Olive.Microservices.Hub</RepositoryUrl>
 		<PackageIcon>icon.png</PackageIcon>
-		<Version>1.3.17</Version>
+		<Version>1.3.18</Version>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 	</PropertyGroup>
@@ -25,20 +25,20 @@
 	<ItemGroup>
 		<PackageReference Include="AppContentService.HubApi" Version="180720.11.4435" />
 		<PackageReference Include="EmailService.SendEmailCommand.EventBusCommand" Version="191220.12.2936" />
-		<PackageReference Include="FS.Shared.Website" Version="1.1.10" />
+		<PackageReference Include="FS.Shared.Website" Version="1.1.11.4" />
 		<PackageReference Include="Hangfire.Core" Version="1.7.18" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.14" />
 		<PackageReference Include="NuGet.CommandLine" Version="6.0.0">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Olive" Version="2.1.303" />
-		<PackageReference Include="Olive.Entities" Version="2.1.167" />
-		<PackageReference Include="Olive.Entities.Data" Version="2.1.180.1" />
-		<PackageReference Include="Olive.Entities.Data.Replication" Version="2.1.178" />
+		<PackageReference Include="Olive" Version="2.1.310" />
+		<PackageReference Include="Olive.Entities" Version="2.1.168" />
+		<PackageReference Include="Olive.Entities.Data" Version="2.1.181" />
+		<PackageReference Include="Olive.Entities.Data.Replication" Version="2.1.182" />
 		<PackageReference Include="Olive.GlobalSearch.Source" Version="1.0.42" />
 		<PackageReference Include="Olive.Microservices.Hub.BoardComponent.Source" Version="2.2.127" />
-		<PackageReference Include="Olive.Mvc.Microservices" Version="3.1.109" />
+		<PackageReference Include="Olive.Mvc.Microservices" Version="3.1.113" />
 		<PackageReference Include="Olive.Mvc.Testing" Version="3.1.108" />
 		<PackageReference Include="Olive.PassiveBackgroundTasks" Version="1.0.26" />
 	</ItemGroup>

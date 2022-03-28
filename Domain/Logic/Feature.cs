@@ -201,7 +201,11 @@ namespace Olive.Microservices.Hub
 
             return false;
         }
-
+        internal int GetOrder()
+        {
+            if (ImplementationUrl.HasValue()) return Order;
+            return Children?.Select(x => x.GetOrder()).Min() ?? 100;
+        }
         public override bool Equals(Entity other) => ReferenceEquals(this, other);
     }
 }

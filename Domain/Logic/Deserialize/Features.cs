@@ -64,7 +64,10 @@ namespace Olive.Microservices.Hub
             }
 
             foreach (var item in Feature.All.OrEmpty())
+            {
                 item.Children = Feature.All.Where(x => x.Parent?.ID == item.ID);
+                item.Order = item.GetOrder();
+            }
         }
 
         static Feature[] GetActualFeatures(FeatureDefinition[] featureDefinitions)

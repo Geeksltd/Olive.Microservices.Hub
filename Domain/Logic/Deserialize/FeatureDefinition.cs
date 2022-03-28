@@ -12,7 +12,6 @@ namespace Olive.Microservices.Hub
             ServiceName = service.Name;
             return this;
         }
-
         public Feature CreateFeature(Feature parent)
         {
             var feature = new Feature
@@ -25,7 +24,7 @@ namespace Olive.Microservices.Hub
                 Icon = Icon.OrEmpty(),
                 ShowOnRight = ShowOnRight,
                 Parent = parent,
-                Order = parent?.Children?.Count() * 10 + 10 ?? 10,
+                Order = Order ?? parent?.Children?.Select(x => x.Order).Max() + 10 ?? 100,
                 Permissions = Permissions.OrEmpty().Split(",").Trim().Where(x => !x.StartsWith("!")).ToArray(),
                 NotPermissions = Permissions.OrEmpty().Split(",").Trim().Where(x => x.StartsWith("!")).Select(x => x.TrimStart("!")).ToArray(),
                 Service = Service.FindByName(ServiceName),
