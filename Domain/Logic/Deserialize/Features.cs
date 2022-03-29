@@ -64,7 +64,9 @@ namespace Olive.Microservices.Hub
             }
 
             foreach (var item in Feature.All.OrEmpty()) item.Children = Feature.All.Where(x => x.Parent?.ID == item.ID);
-            foreach (var item in Feature.All.OrEmpty()) item.Order = item.GetOrder();
+            foreach (var item in Feature.All.OrEmpty().Where(x => x.ImplementationUrl.IsEmpty())) item.Order = item.GetOrder();
+            foreach (var item in Feature.All.OrEmpty().Where(x => x.Order == int.MaxValue)) item.Order = 100;
+
             Feature.All = Feature.All.OrderBy(x => x.Order);
         }
 
