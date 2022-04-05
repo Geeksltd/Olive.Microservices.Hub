@@ -18,7 +18,7 @@
         {
             Subdomains = config["HubSubdomain"]?.Split(",") ?? new string[0];
 
-            if (env.IsProduction()) Features.SetRepository(new S3FeatureRepository());
+            if (env.IsProduction() || env.IsUAT()) Features.SetRepository(new S3FeatureRepository());
             else Features.SetRepository(new IOFeatureRepository());
         }
 
