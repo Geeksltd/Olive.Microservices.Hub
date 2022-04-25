@@ -8,7 +8,7 @@ namespace ViewModel
 {
     partial class BoardComponents
     {
-        public static Dictionary<string, string> BoardComponentSources;
+        internal static Dictionary<string, string> BoardComponentSources;
         public string GetBoardSources(string type) => BoardComponentSources[type];
         public static async Task SetBoardSources()
         {
