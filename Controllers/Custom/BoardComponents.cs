@@ -1,25 +1,28 @@
 ﻿using System.Linq;
 using Olive;
 using Olive.Microservices.Hub;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ViewModel
 {
     partial class BoardComponents
     {
-        public string GetBoardSources(string type)
+        public static Dictionary<string, string> BoardComponentSources;
+        public string GetBoardSources(string type) => BoardComponentSources[type];
+        public static async Task SetBoardSources()
         {
-            var boardSources = Config.Bind<GlobalSearchModel1>("BoardComponents:Sources");
-            var sources = type == "Project" ? boardSources.Project : boardSources.Person;
-
-            var urls = sources.Where(x => x.Contains("/"))
-                .Select(x => new
+            foreach (var service in Service.All)
+            {
+                var sources = await service.GetBoardComponentSources();
+                foreach (var source in sources)
                 {
-                    ServiceName = x.Split("/")[0],
-                    Url = x.Substring(x.Split("/")[0].Length + 1)
-                })
-                .Select(x => $"{Service.FindByName(x.ServiceName).GetAbsoluteImplementationUrl(x.Url)}#{Service.FindByName(x.ServiceName).Icon}");
+                    if (BoardComponentSources.ContainsKey(source))
+                        BoardComponentSources[source] += ";" + service.GetBoardSourceUrl();
+                    else BoardComponentSources.Add(source, service.GetBoardSourceUrl());
 
-            return urls.ToString(";");
+                }
+            }
         }
         public class GlobalSearchModel1
         {

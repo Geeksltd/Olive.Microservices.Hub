@@ -14,6 +14,8 @@ namespace Olive.Microservices.Hub
     {
         public static IEnumerable<Service> All { get; internal set; }
         public string FeaturesJsonPath() => $"/features/services/{Name}.json";
+        public string GetBoardSourceUrl() => GetAbsoluteImplementationUrl("olive/board/features") + "#" + Icon;
+        public string GetGlobalSearchUrl() => GetAbsoluteImplementationUrl("api/global-search") + "#" + Icon;
 
         public static string ToJson()
         {
@@ -76,6 +78,36 @@ namespace Olive.Microservices.Hub
             {
                 Log.For(typeof(Features)).Warning(url + " failed:\n" + ex.ToString());
             }
+        }
+        public async Task<string[]> GetBoardComponentSources()
+        {
+            var url = (BaseUrl + "/olive/board/sources").AsUri();
+
+            try
+            {
+                return JsonConvert.DeserializeObject<string[]>(await url.Download(timeOutSeconds: 10));
+            }
+            catch (Exception ex)
+            {
+                Log.For(typeof(Features)).Warning(url + " failed:\n" + ex.ToString());
+            }
+            return null;
+        }
+        public async Task<bool> GetGlobalSearchSources()
+        {
+            var url = (BaseUrl + "/olive/search/sources").AsUri();
+
+            try
+            {
+                var respone = await url.Download(timeOutSeconds: 10);
+                if (respone.HasValue())
+                    return true;
+            }
+            catch (Exception ex)
+            {
+                Log.For(typeof(Features)).Warning(url + " failed:\n" + ex.ToString());
+            }
+            return false;
         }
     }
 }

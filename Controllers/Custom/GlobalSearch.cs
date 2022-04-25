@@ -1,24 +1,24 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Olive;
 using Olive.Microservices.Hub;
+using System.Collections.Generic;
 
 namespace ViewModel
 {
     partial class GlobalSearch
     {
-        public string GetSearchSources()
+        internal static string SearchSources;
+        public string GetSearchSources() => SearchSources;
+        public static async Task SetSearchSources()
         {
-            var globalSearchSources = Config.Bind<GlobalSearchModel1>("GlobalSearch");
-
-            var urls = globalSearchSources.Sources.Where(x => x.Contains("/"))
-                .Select(x => new
-                {
-                    ServiceName = x.Split("/")[0],
-                    Url = x.Substring(x.Split("/")[0].Length + 1)
-                })
-                .Select(x => $"{Service.FindByName(x.ServiceName).GetAbsoluteImplementationUrl(x.Url)}#{Service.FindByName(x.ServiceName).Icon}");
-
-            return urls.ToString(";");
+            var urls = new List<string>();
+            foreach (var service in Service.All)
+            {
+                var searchable = await service.GetGlobalSearchSources();
+                if (searchable) urls.Add(service.GetGlobalSearchUrl());
+            }
+            SearchSources = urls.ToString(";");
             // var s = ulrs.OrderBy(x => x).ToString(",");
 
             // var globalSearchConfig = AppDomain.CurrentDomain.WebsiteRoot().GetFile("global-search.json")?.ReadAllText();
