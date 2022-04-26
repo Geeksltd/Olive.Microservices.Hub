@@ -109,7 +109,7 @@
                new XAttribute("href", subItem.LoadUrl));
 
             var subIcon = new XElement("i", string.Empty);
-            subIcon.Add(new XAttribute("style", $"color:{color};"));
+            //subIcon.Add(new XAttribute("style", $"color:{color};"));
 
             if (subItem.Icon != null)
                 subIcon.Add(new XAttribute("class", subItem.Icon));
