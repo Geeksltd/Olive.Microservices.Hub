@@ -12,6 +12,7 @@
    </div>
    @if (Model.Items.Any())
    {
+   @ColourPalette.Reset();
    <div class='list-items'>
       @foreach (var listItem in Model.Items)
       {

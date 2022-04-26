@@ -44,6 +44,7 @@
 
         public static async Task<string> RenderFullMenu()
         {
+            ColourPalette.Reset();
             var items = FeatureSecurityFilter.GetAuthorizedFeatures(Context.Current.User());
             var menuItems = await GetAllMenuItems(items);
 
