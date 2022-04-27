@@ -10,7 +10,7 @@ namespace ViewModel
     partial class GlobalSearch
     {
         internal static string Sources = "";
-        public string GetSearchSources() => Sources;
+        public static string GetSearchSources() => Sources;
 
         public static async Task SetSearchSources()
         {

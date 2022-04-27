@@ -11,9 +11,9 @@ namespace ViewModel
     partial class BoardComponents
     {
         internal static Dictionary<string, List<string>> BoardComponentSources;
-        public string GetBoardSources(string type)
+        public static string GetBoardSources(string type)
         {
-            if (BoardSources.BoardComponentSources.ContainsKey(type))
+            if (BoardComponentSources.ContainsKey(type))
                 return BoardComponentSources[type].ToString(";");
             return "";
         }
