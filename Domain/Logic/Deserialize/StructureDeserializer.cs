@@ -17,6 +17,9 @@ namespace Olive.Microservices.Hub
             LoadServices();
             LoadFeatures();
             if (Feature.All.HasAny()) LoadBoards();
+            Task.Factory.RunSync(ViewModel.BoardComponents.SetBoardSources);
+            Task.Factory.RunSync(ViewModel.GlobalSearch.SetSearchSources);
+
         }
 
         public static async Task RefreshFeatures() => await Features.RefreshFeatures();

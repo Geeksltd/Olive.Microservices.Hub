@@ -1,25 +1,29 @@
 ﻿using System.Linq;
 using Olive;
 using Olive.Microservices.Hub;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System;
 
 namespace ViewModel
 {
     partial class BoardComponents
     {
-        public string GetBoardSources(string type)
+        internal static Dictionary<string, string> BoardComponentSources;
+        public string GetBoardSources(string type) => BoardComponentSources[type];
+        public static async Task SetBoardSources()
         {
-            var boardSources = Config.Bind<GlobalSearchModel1>("BoardComponents:Sources");
-            var sources = type == "Project" ? boardSources.Project : boardSources.Person;
 
-            var urls = sources.Where(x => x.Contains("/"))
-                .Select(x => new
-                {
-                    ServiceName = x.Split("/")[0],
-                    Url = x.Substring(x.Split("/")[0].Length + 1)
-                })
-                .Select(x => $"{Service.FindByName(x.ServiceName).GetAbsoluteImplementationUrl(x.Url)}#{Service.FindByName(x.ServiceName).Icon}");
-
-            return urls.ToString(";");
+            try
+            {
+                BoardComponentSources = JsonConvert.DeserializeObject<Dictionary<string, string>>(await Features.Repository.Read("/Board/Sources.txt"));
+            }
+            catch (Exception ex)
+            {
+                Log.For(typeof(GlobalSearch)).Warning(" failed to read board sources:\n" + ex.ToString());
+                await BoardSources.SetBoardSourceTxt();
+            }
         }
         public class GlobalSearchModel1
         {
