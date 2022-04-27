@@ -10,6 +10,7 @@ namespace Olive.Microservices.Hub
         internal static List<string> Urls = new List<string>();
         public static async Task SetSearchSourceTxt()
         {
+            Urls = new List<string>();
             await Task.WhenAll(Service.All.Do(s => s.GetGlobalSearchSources()));
             await Features.Repository.Write("/Search/Sources.txt", Urls.ToString(";"));
             await ViewModel.GlobalSearch.SetSearchSources();
