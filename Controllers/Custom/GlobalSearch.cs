@@ -3,41 +3,28 @@ using System.Threading.Tasks;
 using Olive;
 using Olive.Microservices.Hub;
 using System.Collections.Generic;
+using System;
 
 namespace ViewModel
 {
     partial class GlobalSearch
     {
-        internal static string SearchSources;
-        public string GetSearchSources() => SearchSources;
+        internal static string Sources;
+        public string GetSearchSources() => Sources;
+
         public static async Task SetSearchSources()
         {
-            var urls = new List<string>();
-            foreach (var service in Service.All)
+            try
             {
-                var searchable = await service.GetGlobalSearchSources();
-                if (searchable) urls.Add(service.GetGlobalSearchUrl());
+                Sources = await Features.Repository.Read("/Search/Sources.txt");
             }
-            SearchSources = urls.ToString(";");
-            // var s = ulrs.OrderBy(x => x).ToString(",");
+            catch (Exception ex)
+            {
+                Log.For(typeof(GlobalSearch)).Warning(" failed to read search sources:\n" + ex.ToString());
+                await SearchSources.SetSearchSourceTxt();
+            }
 
-            // var globalSearchConfig = AppDomain.CurrentDomain.WebsiteRoot().GetFile("global-search.json")?.ReadAllText();
-            // var globalSearchConfigModel = Newtonsoft.Json.JsonConvert.DeserializeObject<GlobalSearchModel>(globalSearchConfig);
-            // if (globalSearchConfigModel == null)
-            //    throw new Exception("The global-search.json file was not found!");
-
-            // var olive = globalSearchConfigModel.Olive.Split(',')
-            //    .Select(Service.FindByName)
-            //    .Select(s => $"{s.GetAbsoluteImplementationUrl("/api/global-search")}#{s.Icon}");
-
-            // var webForms = globalSearchConfigModel.WebForms.Split(',')
-            //    .Select(Service.FindByName)
-            //    .Select(s => $"{s.GetAbsoluteImplementationUrl(globalSearchConfigModel.Url)}#{s.Icon}");
-
-            // var t = olive.Concat(webForms).OrderBy(x => x).ToString(",");
-            // return olive.Concat(webForms).ToString(";");
         }
-
         public class GlobalSearchModel
         {
             public string Olive { get; set; }

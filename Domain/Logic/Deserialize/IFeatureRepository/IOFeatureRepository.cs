@@ -11,6 +11,8 @@ namespace Olive.Microservices.Hub
             BaseDirectory = Directory.GetCurrentDirectory();
             Directory.CreateDirectory(BaseDirectory + "/features");
             Directory.CreateDirectory(BaseDirectory + "/features/services");
+            Directory.CreateDirectory(BaseDirectory + "/Board");
+            Directory.CreateDirectory(BaseDirectory + "/Search");
         }
         public async Task Write(string key, string features) => File.WriteAllText(BaseDirectory + key, features);
 

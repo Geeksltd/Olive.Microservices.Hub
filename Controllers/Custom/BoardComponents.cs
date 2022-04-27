@@ -3,6 +3,8 @@ using Olive;
 using Olive.Microservices.Hub;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System;
 
 namespace ViewModel
 {
@@ -12,16 +14,15 @@ namespace ViewModel
         public string GetBoardSources(string type) => BoardComponentSources[type];
         public static async Task SetBoardSources()
         {
-            foreach (var service in Service.All)
-            {
-                var sources = await service.GetBoardComponentSources();
-                foreach (var source in sources)
-                {
-                    if (BoardComponentSources.ContainsKey(source))
-                        BoardComponentSources[source] += ";" + service.GetBoardSourceUrl();
-                    else BoardComponentSources.Add(source, service.GetBoardSourceUrl());
 
-                }
+            try
+            {
+                BoardComponentSources = JsonConvert.DeserializeObject<Dictionary<string, string>>(await Features.Repository.Read("/Board/Sources.txt"));
+            }
+            catch (Exception ex)
+            {
+                Log.For(typeof(GlobalSearch)).Warning(" failed to read board sources:\n" + ex.ToString());
+                await BoardSources.SetBoardSourceTxt();
             }
         }
         public class GlobalSearchModel1
