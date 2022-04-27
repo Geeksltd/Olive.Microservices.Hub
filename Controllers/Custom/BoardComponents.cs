@@ -10,7 +10,7 @@ namespace ViewModel
 {
     partial class BoardComponents
     {
-        internal static Dictionary<string, List<string>> BoardComponentSources = new Dictionary<string, List<string>>();
+        internal static Dictionary<string, List<string>> BoardComponentSources;
         public string GetBoardSources(string type)
         {
             if (BoardSources.BoardComponentSources.ContainsKey(type))
@@ -19,7 +19,11 @@ namespace ViewModel
         }
         public static async Task SetBoardSources()
         {
-
+            new Dictionary<string, List<string>>()
+            {
+            { "Person",new List<string>()},
+            { "Project",new List<string>()},
+            };
             try
             {
                 BoardComponentSources = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(await Features.Repository.Read("/Board/Sources.txt"));
