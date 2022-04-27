@@ -14,6 +14,7 @@ namespace Olive.Microservices.Hub
         {
             await Task.WhenAll(Service.All.Do(s => s.GetBoardComponentSources()));
             await Features.Repository.Write("/Board/Sources.txt", JsonConvert.SerializeObject(BoardComponentSources));
+            await ViewModel.BoardComponents.SetBoardSources();
         }
 
     }
