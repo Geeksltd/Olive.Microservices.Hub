@@ -10,11 +10,11 @@ namespace ViewModel
 {
     partial class BoardComponents
     {
-        internal static Dictionary<string, string> BoardComponentSources = new Dictionary<string, string>();
+        internal static Dictionary<string, List<string>> BoardComponentSources = new Dictionary<string, List<string>>();
         public string GetBoardSources(string type)
         {
             if (BoardSources.BoardComponentSources.ContainsKey(type))
-                return BoardComponentSources[type];
+                return BoardComponentSources[type].ToString(";");
             return "";
         }
         public static async Task SetBoardSources()
@@ -22,7 +22,7 @@ namespace ViewModel
 
             try
             {
-                BoardComponentSources = JsonConvert.DeserializeObject<Dictionary<string, string>>(await Features.Repository.Read("/Board/Sources.txt"));
+                BoardComponentSources = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(await Features.Repository.Read("/Board/Sources.txt"));
             }
             catch (Exception ex)
             {
