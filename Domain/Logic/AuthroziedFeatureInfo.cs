@@ -44,6 +44,7 @@
 
         public static async Task<string> RenderFullMenu()
         {
+            ColourPalette.Reset();
             var items = FeatureSecurityFilter.GetAuthorizedFeatures(Context.Current.User());
             var menuItems = await GetAllMenuItems(items);
 
@@ -111,7 +112,7 @@
                new XAttribute("href", subItem.LoadUrl));
 
             var subIcon = new XElement("i", string.Empty);
-            subIcon.Add(new XAttribute("style", $"color:{color};"));
+            // subIcon.Add(new XAttribute("style", $"color:{color};"));
 
             if (subItem.Icon != null)
                 subIcon.Add(new XAttribute("class", subItem.Icon));
