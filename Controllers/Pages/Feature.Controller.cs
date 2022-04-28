@@ -27,7 +27,7 @@ namespace Controllers
                 return Redirect(Url.Index("Login", new { ReturnUrl = Url.Current() }));
             }
 
-            return Execute(info);
+            return await Execute(info);
 
             return View(info);
         }
