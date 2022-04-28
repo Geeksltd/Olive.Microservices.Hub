@@ -4,8 +4,13 @@
 <form data-module="FeatureView" method="post" action="@Url.Current()" class="feature-frame-view">
    @Html.AntiForgeryToken()
    @Html.StartupActionsJson()
-   <div class="view-body">
-   @ViewBag.PageSource.ToStringOrEmpty().Raw()
-   </div>
+    <div class="view-body">
+        @if (ViewBag.PageSource != null)
+        {
+        <div>
+            @Html.Raw(ViewBag.PageSource)
+        </div>
+        }
+    </div>
 </form>
 <!-- «End| FeatureView» -->
