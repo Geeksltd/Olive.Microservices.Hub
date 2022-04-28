@@ -5,6 +5,7 @@
    @Html.AntiForgeryToken()
    @Html.StartupActionsJson()
    <div class="view-body">
+   @ViewBag.PageSource.ToStringOrEmpty().Raw()
    </div>
 </form>
 <!-- «End| FeatureView» -->

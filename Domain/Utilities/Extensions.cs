@@ -46,5 +46,15 @@
             var urlParts = @this.Replace("{id}", id).Split('&', '?');
             return urlParts.FirstOrDefault() + urlParts.ExceptFirst().ToString("&").WithPrefix("?");
         }
+        public static string Between(this string str, string firstString, string lastString)
+        {
+            var firest = str.IndexOf(firstString);
+            var secend = str.IndexOf(lastString);
+            if (firest == -1 || secend == -1)
+                return null;
+
+            return str.Substring(firest + firstString.Length, secend - (firest + firstString.Length));
+
+        }
     }
 }

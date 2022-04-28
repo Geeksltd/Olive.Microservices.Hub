@@ -60,7 +60,7 @@ namespace Controllers
             FeatureContext.ViewingFeature = info.Item = info.FindFeature();
         }
 
-        ActionResult Execute(ViewModel.FeatureView info)
+        async Task<ActionResult> Execute(ViewModel.FeatureView info)
         {
             // if (info.RequestPath.StartsWith("/Hub/", caseSensitive: false))
             //    return Redirect(info.RequestPath.Substring(4));
@@ -101,6 +101,26 @@ namespace Controllers
                 {
                     JavaScript(new JavascriptService("featuresMenu", "show", info.Item.ID));
                 }
+            }
+
+            ViewBag.PageSource = "";
+            if (info.Path.Contains("serverSide=true"))
+            {
+
+                string baseUrl = "";
+                if (info.Item is null)
+                    baseUrl = Service.All.FirstOrDefault(s => info.Path.StartsWith(s.Name, caseSensitive: false))?.BaseUrl;
+                else
+                    baseUrl = info.Item.Service.BaseUrl;
+
+                string body = await (baseUrl + info.Path.RemoveBefore("/")).AsUri().Download();
+                ViewBag.PageSource = body;
+
+                var title = body.Between("<!--title", "title-->");
+                if (title.HasValue())
+                    ViewData["Title"] = title;
+                var metaTag = body.Between("<!--metaTag", "metaTag-->");
+                ViewData["metaTag"] = metaTag;
             }
 
             ViewData["LeftMenu"] = "FeaturesSideMenu";
