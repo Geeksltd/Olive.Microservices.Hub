@@ -104,9 +104,8 @@ namespace Controllers
             }
 
             ViewBag.PageSource = "";
-            if (info.Path.Contains("serverSide=true"))
+            if (info.Path.Contains("/serverside"))
             {
-
                 string baseUrl = "";
                 if (info.Item is null)
                     baseUrl = Service.All.FirstOrDefault(s => info.Path.StartsWith(s.Name, caseSensitive: false))?.BaseUrl;
