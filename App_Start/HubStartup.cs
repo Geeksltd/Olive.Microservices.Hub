@@ -61,15 +61,17 @@
 
             Console.Title = Microservice.Me.Name;
 
-            app.Use(StructureDeserializer.ReloadFeatures);
-            app.Use(StructureDeserializer.ReloadSources);
-
+            if (Context.Current.Environment().EnvironmentName != "Development")
+            {
+                app.Use(StructureDeserializer.ReloadFeatures);
+                app.Use(StructureDeserializer.ReloadSources);
+                Task.Factory.RunSync(Features.Load);
+                Task.Factory.RunSync(ViewModel.BoardComponents.SetBoardSources);
+                Task.Factory.RunSync(ViewModel.GlobalSearch.SetSearchSources);
+            }
             Feature.DataProvider.Register();
             Service.DataProvider.Register();
             Board.DataProvider.Register();
-            Task.Factory.RunSync(Features.Load);
-            Task.Factory.RunSync(ViewModel.BoardComponents.SetBoardSources);
-            Task.Factory.RunSync(ViewModel.GlobalSearch.SetSearchSources);
 
         }
 

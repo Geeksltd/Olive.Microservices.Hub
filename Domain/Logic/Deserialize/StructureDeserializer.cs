@@ -17,8 +17,12 @@ namespace Olive.Microservices.Hub
             LoadServices();
             LoadFeatures();
             if (Feature.All.HasAny() && Context.Current.Environment().EnvironmentName != "Development") LoadBoards();
-            Task.Factory.RunSync(ViewModel.BoardComponents.SetBoardSources);
-            Task.Factory.RunSync(ViewModel.GlobalSearch.SetSearchSources);
+            if (!Feature.All.HasAny() || Context.Current.Environment().EnvironmentName != "Development")
+            {
+                Task.Factory.RunSync(ViewModel.BoardComponents.SetBoardSources);
+                Task.Factory.RunSync(ViewModel.GlobalSearch.SetSearchSources);
+            }
+
 
         }
 
@@ -47,9 +51,9 @@ namespace Olive.Microservices.Hub
                                       }).ToList();
                    else
                    {
-                       Service.All = Config.Get<Dictionary<string, string>>("Microservice:")
+                       Service.All = Config.GetSubsection("Microservice", true)
                        .GetKeys()
-                       .Where(x => x != "Me")
+                       .Where(x => !x.Contains("Me") && !x.Contains(":"))
                        .Select(x =>
                        new Service
                        {
