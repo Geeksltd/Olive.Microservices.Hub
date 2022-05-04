@@ -6,8 +6,10 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Newtonsoft.Json;
     using Olive;
     using Olive.Entities;
+    using Olive.Microservices.Hub;
     using Olive.Mvc;
 
     public class SharedActionsController : BaseController
@@ -67,5 +69,19 @@
         [Route("temp-file/{key}")]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public Task<ActionResult> DownloadTempFile(string key) => FileRequestService.Download(key);
+
+
+        [Route("LocalSetup")]
+        [HttpPost]
+        public async Task<ActionResult> LocalSetup()
+        {
+            if (Context.Current.Environment().EnvironmentName != "Development") return View("error-404");
+            var data = JsonConvert.DeserializeObject<LocalIncommingData>(await Request.Body.ReadAllText());
+            StructureDeserializer.AddService(data.Service);
+            StructureDeserializer.AddFeatures(data.Features);
+            await StructureDeserializer.AddSources(data.BoardSources, data.Service, data.GlobalySearchable);
+            data.Features.Do(x => x.For(data.Service));
+            return View("ok-200");
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace Olive.Microservices.Hub
         {
             LoadServices();
             LoadFeatures();
-            if (Feature.All.HasAny()) LoadBoards();
+            if (Feature.All.HasAny() && Context.Current.Environment().EnvironmentName != "Development") LoadBoards();
             Task.Factory.RunSync(ViewModel.BoardComponents.SetBoardSources);
             Task.Factory.RunSync(ViewModel.GlobalSearch.SetSearchSources);
 
@@ -30,20 +30,36 @@ namespace Olive.Microservices.Hub
         {
             Run("LoadServices", () => Service.All == null, () =>
                {
+
                    var environment = Context.Current.Environment().EnvironmentName.ToLower();
+                   if (Context.Current.Environment().EnvironmentName != "Development")
+                       Service.All = (from x in ReadXml(GetFromRoot("Services.xml"))
+                                      let envDomain = x.Parent.GetValue<string>("@" + environment)
+                                      let url = x.GetValue<string>("@" + environment) ?? x.GetValue<string>("@url")
+                                      select new Service
+                                      {
+                                          Name = x.GetCleanName(),
+                                          UseIframe = x.GetValue<bool?>("@iframe") ?? false,
+                                          BaseUrl = (url.StartsWith("http") ? url : $"https://{url}.{envDomain}").ToLower(),
+                                          Icon = x.GetValue<string>("@icon"),
+                                          InjectSingleSignon = x.GetValue<bool?>("@sso") ?? false
 
-                   Service.All = (from x in ReadXml(GetFromRoot("Services.xml"))
-                                  let envDomain = x.Parent.GetValue<string>("@" + environment)
-                                  let url = x.GetValue<string>("@" + environment) ?? x.GetValue<string>("@url")
-                                  select new Service
-                                  {
-                                      Name = x.GetCleanName(),
-                                      UseIframe = x.GetValue<bool?>("@iframe") ?? false,
-                                      BaseUrl = (url.StartsWith("http") ? url : $"https://{url}.{envDomain}").ToLower(),
-                                      Icon = x.GetValue<string>("@icon"),
-                                      InjectSingleSignon = x.GetValue<bool?>("@sso") ?? false
-
-                                  }).ToList();
+                                      }).ToList();
+                   else
+                   {
+                       Service.All = Config.Get<List<string>>("Microservice:")
+                       .Where(x => x != "Me")
+                       .Select(x =>
+                       new Service
+                       {
+                           Name = x,
+                           UseIframe = Config.Get("Microservice:" + x + ":Iframe").ToLower() == "true",
+                           BaseUrl = Config.Get("Microservice:" + x + ":Url"),
+                           Icon = Config.Get("Microservice:" + x + ":Icon"),
+                           InjectSingleSignon = Config.Get("Microservice:" + x + ":Sso").ToLower() == "true",
+                       }
+                       );
+                   }
                });
         }
 
@@ -91,8 +107,52 @@ namespace Olive.Microservices.Hub
                 await next(ctx);
             };
         }
+        internal static RequestDelegate ReloadSources(RequestDelegate next)
+        {
+            return async ctx =>
+            {
+                if (LocalTime.UtcNow - LastLoad > 2.Minutes())
+                {
+                    LastLoad = LocalTime.UtcNow;
+                    await ViewModel.BoardComponents.SetBoardSources();
+                    await ViewModel.GlobalSearch.SetSearchSources();
+                }
+                await next(ctx);
+            };
+        }
 
+        internal async static Task AddSources(string[] boards, Service service, bool globalsearch)
+        {
 
+            if (ViewModel.BoardComponents.BoardComponentSources == null)
+                new Dictionary<string, List<string>>()
+                {
+                { "Person",new List<string>()},
+                { "Project",new List<string>()},
+                };
+            foreach (var board in boards)
+                if (!ViewModel.BoardComponents.BoardComponentSources[board].Contains(service.GetBoardSourceUrl()))
+                    ViewModel.BoardComponents.BoardComponentSources[board].Append(service.GetBoardSourceUrl());
+            if (globalsearch && !ViewModel.GlobalSearch.Sources.Contains(service.GetGlobalSearchUrl()))
+            {
+                if (!ViewModel.GlobalSearch.Sources.IsEmpty()) ViewModel.GlobalSearch.Sources += ";";
+                ViewModel.GlobalSearch.Sources += service.GetGlobalSearchUrl();
+            }
+        }
+        internal static void AddService(Service service)
+        {
+            if (Service.All.Where(x => x.Name == service.Name).HasAny()) return;
+            Service.All.Append(service);
+        }
+        internal static void AddFeatures(FeatureDefinition[] features)
+        {
+            var actualFeatures = Features.GetActualFeatures(features);
+            foreach (var feature in actualFeatures)
+            {
+                if (!Feature.All.Where(x => x.GetFullPathSlashSeperated() == feature.GetFullPathSlashSeperated()).HasAny())
+                    Feature.All.Append(feature);
+            }
+        }
         static void LoadBoards()
         {
             Run("LoadBoards", () => Board.All == null, () =>

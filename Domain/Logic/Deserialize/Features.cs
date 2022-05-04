@@ -23,7 +23,7 @@ namespace Olive.Microservices.Hub
 
         internal async static Task RefreshFeatures()
         {
-            var features = FromLegacyXml().ToList();
+            var features = new List<FeatureDefinition>();
 
             foreach (var service in Service.All)
             {
@@ -70,7 +70,7 @@ namespace Olive.Microservices.Hub
             Feature.All = Feature.All.OrderBy(x => x.Order);
         }
 
-        static Feature[] GetActualFeatures(FeatureDefinition[] featureDefinitions)
+        internal static Feature[] GetActualFeatures(FeatureDefinition[] featureDefinitions)
         {
             var featuresDictionary = new Dictionary<string, List<Feature>>();
 
@@ -110,87 +110,6 @@ namespace Olive.Microservices.Hub
             }
 
             return featuresDictionary.Values.SelectMany(x => x).ToArray();
-        }
-
-        static IEnumerable<FeatureDefinition> FromLegacyXml()
-        {
-            var featuresXml = GetXmlFeatureDefinitions()
-                   .SelectMany(x => x.GetAllFeatures())
-                   .ExceptNull()
-                   .ToList();
-
-            foreach (var item in featuresXml)
-                item.Children = featuresXml.Where(x => x.Parent?.ID == item.ID);
-
-            var featureDefenitions = new List<FeatureDefinition>();
-
-            foreach (var featureXml in featuresXml)
-            {
-                if (featureXml.HasSimilarChild(featureXml.ImplementationUrl)) continue;
-                var fullPath = featureXml.GetFullPathSlashSeperated();
-                if (featureXml.Title == "add") fullPath = fullPath + "/" + featureXml.Ref;
-                if (featureXml.ImplementationUrl.IsEmpty()) continue;
-
-                featureDefenitions.Add(new FeatureDefinition
-                {
-                    Refrance = featureXml.Ref.OrEmpty(),
-                    ServiceName = featureXml.Service.Name,
-                    FullPath = fullPath,
-                    Icon = featureXml.Icon,
-                    Permissions = featureXml.GetPermissionsString(),
-                    RelativeUrl = featureXml.ImplementationUrl,
-                    BadgeUrl = featureXml.BadgeUrl,
-                    Description = featureXml.Description,
-                    ShowOnRight = featureXml.ShowOnRight,
-                    Iframe = featureXml.UseIframe
-                });
-
-            }
-
-            return featureDefenitions;
-        }
-
-        static XmlFeatureDefinition[] GetXmlFeatureDefinitions()
-        {
-            var start = LocalTime.Now;
-            var stepStart = LocalTime.Now;
-            void StartSet() => stepStart = LocalTime.Now;
-            var root = new XmlFeatureDefinition(null, new XElement("ROOT"));
-
-            Log.For(typeof(StructureDeserializer))
-                .Info("finished FeatureDefinition in " + LocalTime.Now.Subtract(stepStart).ToNaturalTime());
-
-            StartSet();
-            var files = new[] { "Features.xml", "Features.Widgets.xml" }.Select(f => GetFromRoot(f));
-
-            Log.For(typeof(StructureDeserializer))
-                .Info("finished getting files in " + LocalTime.Now.Subtract(stepStart).ToNaturalTime());
-
-            StartSet();
-
-            var results = files
-                     .Select(x => ReadXml(x))
-                     .SelectMany(x => x)
-                     .Select(x => new XmlFeatureDefinition(root, x))
-                     .ToArray();
-
-            Log.For(typeof(StructureDeserializer))
-                .Info("finished calculating the results in " + LocalTime.Now.Subtract(stepStart).ToNaturalTime());
-
-            Log.For(typeof(StructureDeserializer))
-                .Info("finished GetXmlFeatureDefinitions in " + LocalTime.Now.Subtract(start).ToNaturalTime());
-
-            return results;
-        }
-
-        static FileInfo GetFromRoot(string filename) => AppDomain.CurrentDomain.WebsiteRoot().GetFile(filename);
-
-        static IEnumerable<XElement> ReadXml(System.IO.FileInfo file)
-        {
-            var start = LocalTime.Now;
-            var result = file.ReadAllText().To<XDocument>().Root.Elements();
-            Console.WriteLine($"########################### Finished running ReadXml for {file.Name} in " + LocalTime.Now.Subtract(start).ToNaturalTime());
-            return result;
         }
     }
 }

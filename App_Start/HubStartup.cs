@@ -18,7 +18,7 @@
         {
             Subdomains = config["HubSubdomain"]?.Split(",") ?? new string[0];
 
-            if (env.IsProduction() || env.IsUAT()) Features.SetRepository(new S3FeatureRepository());
+            if (env.EnvironmentName != "Development") Features.SetRepository(new S3FeatureRepository());
             else Features.SetRepository(new IOFeatureRepository());
         }
 
@@ -62,6 +62,8 @@
             Console.Title = Microservice.Me.Name;
 
             app.Use(StructureDeserializer.ReloadFeatures);
+            app.Use(StructureDeserializer.ReloadSources);
+
             Feature.DataProvider.Register();
             Service.DataProvider.Register();
             Board.DataProvider.Register();
