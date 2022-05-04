@@ -51,8 +51,7 @@ namespace Olive.Microservices.Hub
                                       }).ToList();
                    else
                    {
-                       Service.All = Config.GetSubsection("Microservice", true)
-                       .GetKeys()
+                       Service.All = Config.GetSubsection("Microservice", true).Select(x => x.Key)
                        .Where(x => !x.Contains("Me") && !x.Contains(":"))
                        .Select(x =>
                        new Service
