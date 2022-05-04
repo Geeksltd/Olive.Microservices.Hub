@@ -47,7 +47,8 @@ namespace Olive.Microservices.Hub
                                       }).ToList();
                    else
                    {
-                       Service.All = Config.Get<List<string>>("Microservice:")
+                       Service.All = Config.Get<Dictionary<string, string>>("Microservice:")
+                       .GetKeys()
                        .Where(x => x != "Me")
                        .Select(x =>
                        new Service
