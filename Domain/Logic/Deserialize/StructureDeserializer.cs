@@ -133,7 +133,7 @@ namespace Olive.Microservices.Hub
             };
         }
 
-        internal async static Task AddSources(string[] boards, Service service, bool globalsearch)
+        internal static void AddSources(string[] boards, Service service, bool globalsearch)
         {
 
             if (ViewModel.BoardComponents.BoardComponentSources == null)
@@ -143,11 +143,18 @@ namespace Olive.Microservices.Hub
                 { "Project",new List<string>()},
                 };
             foreach (var board in boards)
-                if (!ViewModel.BoardComponents.BoardComponentSources[board].Contains(service.GetBoardSourceUrl()))
+            {
+                if (!ViewModel.BoardComponents.BoardComponentSources.ContainsKey(board))
+                    ViewModel.BoardComponents.BoardComponentSources.Add(board, new List<string> { service.GetBoardSourceUrl() });
+                else if (!ViewModel.BoardComponents.BoardComponentSources[board].Contains(service.GetBoardSourceUrl()))
                     ViewModel.BoardComponents.BoardComponentSources[board].Append(service.GetBoardSourceUrl());
+            }
+
+
+
             if (globalsearch && !ViewModel.GlobalSearch.Sources.Contains(service.GetGlobalSearchUrl()))
             {
-                if (!ViewModel.GlobalSearch.Sources.IsEmpty()) ViewModel.GlobalSearch.Sources += ";";
+                if (ViewModel.GlobalSearch.Sources.HasValue()) ViewModel.GlobalSearch.Sources += ";";
                 ViewModel.GlobalSearch.Sources += service.GetGlobalSearchUrl();
             }
         }

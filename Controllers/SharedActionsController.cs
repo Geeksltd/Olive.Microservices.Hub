@@ -80,7 +80,7 @@
             StructureDeserializer.AddService(data.Service);
             data.Features.Do(x => x.For(data.Service));
             StructureDeserializer.AddFeatures(data.Features);
-            await StructureDeserializer.AddSources(data.BoardSources, data.Service, data.GlobalySearchable);
+            StructureDeserializer.AddSources(data.BoardSources, data.Service, data.GlobalySearchable);
             return Content("OK");
         }
     }

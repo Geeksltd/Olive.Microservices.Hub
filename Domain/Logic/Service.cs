@@ -102,7 +102,11 @@ namespace Olive.Microservices.Hub
             {
                 var sources = JsonConvert.DeserializeObject<string[]>(await url.Download(timeOutSeconds: 10));
                 foreach (var source in sources)
-                    BoardSources.BoardComponentSources[source].Add(GetBoardSourceUrl());
+                {
+                    if (BoardSources.BoardComponentSources.ContainsKey(source))
+                        BoardSources.BoardComponentSources[source].Add(GetBoardSourceUrl());
+                    else BoardSources.BoardComponentSources.Add(source, new List<string> { GetBoardSourceUrl() });
+                }
             }
             catch (Exception ex)
             {
