@@ -62,12 +62,14 @@ namespace Olive.Microservices.Hub
                 var featureDefinitions = JsonConvert.DeserializeObject<FeatureDefinition[]>(json);
                 Feature.All = GetActualFeatures(featureDefinitions);
             }
-
+            else await RefreshServiceFeatures();
             foreach (var item in Feature.All.OrEmpty()) item.Children = Feature.All.Where(x => x.Parent?.ID == item.ID);
             foreach (var item in Feature.All.OrEmpty().Where(x => x.ImplementationUrl.IsEmpty())) item.Order = item.GetOrder();
             foreach (var item in Feature.All.OrEmpty().Where(x => x.Order == int.MaxValue)) item.Order = 100;
 
             Feature.All = Feature.All.OrderBy(x => x.Order);
+            Feature.DataProvider.Register();
+
         }
 
         internal static Feature[] GetActualFeatures(FeatureDefinition[] featureDefinitions)

@@ -58,7 +58,12 @@ namespace Olive.Microservices.Hub
 
         public string GetAbsoluteImplementationUrl(string relativeUrl) => BaseUrl.AppendUrlPath(relativeUrl);
 
-        public static Service FindByName(string name) => All.FirstOrDefault(s => s.Name == name);
+        public static Service FindByName(string name)
+        {
+            var result = All.FirstOrDefault(s => s.Name == name);
+            if (result == null) return new Service();
+            return result;
+        }
 
         public class DataProvider : LimitedDataProvider
         {

@@ -17,7 +17,7 @@ namespace Olive.Microservices.Hub
             LoadServices();
             LoadFeatures();
             if (Feature.All.HasAny() && Context.Current.Environment().EnvironmentName != "Development") LoadBoards();
-            if (!Feature.All.HasAny() || Context.Current.Environment().EnvironmentName != "Development")
+            if (Context.Current.Environment().EnvironmentName != "Development")
             {
                 Task.Factory.RunSync(ViewModel.BoardComponents.SetBoardSources);
                 Task.Factory.RunSync(ViewModel.GlobalSearch.SetSearchSources);
@@ -35,36 +35,44 @@ namespace Olive.Microservices.Hub
             Run("LoadServices", () => Service.All == null, () =>
                {
 
-                   var environment = Context.Current.Environment().EnvironmentName.ToLower();
-                   if (Context.Current.Environment().EnvironmentName != "Development")
-                       Service.All = (from x in ReadXml(GetFromRoot("Services.xml"))
-                                      let envDomain = x.Parent.GetValue<string>("@" + environment)
-                                      let url = x.GetValue<string>("@" + environment) ?? x.GetValue<string>("@url")
-                                      select new Service
-                                      {
-                                          Name = x.GetCleanName(),
-                                          UseIframe = x.GetValue<bool?>("@iframe") ?? false,
-                                          BaseUrl = (url.StartsWith("http") ? url : $"https://{url}.{envDomain}").ToLower(),
-                                          Icon = x.GetValue<string>("@icon"),
-                                          InjectSingleSignon = x.GetValue<bool?>("@sso") ?? false
-
-                                      }).ToList();
-                   else
+                   try
+                   {
+                       Task.Factory.RunSync(SetServicesFromXml);
+                   }
+                   catch
                    {
                        Service.All = Config.GetSubsection("Microservice", true).Select(x => x.Key)
-                       .Where(x => !x.Contains("Me") && !x.Contains(":"))
-                       .Select(x =>
-                       new Service
-                       {
-                           Name = x,
-                           UseIframe = Config.Get("Microservice:" + x + ":Iframe").ToLower() == "true",
-                           BaseUrl = Config.Get("Microservice:" + x + ":Url"),
-                           Icon = Config.Get("Microservice:" + x + ":Icon"),
-                           InjectSingleSignon = Config.Get("Microservice:" + x + ":Sso").ToLower() == "true",
-                       }
-                       );
+                         .Where(x => !x.Contains("Me") && !x.Contains(":"))
+                         .Select(x =>
+                         new Service
+                         {
+                             Name = x,
+                             UseIframe = Config.Get("Microservice:" + x + ":Iframe").ToLower() == "true",
+                             BaseUrl = Config.Get("Microservice:" + x + ":Url"),
+                             Icon = Config.Get("Microservice:" + x + ":Icon"),
+                             InjectSingleSignon = Config.Get("Microservice:" + x + ":Sso").ToLower() == "true",
+                         });
                    }
+
                });
+        }
+
+        private static async Task SetServicesFromXml()
+        {
+            var serviceXml = await Features.Repository.Read("/Services.xml");
+            var environment = Context.Current.Environment().EnvironmentName.ToLower();
+            Service.All = (from x in serviceXml.To<XDocument>().Root.Elements()
+                           let envDomain = x.Parent.GetValue<string>("@" + environment)
+                           let url = x.GetValue<string>("@" + environment) ?? x.GetValue<string>("@url")
+                           select new Service
+                           {
+                               Name = x.GetCleanName(),
+                               UseIframe = x.GetValue<bool?>("@iframe") ?? false,
+                               BaseUrl = (url.StartsWith("http") ? url : $"https://{url}.{envDomain}").ToLower(),
+                               Icon = x.GetValue<string>("@icon"),
+                               InjectSingleSignon = x.GetValue<bool?>("@sso") ?? false
+
+                           }).ToList();
         }
 
         static void Run(string actionName, Func<bool> condition, Action action)
@@ -146,16 +154,29 @@ namespace Olive.Microservices.Hub
         internal static void AddService(Service service)
         {
             if (Service.All.Where(x => x.Name == service.Name).HasAny()) return;
-            Service.All.Append(service);
+            var services = new List<Service>() { service };
+            services.AddRange(Service.All);
+            Service.All = services.ToList();
         }
         internal static void AddFeatures(FeatureDefinition[] features)
         {
-            var actualFeatures = Features.GetActualFeatures(features);
-            foreach (var feature in actualFeatures)
+            if (!features.HasAny()) return;
+            var actualFeatures = Features.GetActualFeatures(features).ToList();
+            if (Feature.All.HasAny())
             {
-                if (!Feature.All.Where(x => x.GetFullPathSlashSeperated() == feature.GetFullPathSlashSeperated()).HasAny())
-                    Feature.All.Append(feature);
+                var featuresFullPath = Feature.All.Select(y => y.GetFullPathSlashSeperated());
+                actualFeatures = actualFeatures.Where(x => !x.GetFullPathSlashSeperated().IsAnyOf(featuresFullPath)).ToList();
+                actualFeatures.AddRange(Feature.All);
             }
+            Feature.All = actualFeatures;
+            foreach (var item in Feature.All.OrEmpty())
+            {
+                item.Children = Feature.All.Where(x => x.Parent?.GetFullPathSlashSeperated() == item.GetFullPathSlashSeperated());
+                item.Children.Do(x => x.Parent = item);
+            }
+            foreach (var item in Feature.All.OrEmpty().Where(x => x.ImplementationUrl.IsEmpty())) item.Order = item.GetOrder();
+            foreach (var item in Feature.All.OrEmpty().Where(x => x.Order == int.MaxValue)) item.Order = 100;
+            Feature.All = Feature.All.OrderBy(x => x.Order);
         }
         static void LoadBoards()
         {

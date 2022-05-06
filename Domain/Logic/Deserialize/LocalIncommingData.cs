@@ -4,13 +4,12 @@ using System.Text;
 
 namespace Olive.Microservices.Hub
 {
-    internal class LocalIncommingData
+    public class LocalIncommingData
     {
-
-        internal Service Service { set; get; }
-        internal FeatureDefinition[] Features { set; get; }
-        internal string[] BoardSources { set; get; }
-        internal bool GlobalySearchable { set; get; }
+        public Service Service { set; get; }
+        public FeatureDefinition[] Features { set; get; }
+        public string[] BoardSources { set; get; }
+        public bool GlobalySearchable { set; get; }
 
     }
 }

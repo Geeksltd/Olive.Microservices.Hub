@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace Olive.Microservices.Hub
 {
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
-    class FeatureDefinition : Mvc.Microservices.Feature
+    public class FeatureDefinition : Mvc.Microservices.Feature
     {
         public string ServiceName;
         public FeatureDefinition For(Service service)

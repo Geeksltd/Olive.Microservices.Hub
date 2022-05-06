@@ -2,6 +2,8 @@
 {
     using System;
     using System.ComponentModel;
+    using System.IO;
+    using System.Text;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
@@ -70,18 +72,16 @@
         [EditorBrowsable(EditorBrowsableState.Never)]
         public Task<ActionResult> DownloadTempFile(string key) => FileRequestService.Download(key);
 
-
-        [Route("LocalSetup")]
-        [HttpPost]
+        [HttpPost("local-setup")]
         public async Task<ActionResult> LocalSetup()
         {
-            if (Context.Current.Environment().EnvironmentName != "Development") return View("error-404");
+            if (Context.Current.Environment().EnvironmentName != "Development") return Content("error-404");
             var data = JsonConvert.DeserializeObject<LocalIncommingData>(await Request.Body.ReadAllText());
             StructureDeserializer.AddService(data.Service);
+            data.Features.Do(x => x.For(data.Service));
             StructureDeserializer.AddFeatures(data.Features);
             await StructureDeserializer.AddSources(data.BoardSources, data.Service, data.GlobalySearchable);
-            data.Features.Do(x => x.For(data.Service));
-            return View("ok-200");
+            return Content("OK");
         }
     }
 }
