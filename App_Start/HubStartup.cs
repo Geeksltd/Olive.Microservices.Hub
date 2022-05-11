@@ -71,7 +71,6 @@
             }
             Feature.DataProvider.Register();
             Service.DataProvider.Register();
-            Board.DataProvider.Register();
 
         }
 

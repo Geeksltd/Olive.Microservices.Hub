@@ -16,14 +16,11 @@ namespace Olive.Microservices.Hub
         {
             LoadServices();
             LoadFeatures();
-            if (Feature.All.HasAny() && Context.Current.Environment().EnvironmentName != "Development") LoadBoards();
             if (Context.Current.Environment().EnvironmentName != "Development")
             {
                 Task.Factory.RunSync(ViewModel.BoardComponents.SetBoardSources);
                 Task.Factory.RunSync(ViewModel.GlobalSearch.SetSearchSources);
             }
-
-
         }
 
         public static async Task RefreshFeatures() => await Features.RefreshFeatures();
@@ -49,7 +46,6 @@ namespace Olive.Microservices.Hub
                              Name = x,
                              UseIframe = Config.Get("Microservice:" + x + ":Iframe").ToLower() == "true",
                              BaseUrl = Config.Get("Microservice:" + x + ":Url"),
-                             Icon = Config.Get("Microservice:" + x + ":Icon"),
                              InjectSingleSignon = Config.Get("Microservice:" + x + ":Sso").ToLower() == "true",
                          });
                    }
@@ -87,17 +83,6 @@ namespace Olive.Microservices.Hub
 
             Console.WriteLine($"########################### Finished running {actionName} in " + LocalTime.Now.Subtract(start).ToNaturalTime());
         }
-
-        static IEnumerable<XElement> ReadXml(System.IO.FileInfo file)
-        {
-            var start = LocalTime.Now;
-            var result = file.ReadAllText().To<XDocument>().Root.Elements();
-            Console.WriteLine($"########################### Finished running ReadXml for {file.Name} in " + LocalTime.Now.Subtract(start).ToNaturalTime());
-            return result;
-        }
-
-        static FileInfo GetFromRoot(string filename) => AppDomain.CurrentDomain.WebsiteRoot().GetFile(filename);
-
         static void LoadFeatures()
         {
             Run("LoadFeatures", () => Feature.All == null, () =>
@@ -184,13 +169,6 @@ namespace Olive.Microservices.Hub
             foreach (var item in Feature.All.OrEmpty().Where(x => x.ImplementationUrl.IsEmpty())) item.Order = item.GetOrder();
             foreach (var item in Feature.All.OrEmpty().Where(x => x.Order == int.MaxValue)) item.Order = 100;
             Feature.All = Feature.All.OrderBy(x => x.Order);
-        }
-        static void LoadBoards()
-        {
-            Run("LoadBoards", () => Board.All == null, () =>
-                {
-                    Board.All = ReadXml(GetFromRoot("Boards.xml")).Select(x => new Board(x)).ToList();
-                });
         }
         public static async Task<string> GetFeaturesJson() => await Features.Repository.Read("/features/features.json");
 
