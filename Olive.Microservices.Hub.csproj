@@ -8,7 +8,7 @@
 		<Authors>Geeks Ltd</Authors>
 		<RepositoryUrl>https://github.com/Geeksltd/Olive.Microservices.Hub/tree/master/Olive.Microservices.Hub</RepositoryUrl>
 		<PackageIcon>icon.png</PackageIcon>
-		<Version>1.4.1-alpha-uat</Version>
+		<Version>1.4.2-alpha-uat</Version>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 	</PropertyGroup>
@@ -38,7 +38,7 @@
 		<PackageReference Include="Olive.Entities.Data.Replication" Version="2.1.185" />
 		<PackageReference Include="Olive.GlobalSearch.Source" Version="1.0.42" />
 		<PackageReference Include="Olive.Microservices.Hub.BoardComponent.Source" Version="2.2.127" />
-		<PackageReference Include="Olive.Mvc.Microservices" Version="3.1.144" />
+		<PackageReference Include="Olive.Mvc.Microservices" Version="3.1.143" />
 		<PackageReference Include="Olive.Mvc.Testing" Version="3.1.109" />
 		<PackageReference Include="Olive.PassiveBackgroundTasks" Version="1.0.27" />
 	</ItemGroup>
