@@ -14,12 +14,12 @@ namespace Olive.Microservices.Hub
     {
         public static IEnumerable<Service> All { get; internal set; }
         public string FeaturesJsonPath() => $"/features/services/{Name}.json";
-        public string GetBoardSourceUrl() => GetAbsoluteImplementationUrl("olive/board/features");
+        public string GetBoardSourceUrl() => BaseUrl + "/olive/board/features";
         public string GetGlobalSearchUrl()
         {
             if (UseIframe)
-                return GetAbsoluteImplementationUrl("global-search.axd") + "#" + Icon;
-            return GetAbsoluteImplementationUrl("api/global-search") + "#" + Icon;
+                return BaseUrl + "/global-search.axd" + "#" + Icon;
+            return BaseUrl + "/api/global-search" + "#" + Icon;
         }
 
         public static string ToJson()
@@ -96,7 +96,7 @@ namespace Olive.Microservices.Hub
             try
             {
                 var sources = JsonConvert.DeserializeObject<string[]>(await url.Download(timeOutSeconds: 10));
-                foreach (var source in sources)
+                foreach (var source in sources.Select(x => x.ToLower()))
                 {
                     if (BoardSources.BoardComponentSources.ContainsKey(source))
                         BoardSources.BoardComponentSources[source].Add(GetBoardSourceUrl());

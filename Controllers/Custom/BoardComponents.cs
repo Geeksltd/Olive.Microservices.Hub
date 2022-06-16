@@ -13,16 +13,16 @@ namespace ViewModel
         internal static Dictionary<string, List<string>> BoardComponentSources;
         public string GetBoardSources(string type)
         {
-            if (BoardComponentSources.ContainsKey(type))
-                return BoardComponentSources[type].ToString(";");
+            if (BoardComponentSources.ContainsKey(type.ToLower()))
+                return BoardComponentSources[type.ToLower()].ToString(";");
             return "";
         }
         public static async Task SetBoardSources()
         {
-            new Dictionary<string, List<string>>()
+            BoardComponentSources = new Dictionary<string, List<string>>()
             {
-            { "Person",new List<string>()},
-            { "Project",new List<string>()},
+            { "person",new List<string>()},
+            { "project",new List<string>()},
             };
             try
             {

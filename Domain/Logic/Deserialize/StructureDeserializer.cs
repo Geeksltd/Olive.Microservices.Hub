@@ -16,11 +16,10 @@ namespace Olive.Microservices.Hub
         {
             LoadServices();
             LoadFeatures();
-            if (Context.Current.Environment().EnvironmentName != "Development")
-            {
-                Task.Factory.RunSync(ViewModel.BoardComponents.SetBoardSources);
-                Task.Factory.RunSync(ViewModel.GlobalSearch.SetSearchSources);
-            }
+
+            Task.Factory.RunSync(ViewModel.BoardComponents.SetBoardSources);
+            Task.Factory.RunSync(ViewModel.GlobalSearch.SetSearchSources);
+
         }
 
         public static async Task RefreshFeatures() => await Features.RefreshFeatures();
@@ -122,12 +121,12 @@ namespace Olive.Microservices.Hub
         {
 
             if (ViewModel.BoardComponents.BoardComponentSources == null)
-                new Dictionary<string, List<string>>()
+                ViewModel.BoardComponents.BoardComponentSources = new Dictionary<string, List<string>>()
                 {
-                { "Person",new List<string>()},
-                { "Project",new List<string>()},
+                { "person",new List<string>()},
+                { "project",new List<string>()},
                 };
-            foreach (var board in boards)
+            foreach (var board in boards.Select(x => x.ToLower()))
             {
                 if (!ViewModel.BoardComponents.BoardComponentSources.ContainsKey(board))
                     ViewModel.BoardComponents.BoardComponentSources.Add(board, new List<string> { service.GetBoardSourceUrl() });
