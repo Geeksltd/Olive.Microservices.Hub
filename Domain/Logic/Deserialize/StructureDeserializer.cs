@@ -43,6 +43,7 @@ namespace Olive.Microservices.Hub
                          new Service
                          {
                              Name = x,
+                             Icon = Config.Get("Microservice:" + x + ":Icon"),
                              UseIframe = Config.Get("Microservice:" + x + ":Iframe").ToLower() == "true",
                              BaseUrl = Config.Get("Microservice:" + x + ":Url"),
                              InjectSingleSignon = Config.Get("Microservice:" + x + ":Sso").ToLower() == "true",
@@ -133,9 +134,6 @@ namespace Olive.Microservices.Hub
                 else if (!ViewModel.BoardComponents.BoardComponentSources[board].Contains(service.GetBoardSourceUrl()))
                     ViewModel.BoardComponents.BoardComponentSources[board].Append(service.GetBoardSourceUrl());
             }
-
-
-
             if (globalsearch && !ViewModel.GlobalSearch.Sources.Contains(service.GetGlobalSearchUrl()))
             {
                 if (ViewModel.GlobalSearch.Sources.HasValue()) ViewModel.GlobalSearch.Sources += ";";

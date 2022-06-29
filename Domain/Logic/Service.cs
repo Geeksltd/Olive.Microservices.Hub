@@ -14,12 +14,12 @@ namespace Olive.Microservices.Hub
     {
         public static IEnumerable<Service> All { get; internal set; }
         public string FeaturesJsonPath() => $"/features/services/{Name}.json";
-        public string GetBoardSourceUrl() => BaseUrl + "/olive/board/features";
+        public string GetBoardSourceUrl() => GetAbsoluteImplementationUrl("olive/board/features");
         public string GetGlobalSearchUrl()
         {
             if (UseIframe)
-                return BaseUrl + "/global-search.axd" + "#" + Icon;
-            return BaseUrl + "/api/global-search" + "#" + Icon;
+                return GetAbsoluteImplementationUrl("global-search.axd") + "#" + Icon;
+            return GetAbsoluteImplementationUrl("api/global-search") + "#" + Icon;
         }
 
         public static string ToJson()
@@ -77,7 +77,7 @@ namespace Olive.Microservices.Hub
 
         public async Task GetAndSaveFeaturesJson()
         {
-            var url = (BaseUrl + "/olive/features").AsUri();
+            var url = GetAbsoluteImplementationUrl("olive/features").AsUri();
 
             try
             {
@@ -91,7 +91,7 @@ namespace Olive.Microservices.Hub
         }
         public async Task GetBoardComponentSources()
         {
-            var url = (BaseUrl + "/olive/board/sources").AsUri();
+            var url = GetAbsoluteImplementationUrl("olive/board/sources").AsUri();
 
             try
             {
@@ -110,9 +110,9 @@ namespace Olive.Microservices.Hub
         }
         public async Task GetGlobalSearchSources()
         {
-            var url = (BaseUrl + "/api/global-search?searcher=s");
+            var url = GetAbsoluteImplementationUrl("/api/global-search?searcher=s");
             if (UseIframe)
-                url = (BaseUrl + "/global-search.axd?searcher=s");
+                url = GetAbsoluteImplementationUrl("/global-search.axd?searcher=s");
 
             try
             {
