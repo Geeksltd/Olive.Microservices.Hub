@@ -62,7 +62,7 @@ namespace System
             var attr = HeaderButtonTargetAttr(button);
 
             var url = button.Url.ToLower().StartsWith("http") ? button.Url : Microservice.Of("Hub").Url(button.Url);
-            var style = button.Colour.IsEmpty() ? "" : $"style='color:{button.Colour}'";
+            var style = button.Colour.IsEmpty() ? "" : $"style='color:{button.Colour}' title='{button.Title}'";
             return @$"
         <a class="""" href=""{url}"" {attr} {style}>
             <i class=""{button.Icon}""></i>
