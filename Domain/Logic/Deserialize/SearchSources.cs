@@ -12,7 +12,7 @@ namespace Olive.Microservices.Hub
         {
             Urls = new List<string>();
             await Task.WhenAll(Service.All.Do(s => s.GetGlobalSearchSources()));
-            await Features.Repository.Write("/Search/Sources.txt", Urls.ToString(";"));
+            await Features.Repository.Write("/Search/Sources.txt", Urls.Trim().ToString(";"));
             await ViewModel.GlobalSearch.SetSearchSources();
         }
     }
