@@ -1,0 +1,15 @@
+﻿@model ViewModel.ProjectFrameModule
+@(Layout = null)
+<!-- «Start| TaskFrameModule» -->
+<div data-module="ProjectFrameModule" class="w-100">
+    @Html.StartupActionsJson()
+    <div id='projectiFram-container'
+         data-src='@(Service.FindByName("Projects").BaseUrl)/recent-projects' >
+        @*<button type='button' id='taskBarCollapse' class='navbar-btn d-none d-lg-block @(Request.Cookies[".task-bar"].OrEmpty() == "collapsed" ? "collapse" : string.Empty ) '>
+            <i class='fa @(Request.Cookies[".task-bar"].OrEmpty() == "collapsed" ? "fa-chevron-left" : "fa-chevron-right")' aria-hidden='true'></i>
+        </button>*@
+        <div class='module-content'>
+        </div>
+    </div>
+</div>
+<!-- «End| TaskFrameModule» -->

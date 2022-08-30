@@ -66,6 +66,7 @@ namespace Controllers
             //    return Redirect(info.RequestPath.Substring(4));
 
             ViewData["Title"] = info.Item?.GetFullPath();
+            Log.Error(info.RequestPath + " | " + Request.ToPathAndQuery() + " | " + Request.ToRawUrl());
 
             if (info.Item == null)
             {
