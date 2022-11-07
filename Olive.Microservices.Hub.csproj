@@ -8,7 +8,7 @@
 		<Authors>Geeks Ltd</Authors>
 		<RepositoryUrl>https://github.com/Geeksltd/Olive.Microservices.Hub/tree/master/Olive.Microservices.Hub</RepositoryUrl>
 		<PackageIcon>icon.png</PackageIcon>
-		<Version>1.3.62</Version>
+		<Version>1.3.70</Version>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 	</PropertyGroup>
@@ -25,7 +25,7 @@
 	<ItemGroup>
 		<PackageReference Include="AppContentService.HubApi" Version="180720.11.4435" />
 		<PackageReference Include="EmailService.SendEmailCommand.EventBusCommand" Version="191220.12.2936" />
-		<PackageReference Include="FS.Shared.Website" Version="1.1.11.5" />
+		<PackageReference Include="FS.Shared.Website" Version="1.1.11.18" />
 		<PackageReference Include="Hangfire.Core" Version="1.7.18" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.14" />
 		<PackageReference Include="NuGet.CommandLine" Version="6.3.0">

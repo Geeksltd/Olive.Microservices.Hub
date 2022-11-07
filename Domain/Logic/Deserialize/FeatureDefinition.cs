@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.TeamFoundation.Common;
 using Newtonsoft.Json;
 
 namespace Olive.Microservices.Hub
@@ -18,7 +17,7 @@ namespace Olive.Microservices.Hub
         {
             var feature = new Feature
             {
-                ID=HashtoGuid(StringSha256Hash(FullPath)).To<Guid>(),
+                ID= HubEncoder.ConvertStringToGuid(FullPath),
                 Ref = Refrance.OrEmpty(),
                 Title = FullPath.Split("/").LastOrDefault(),
                 Description = Description.OrEmpty(),
@@ -42,13 +41,5 @@ namespace Olive.Microservices.Hub
             feature.LoadUrl = feature.FindLoadUrl().ToLower();
             return feature;
         }
-
-
-
-         static string StringSha256Hash(string text) =>
-        text.IsNullOrEmpty() ? string.Empty : BitConverter.ToString(new System.Security.Cryptography.SHA1Managed().ComputeHash(System.Text.Encoding.UTF8.GetBytes(text))).Replace("-", string.Empty);
-
-
-        static string HashtoGuid(string input) => input.IsNullOrEmpty() ? "" : $"{input.Substring(0, 8)}-{input.Substring(8, 4)}-{input.Substring(12, 4)}-{input.Substring(16, 4)}-{input.Substring(20, 12)}";
     }
 }
