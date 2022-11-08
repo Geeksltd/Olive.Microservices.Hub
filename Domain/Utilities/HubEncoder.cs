@@ -9,20 +9,26 @@ namespace Olive.Microservices.Hub
     {
         public static Guid ConvertStringToGuid(string inputstr)
         {
-            if (inputstr.IsEmpty()) return Guid.NewGuid();
+            var result = Guid.NewGuid();
+            if (inputstr.IsEmpty()) return result;
 
-            var hashedstring = HashString(inputstr);
+            try
+            {
+                var hashedstring = HashString(inputstr);
 
-            var hashed32 = Conver256to32(hashedstring);
+                var hashed32 = Conver256to32(hashedstring);
 
-            var hashed32tostring = Convert32toString(hashed32);
+                var hashed32tostring = Convert32toString(hashed32);
 
-            var guidstring = HexToGuid(hashed32tostring);
+                var guidstring = HexToGuid(hashed32tostring);
 
-            var guidresult = Guid.Parse(guidstring);
+                result = guidstring.To<Guid>();
+            }
+            catch
+            {
 
-            return guidresult;
-
+            }
+            return result;
         }
 
         static string HexToGuid(string hexstring)
@@ -60,7 +66,7 @@ namespace Olive.Microservices.Hub
                 case 13: result = 'D'; break;
                 case 14: result = 'E'; break;
                 case 15: result = 'F'; break;
-                default: result= '0'; break;
+                default: result = '0'; break;
             }
             return result;
         }
@@ -79,32 +85,32 @@ namespace Olive.Microservices.Hub
         static List<int> HashString(string input)
         {
             var hashtable = new List<int>();
-            for (int i = 0; i < 256; ++i) hashtable.Add(0);
+            for (int i = 0; i < 256; ++i) hashtable.Add(-1);
 
             var tobytearray = ConvertStr2Byte(input);
 
             for (int i = 0; i < tobytearray.Count; ++i) hashtable[tobytearray[i]] = 1 + i;
 
-            while (hashtable.Contains(0))
+            while (hashtable.Contains(-1))
             {
                 for (int i = 0; i < hashtable.Count; ++i)
                 {
-                    if (hashtable[i] == 0)
+                    if (hashtable[i] == -1)
                     {
-                        long temp = 0;
+                        int temp;
                         if (i == 0)
                         {
-                            temp = hashtable[255] * 255 + hashtable[254] * 254;
+                            temp = (hashtable[255] == -1 ? 0 : hashtable[255]) * 255 + (hashtable[254] == -1 ? 0 : hashtable[254]) * 254;
                         }
                         else if (i == 1)
                         {
-                            temp = hashtable[255] * 255;
+                            temp = (hashtable[255] == -1 ? 0 : hashtable[255]) * 255;
                         }
                         else
                         {
-                            temp = hashtable[i - 1] * (i - 1) + hashtable[i - 2] * (i - 2);
+                            temp = (hashtable[i - 1] == -1 ? 0 : hashtable[i - 1]) * (i - 1) + (hashtable[i - 2] == -1 ? 0 : hashtable[i - 2]) * (i - 2);
                         }
-                        hashtable[i] = (byte)(temp % 256);
+                        hashtable[i] = temp % 256;
                     }
                 }
             }
@@ -114,7 +120,7 @@ namespace Olive.Microservices.Hub
         static List<int> ConvertStr2Byte(string input)
         {
             var result = new List<int>();
-            input.ToList().ForEach(chr => result.Add((byte)chr));
+            input.ToList().ForEach(chr => result.Add(Convert.ToByte(chr)));
             return result;
         }
     }

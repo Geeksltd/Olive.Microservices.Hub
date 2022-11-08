@@ -32,6 +32,7 @@ namespace Olive.Microservices.Hub
                 Service = Service.FindByName(ServiceName),
                 UseIframe = Iframe
             };
+
             // Add prefixes:
             feature.Permissions = feature.Permissions.Where(x => x.Lacks(":")).Select(x => $"{ServiceName}:{x}").Concat(feature.Permissions).ToArray();
 

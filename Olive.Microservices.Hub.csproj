@@ -8,7 +8,7 @@
 		<Authors>Geeks Ltd</Authors>
 		<RepositoryUrl>https://github.com/Geeksltd/Olive.Microservices.Hub/tree/master/Olive.Microservices.Hub</RepositoryUrl>
 		<PackageIcon>icon.png</PackageIcon>
-		<Version>1.3.70</Version>
+		<Version>1.3.72</Version>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 	</PropertyGroup>
@@ -25,17 +25,17 @@
 	<ItemGroup>
 		<PackageReference Include="AppContentService.HubApi" Version="180720.11.4435" />
 		<PackageReference Include="EmailService.SendEmailCommand.EventBusCommand" Version="191220.12.2936" />
-		<PackageReference Include="FS.Shared.Website" Version="1.1.11.18" />
+		<PackageReference Include="FS.Shared.Website" Version="1.1.11.19" />
 		<PackageReference Include="Hangfire.Core" Version="1.7.18" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.14" />
 		<PackageReference Include="NuGet.CommandLine" Version="6.3.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Olive" Version="2.1.327" />
-		<PackageReference Include="Olive.Entities" Version="2.1.178" />
-		<PackageReference Include="Olive.Entities.Data" Version="2.1.186" />
-		<PackageReference Include="Olive.Entities.Data.Replication" Version="2.1.189" />
+		<PackageReference Include="Olive" Version="2.1.328" />
+		<PackageReference Include="Olive.Entities" Version="2.1.179" />
+		<PackageReference Include="Olive.Entities.Data" Version="2.1.187" />
+		<PackageReference Include="Olive.Entities.Data.Replication" Version="2.1.190" />
 		<PackageReference Include="Olive.GlobalSearch.Source" Version="1.0.42" />
 		<PackageReference Include="Olive.Microservices.Hub.BoardComponent.Source" Version="2.2.127" />
 		<PackageReference Include="Olive.Mvc.Microservices" Version="3.1.148" />
