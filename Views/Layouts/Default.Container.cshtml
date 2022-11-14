@@ -3,6 +3,8 @@
 @{
     var leftMenu = ViewData["LeftMenu"].ToStringOrEmpty();
     var hasFullViewContent = ((await Request.Get<Olive.Microservices.Hub.Feature>("feature"))?.HasSecondLevelMenu()).GetValueOrDefault() == false;
+    var root = Microservice.Me.Url().TrimEnd("/");
+    if (root.Contains("hub.")) root = root.Remove("hub.") + "/hub";
 }
 
 <!DOCTYPE html>
@@ -13,31 +15,31 @@
     <meta http-equiv="refresh" content="@timeout">
     <title>@ViewData["Title"]</title>
     <link rel='stylesheet' href="~/styles/default/styles@(".min".OnlyWhen(Environment.IsProduction())).css?v=%APP_VERSION%" type='text/css' />
-    <link rel="icon" media="all" type="image/x-icon" href="~/img/favicon.png" />
-    <link rel="shortcut icon" href="~/img/favicon.ico">
+    <link rel="icon" media="all" type="image/x-icon" href="@root/img/favicon.png" />
+    <link rel="shortcut icon" href="@root/img/favicon.ico">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="#42AAA9">
     <meta name="apple-mobile-web-app-title" content="Hub Application">
 
     <link rel="mask-icon" href="/images/fav/safari-pinned-tab.svg" color="#5bbad5" style="user-select: text;">
-    <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" href="/img/pwa/splash/iphonexsmax_splash.png" style="user-select: text;">
-    <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" href="/img/pwa/splash/iphonexr_splash.png" style="user-select: text;">
-    <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="/img/pwa/splash/iphonex_splash.png" style="user-select: text;">
-    <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="/img/pwa/splash/iphone6_splash.png" style="user-select: text;">
-    <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" href="/img/pwa/splash/iphoneplus_splash.png" style="user-select: text;">
-    <link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="/img/pwa/splash/iphone5_splash.png" style="user-select: text;">
+    <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" href="@root/img/pwa/splash/iphonexsmax_splash.png" style="user-select: text;">
+    <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" href="@root/img/pwa/splash/iphonexr_splash.png" style="user-select: text;">
+    <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="@root/img/pwa/splash/iphonex_splash.png" style="user-select: text;">
+    <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="@root/img/pwa/splash/iphone6_splash.png" style="user-select: text;">
+    <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" href="@root/img/pwa/splash/iphoneplus_splash.png" style="user-select: text;">
+    <link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="@root/img/pwa/splash/iphone5_splash.png" style="user-select: text;">
 
-    <link rel="apple-touch-icon" sizes="57x57" href="~/img/pwa/icon57.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="~/img/pwa/icon76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="~/img/pwa/icon114.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="~/img/pwa/icon167.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="~/img/pwa/icon144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="~/img/pwa/icon152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="~/img/pwa/icon180.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="~/img/pwa/icon192.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="@root/img/pwa/icon57.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="@root/img/pwa/icon76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="@root/img/pwa/icon114.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="@root/img/pwa/icon167.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="@root/img/pwa/icon144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="@root/img/pwa/icon152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="@root/img/pwa/icon180.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="@root/img/pwa/icon192.png">
 
-    <meta name="msapplication-TileImage" content="~/img/pwa/icon144.png">
+    <meta name="msapplication-TileImage" content="@root/img/pwa/icon144.png">
     <meta name="msapplication-TileColor" content="green">
     <meta name="msapplication-starturl" content="/">
 

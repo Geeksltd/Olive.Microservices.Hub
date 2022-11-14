@@ -1,6 +1,11 @@
 ﻿@model ViewModel.Footer
 @(Layout = null)
 
+@{
+    var root = Microservice.Me.Url().TrimEnd("/");
+    if (root.Contains("hub.")) root = root.Remove("hub.") + "/hub";
+}
+
 <!-- «Start| Footer» -->
 <form data-module="Footer" method="post" action="@Url.Current()" class="logout-box">
    @Html.AntiForgeryToken()
@@ -15,7 +20,7 @@
         else
         {
     <a href="#">
-        <img src="~/img/icons/user.svg" class="sidebar-top-module-profile">
+                <img src="@root/img/icons/user.svg" class="sidebar-top-module-profile">
     </a>
         }
     </div>
