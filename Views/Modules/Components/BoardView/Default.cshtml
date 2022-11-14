@@ -2,6 +2,7 @@
 @(Layout = null)
 
 @{ Olive.Microservices.Hub.Board item = Model.Item; }
+@{if (item == null)return;}
 
 <!-- «Start| BoardView» -->
 <div data-module="BoardView" class="gridster-holder">

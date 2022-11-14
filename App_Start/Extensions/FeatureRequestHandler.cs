@@ -31,7 +31,11 @@ namespace ViewModel
 
             if (Path.IsEmpty())
             {
-                RequestPath = Path = "dashboard/home.aspx";
+                var defaultPath = Config.Get<string>("Dashboard:HomeUrl")
+                    .Or(Config.Get<bool>("Dashboard:Enabled")
+                    ? "dashboard/home.aspx"
+                    : "/hub/everything");
+                RequestPath = Path = defaultPath;
                 HostAndPath = request.RootUrl() + Path.TrimStart("/");
             }
         }
@@ -66,14 +70,19 @@ namespace Controllers
             //    return Redirect(info.RequestPath.Substring(4));
 
             ViewData["Title"] = info.Item?.GetFullPath();
-            //Log.Error(info.RequestPath + " | " + Request.ToPathAndQuery() + " | " + Request.ToRawUrl());
+            // Log.Error(info.RequestPath + " | " + Request.ToPathAndQuery() + " | " + Request.ToRawUrl());
 
             if (info.Item == null)
             {
                 var path = info.RequestPath.TrimStart("/");
 
                 var service = Service.All.FirstOrDefault(s => path.StartsWith(s.Name, caseSensitive: false));
-                if (service is null) return Redirect("/");
+                if (service is null)
+                {
+                    // return Redirect("/");
+                    Response.StatusCode = 404;
+                    return Content($"{info.RequestPath} not found");
+                }
 
                 var actualRelativeUrl = path.Substring(service.Name.Length).TrimStart("/");
 
