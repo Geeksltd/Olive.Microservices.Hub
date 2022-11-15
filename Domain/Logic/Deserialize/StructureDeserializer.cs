@@ -88,11 +88,11 @@ namespace Olive.Microservices.Hub
             Console.WriteLine($"########################### Finished running {actionName} in " + LocalTime.Now.Subtract(start).ToNaturalTime());
         }
 
-        static IEnumerable<XElement> ReadXml(System.IO.FileInfo file)
+        static IEnumerable<XElement> ReadXml(string fileName, string content)
         {
             var start = LocalTime.Now;
-            var result = file.ReadAllText().To<XDocument>().Root.Elements();
-            Console.WriteLine($"########################### Finished running ReadXml for {file.Name} in " + LocalTime.Now.Subtract(start).ToNaturalTime());
+            var result = content.To<XDocument>().Root.Elements();
+            Console.WriteLine($"########################### Finished running ReadXml for {fileName} in " + LocalTime.Now.Subtract(start).ToNaturalTime());
             return result;
         }
 
@@ -189,10 +189,11 @@ namespace Olive.Microservices.Hub
         {
             Run("LoadBoards", () => Board.All == null, () =>
                 {
-                    Board.All = ReadXml(GetFromRoot("Boards.xml")).Select(x => new Board(x)).ToList();
+                    Board.All = ReadXml("Boards.xml", GetBoardsXml().RiskDeadlockAndAwaitResult()).Select(x => new Board(x)).ToList();
                 });
         }
         public static async Task<string> GetFeaturesJson() => await Features.Repository.Read("/features/features.json");
+        public static async Task<string> GetBoardsXml() => await Board.Repository.Read("/Boards.xml");
 
     }
 }

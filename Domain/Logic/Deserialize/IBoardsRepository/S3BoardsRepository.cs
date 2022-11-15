@@ -1,0 +1,20 @@
+﻿using System.Text;
+using System.Threading.Tasks;
+
+namespace Olive.Microservices.Hub
+{
+    internal class S3BoardsRepository : IBoardsRepository
+    {
+        public async Task Write(string key, string boards)
+        {
+            using (var stream = new System.IO.MemoryStream(boards.ToBytes(Encoding.UTF8)))
+                await new Amazon.S3.Transfer.TransferUtility().UploadAsync(stream, Config.GetOrThrow("Blob:S3:Bucket"), key);
+        }
+
+        public async Task<string> Read(string key)
+        {
+            using (var stream = new Amazon.S3.Transfer.TransferUtility().OpenStream(Config.GetOrThrow("Blob:S3:Bucket"), key))
+                return await stream.ReadAllText();
+        }
+    }
+}

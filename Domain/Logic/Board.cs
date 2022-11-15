@@ -10,8 +10,12 @@ using Olive.Entities.Data;
 
 namespace Olive.Microservices.Hub
 {
-    partial class Board
+    public partial class Board
     {
+        internal static IBoardsRepository Repository;
+
+        internal static void SetRepository(IBoardsRepository boardsRepository) => Repository = boardsRepository;
+
         public static IEnumerable<Board> All { get; internal set; }
 
         public Board(XElement data)
