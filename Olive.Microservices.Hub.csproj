@@ -23,7 +23,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AppContentService.HubApi" Version="180720.11.4435" />
 		<PackageReference Include="EmailService.SendEmailCommand.EventBusCommand" Version="191220.12.2936" />
 		<PackageReference Include="FS.Shared.Website" Version="1.1.11.19" />
 		<PackageReference Include="Hangfire.Core" Version="1.7.18" />
