@@ -31,7 +31,7 @@ namespace ViewModel
 
             if (Path.IsEmpty())
             {
-                RequestPath = Path = "dashboard/home.aspx";
+                RequestPath = Path = Config.Get("HomePageUrl").Or("dashboard/home.aspx");
                 HostAndPath = request.RootUrl() + Path.TrimStart("/");
             }
         }
