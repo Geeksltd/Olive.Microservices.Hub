@@ -51,7 +51,6 @@
 
         public override void Configure(IApplicationBuilder app)
         {
-            AppContentService.HubApi.DefaultConfig(config => config.Cache(CachePolicy.CacheOrFreshOrNull));
             app.UseResponseCompression();
 
             if (Subdomains.Any())
