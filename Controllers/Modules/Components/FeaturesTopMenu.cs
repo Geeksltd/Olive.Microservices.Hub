@@ -40,6 +40,12 @@ namespace Controllers
             {
                 // Include the parent if it has implementation
                 info.Items = new[] { info.Parent }.Union(info.Items);
+                
+            }
+
+            if (info.Items.HasAny())
+            {
+                info.Items = info.Items.OrderBy(x => x.Title).ToList();
             }
         }
 
