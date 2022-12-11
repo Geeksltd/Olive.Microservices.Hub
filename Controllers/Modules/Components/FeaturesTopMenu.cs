@@ -51,38 +51,12 @@ namespace Controllers
             {
                 info.Items = info.Items.OrderBy(x => x.Title).ToList();
             }
-            
-
-            string itemsonprebound="Items on prebound \r\n";
-
-            if (info.Items.HasAny())
-            {
-                foreach(var item in info.Items)
-                {
-                    itemsonprebound+=item.Title+"\r\n"+JsonConvert.SerializeObject(item)+"\r\n";
-                }
-            }
-
-            
-            Log.Error(itemsonprebound);
         }
 
         [NonAction, OnBound]
         public async Task OnBound(vm.FeaturesTopMenu info)
         {
             info.ActiveItem = GetActiveItem(info);
-
-            string itemsonprebound = "Items on bound \r\n";
-
-            if (info.Items.HasAny())
-            {
-                foreach (var item in info.Items)
-                {
-                    itemsonprebound += item.Title + "\r\n" + JsonConvert.SerializeObject(item) + "\r\n";
-                }
-            }
-
-            Log.Error(itemsonprebound);
         }
 
         [NonAction]
