@@ -1,0 +1,15 @@
+﻿@model ViewModel.SideBarRightModule
+@(Layout = null)
+
+<!-- «Start| SideBarRightModule» -->
+<div data-module="SideBarRightModule" class="task-bar d-none d-lg-flex p-0 @(Request.Cookies[".task-bar"].OrEmpty() == "collapsed" ? "collapsed" : string.Empty )">
+    @Html.StartupActionsJson()
+    <button type='button' id='taskBarCollapse' class='navbar-btn d-none d-lg-block @(Request.Cookies[".task-bar"].OrEmpty() == "collapsed" ? "collapse" : string.Empty ) '>
+        <i class='fa @(Request.Cookies[".task-bar"].OrEmpty() == "collapsed" ? "fa-chevron-left" : "fa-chevron-right")' aria-hidden='true'></i>
+    </button>
+    @(await Component.InvokeAsync<ProjectFrameModule>())
+    @(await Component.InvokeAsync<TaskFrameModule>())
+    
+</div>
+<!-- «End| SideBarRightModule» -->
+

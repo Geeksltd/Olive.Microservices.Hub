@@ -49,6 +49,11 @@ namespace Controllers
 
             info.Items = await GetSource(info)
                 .Select(item => new vm.ChildFeaturesList.ListItem(item)).ToList();
+
+            if (info.Items.HasAny())
+            {
+                info.Items = info.Items.OrderBy(x => x.Item.Title).ToList();
+            }
         }
 
         [NonAction]

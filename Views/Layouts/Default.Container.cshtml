@@ -74,6 +74,11 @@
                     @(await Component.InvokeAsync<ViewComponents.SideBarTopModule>())
                     @(await Component.InvokeAsync(leftMenu))
                     @(await Component.InvokeAsync<Footer>())
+                    <div class="div-float">
+                        <a href="https://auditlog.app.geeks.ltd/improvement" target="$modal" class="alink-float no-print" title="Request a system improvement">
+                            <i class="fas fa-comment-medical icon-float" title="Request a system improvement"></i>
+                        </a>
+                    </div>
                 </div>
             }
 
@@ -99,12 +104,17 @@
                 </div>
             </div>
 
-            @*@if (leftMenu.HasValue())
+            @if (leftMenu.HasValue())
             {
                 @(await Component.InvokeAsync<SideBarRightModule>())
-            }*@
+            }
         </div>
     </div>
     @Html.DevCommandsWidget()
+   @* @if (User.Identity.IsAuthenticated){
+        <a href="https://auditlog.app.geeks.ltd/improvement" target="$modal" class="float no-print" title="Request a system improvement">
+            <i class="fas fa-comment-medical my-float" title="Request a system improvement"></i>
+        </a>
+    }*@
 </body>
 </html>

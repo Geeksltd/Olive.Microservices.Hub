@@ -16,6 +16,11 @@
         /// <summary>Initializes a new instance of the UserInfo class.</summary>
         public UserInfo() => Deleting += (ev) => ev.Do(Cascade_Deleting);
 
+        /// <summary>Gets or sets the value of AuthenticatorKey on this User info instance.</summary>
+        [System.ComponentModel.DisplayName("AuthenticatorKey")]
+        [System.ComponentModel.DataAnnotations.StringLength(200)]
+        public string AuthenticatorKey { get; set; }
+
         /// <summary>Gets or sets the value of DisplayName on this User info instance.</summary>
         [System.ComponentModel.DisplayName("DisplayName")]
         public string DisplayName { get; set; }
@@ -23,6 +28,9 @@
         /// <summary>Gets or sets the value of Email on this User info instance.</summary>
         [System.ComponentModel.DataAnnotations.StringLength(100)]
         public string Email { get; set; }
+
+        /// <summary>Gets or sets a value indicating whether this User info instance is Enable2FA.</summary>
+        public bool? Enable2FA { get; set; }
 
         /// <summary>Gets or sets the value of ImageUrl on this User info instance.</summary>
         [System.ComponentModel.DisplayName("ImageUrl")]

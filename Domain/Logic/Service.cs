@@ -18,7 +18,8 @@ namespace Olive.Microservices.Hub
         public string GetGlobalSearchUrl()
         {
             if (UseIframe)
-                return GetAbsoluteImplementationUrl("global-search.axd") + "#" + Icon;
+                //return GetAbsoluteImplementationUrl("global-search.axd") + "#" + Icon;
+                return null;
             return GetAbsoluteImplementationUrl("api/global-search") + "#" + Icon;
         }
 

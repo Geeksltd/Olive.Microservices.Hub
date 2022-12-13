@@ -20,6 +20,9 @@
 
             if (env.EnvironmentName != "Development") Features.SetRepository(new S3FeatureRepository());
             else Features.SetRepository(new IOFeatureRepository());
+
+            if (env.EnvironmentName != "Development") Board.SetRepository(new S3BoardsRepository());
+            else Board.SetRepository(new IOBoardsRepository());
         }
 
         protected virtual bool IsProduction() => false;
@@ -51,7 +54,6 @@
 
         public override void Configure(IApplicationBuilder app)
         {
-            AppContentService.HubApi.DefaultConfig(config => config.Cache(CachePolicy.CacheOrFreshOrNull));
             app.UseResponseCompression();
 
             if (Subdomains.Any())

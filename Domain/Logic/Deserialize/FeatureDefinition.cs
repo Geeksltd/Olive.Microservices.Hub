@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Olive.Microservices.Hub
@@ -16,6 +17,7 @@ namespace Olive.Microservices.Hub
         {
             var feature = new Feature
             {
+                ID= HubEncoder.ConvertStringToGuid(FullPath),
                 Ref = Refrance.OrEmpty(),
                 Title = FullPath.Split("/").LastOrDefault(),
                 Description = Description.OrEmpty(),
@@ -30,6 +32,7 @@ namespace Olive.Microservices.Hub
                 Service = Service.FindByName(ServiceName),
                 UseIframe = Iframe
             };
+
             // Add prefixes:
             feature.Permissions = feature.Permissions.Where(x => x.Lacks(":")).Select(x => $"{ServiceName}:{x}").Concat(feature.Permissions).ToArray();
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Newtonsoft.Json;
 using Olive;
 using Olive.Microservices.Hub;
 using Olive.Mvc;
@@ -33,6 +34,10 @@ namespace Controllers
             // Set ViewingFeature
             info.ViewingFeature = FeatureContext.ViewingFeature;
 
+            if (info.Parent.Children.HasAny())
+            {
+                info.Parent.Children=info.Parent.Children.OrderBy(x=>x.Title).ToList();
+            }
             // Set the items
             info.Items = info.Parent.Children;
 
@@ -40,6 +45,11 @@ namespace Controllers
             {
                 // Include the parent if it has implementation
                 info.Items = new[] { info.Parent }.Union(info.Items);
+            }
+
+            if (info.Items.HasAny())
+            {
+                info.Items = info.Items.OrderBy(x => x.Title).ToList();
             }
         }
 
@@ -54,7 +64,12 @@ namespace Controllers
         {
             return info.Items.Reverse().FirstOrDefault(f => f.WithAllChildren().Contains(info.ViewingFeature))?.ID.ToString();
 
-            return null;
+
+        }
+
+        private void OrderChildren()
+        {
+
         }
     }
 }

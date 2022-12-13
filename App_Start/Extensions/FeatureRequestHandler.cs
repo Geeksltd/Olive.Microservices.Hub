@@ -31,7 +31,7 @@ namespace ViewModel
 
             if (Path.IsEmpty())
             {
-                RequestPath = Path = "dashboard/home.aspx";
+                RequestPath = Path = Config.Get("HomePageUrl").Or("dashboard/home.aspx");
                 HostAndPath = request.RootUrl() + Path.TrimStart("/");
             }
         }
@@ -66,6 +66,7 @@ namespace Controllers
             //    return Redirect(info.RequestPath.Substring(4));
 
             ViewData["Title"] = info.Item?.GetFullPath();
+            //Log.Error(info.RequestPath + " | " + Request.ToPathAndQuery() + " | " + Request.ToRawUrl());
 
             if (info.Item == null)
             {
