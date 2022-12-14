@@ -168,7 +168,6 @@ namespace Olive.Microservices.Hub
             Feature.All = Feature.All.OrderBy(x => x.Order);
         }
         public static async Task<string> GetFeaturesJson() => await Features.Repository.Read("/features/features.json");
-        public static async Task<string> GetBoardsXml() => await Board.Repository.Read("/Boards.xml");
 
     }
 }
