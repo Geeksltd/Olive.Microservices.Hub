@@ -107,7 +107,9 @@
                 DisplayName = Config.Get("Authentication:SimulateLogin:DisplayName"),
                 IsActive = true,
                 ID = Config.Get("Authentication:SimulateLogin:Id").To<Guid>(),
-                Roles = Config.Get("Authentication:SimulateLogin:Roles")
+                Roles = Config.Get("Authentication:SimulateLogin:Roles"),
+                AuthenticatorKey =  "salt",
+                Enable2FA = false
             });
         }
     }
