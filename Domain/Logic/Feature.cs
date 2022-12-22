@@ -35,8 +35,7 @@ namespace Olive.Microservices.Hub
         {
             if (@ref.IsEmpty()) return null;
 
-            return All.FirstOrDefault(x => x.Ref == @ref)
-                ?? throw new Exception("Feature not found: " + @ref);
+            return All.FirstOrDefault(x => x.Ref == @ref);
         }
 
         public static Feature FindBySubFeaturePath(string path)
