@@ -14,7 +14,7 @@ namespace Olive.Microservices.Hub
     {
         public static IEnumerable<Service> All { get; internal set; }
         public string FeaturesJsonPath() => $"/features/services/{Name}.json";
-        public string GetBoardSourceUrl() => GetAbsoluteImplementationUrl("olive/board/features");
+        public string GetBoardSourceUrl() => GetAbsoluteImplementationUrl("olive/board/features/");
         public string GetGlobalSearchUrl()
         {
             if (UseIframe)
