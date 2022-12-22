@@ -23,19 +23,15 @@ namespace Olive.Microservices.Hub
             Name = data.GetCleanName();
 
             widgets = data.Elements().SelectMany(group => group.Elements().Select(x =>
+              new Widget
               {
-                  var feature=Feature.FindByRef(x.GetValue<string>("@feature"));
-                  var settings = Feature.FindByRef(x.GetValue<string>("@settings"));
-                  return feature==null||settings==null?null: new Widget
-                  {
-                      Board = this,
-                      Group = group.Name.LocalName,
-                      Title = x.GetCleanName(),
-                      Colour = x.GetValue<string>("@colour"),
-                      Feature = feature,
-                      Settings = settings
-                  };
-              })).Where(a => a != null).ToList();
+                  Board = this,
+                  Group = group.Name.LocalName,
+                  Title = x.GetCleanName(),
+                  Colour = x.GetValue<string>("@colour"),
+                  Feature = Feature.FindByRef(x.GetValue<string>("@feature")) ?? throw new Exception("Feature not specified!"),
+                  Settings = Feature.FindByRef(x.GetValue<string>("@settings"))
+              })).ToList();
         }
 
         public Widget[] GetWidgets(ClaimsPrincipal user)
