@@ -73,7 +73,7 @@ namespace Controllers
                 var path = info.RequestPath.TrimStart("/");
 
                 var service = Service.All.FirstOrDefault(s => path.StartsWith(s.Name, caseSensitive: false));
-                if (service is null) return Redirect("/");
+                if (service is null) return new NotFoundResult();
 
                 var actualRelativeUrl = path.Substring(service.Name.Length).TrimStart("/");
 
