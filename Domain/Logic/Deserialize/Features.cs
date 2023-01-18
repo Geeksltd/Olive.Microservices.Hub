@@ -17,7 +17,9 @@ namespace Olive.Microservices.Hub
 
         internal async static Task RefreshServiceFeatures()
         {
-            await Task.WhenAll(Service.All.Do(s => s.GetAndSaveFeaturesJson()));
+            if (Service.All?.Any() == true)
+                await Task.Run(() => Parallel.ForEach(Service.All, async service => await service.GetAndSaveFeaturesJson()));
+
             await RefreshFeatures();
         }
 
