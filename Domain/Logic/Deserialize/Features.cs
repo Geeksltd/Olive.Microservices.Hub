@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Newtonsoft.Json;
 using Olive;
 
@@ -20,22 +18,25 @@ namespace Olive.Microservices.Hub
         {
             if (Service.All?.Any() == true)
             {
-                    var throttler = new SemaphoreSlim(initialCount: 10);
-                    var tasks = Service.All.Select(async service =>
+                var throttler = new SemaphoreSlim(initialCount: 10);
+
+                var tasks = Service.All.Select(async service =>
+                {
+                    await throttler.WaitAsync();
+
+                    try
                     {
-                        await throttler.WaitAsync();
-                        try
-                        {
-                            await service.GetAndSaveFeaturesJson().ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            throttler.Release();
-                        }
-                    });
-                    await Task.WhenAll(tasks);
+                        await service.GetAndSaveFeaturesJson().ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        throttler.Release();
+                    }
+                });
+
+                await Task.WhenAll(tasks);
             }
-            
+
             await RefreshFeatures();
         }
 
@@ -81,13 +82,13 @@ namespace Olive.Microservices.Hub
                 Feature.All = GetActualFeatures(featureDefinitions);
             }
             else await RefreshServiceFeatures();
+
             foreach (var item in Feature.All.OrEmpty()) item.Children = Feature.All.Where(x => x.Parent?.ID == item.ID);
             foreach (var item in Feature.All.OrEmpty().Where(x => x.ImplementationUrl.IsEmpty())) item.Order = item.GetOrder();
             foreach (var item in Feature.All.OrEmpty().Where(x => x.Order == int.MaxValue)) item.Order = 100;
 
             Feature.All = Feature.All.OrderBy(x => x.Order);
             Feature.DataProvider.Register();
-
         }
 
         internal static Feature[] GetActualFeatures(FeatureDefinition[] featureDefinitions)

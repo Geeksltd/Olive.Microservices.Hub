@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Olive.Microservices.Hub
+﻿namespace Olive.Microservices.Hub
 {
     public class LocalIncommingData
     {
@@ -10,6 +6,5 @@ namespace Olive.Microservices.Hub
         public FeatureDefinition[] Features { set; get; }
         public string[] BoardSources { set; get; }
         public bool GlobalySearchable { set; get; }
-
     }
 }

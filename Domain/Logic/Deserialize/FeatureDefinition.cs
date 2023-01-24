@@ -13,11 +13,12 @@ namespace Olive.Microservices.Hub
             ServiceName = service.Name;
             return this;
         }
+
         public Feature CreateFeature(Feature parent)
         {
             var feature = new Feature
             {
-                ID= HubEncoder.ConvertStringToGuid(FullPath),
+                ID = HubEncoder.ConvertStringToGuid(FullPath),
                 Ref = Refrance.OrEmpty(),
                 Title = FullPath.Split("/").LastOrDefault(),
                 Description = Description.OrEmpty(),

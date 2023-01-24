@@ -71,10 +71,10 @@
                 Task.Factory.RunSync(ViewModel.BoardComponents.SetBoardSources);
                 Task.Factory.RunSync(ViewModel.GlobalSearch.SetSearchSources);
             }
+
             Feature.DataProvider.Register();
             Service.DataProvider.Register();
             Board.DataProvider.Register();
-
         }
 
         protected override void ConfigureMiddlewares(IApplicationBuilder app)

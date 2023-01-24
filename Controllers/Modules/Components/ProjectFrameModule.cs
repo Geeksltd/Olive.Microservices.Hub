@@ -5,8 +5,6 @@ using vm = ViewModel;
 
 namespace ViewComponents
 {
-
-
     public partial class ProjectFrameModule : ViewComponent
     {
         public async Task<IViewComponentResult> InvokeAsync(vm.ProjectFrameModule info)
@@ -18,8 +16,6 @@ namespace ViewComponents
 
 namespace Controllers
 {
-
-
     public partial class ProjectFrameModuleController : BaseController
     {
     }
@@ -27,8 +23,6 @@ namespace Controllers
 
 namespace ViewModel
 {
-
-
     [BindingController(typeof(Controllers.ProjectFrameModuleController))]
     public partial class ProjectFrameModule : IViewModel
     {

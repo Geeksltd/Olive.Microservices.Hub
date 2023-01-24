@@ -1,10 +1,9 @@
-﻿using System.Linq;
-using Olive;
-using Olive.Microservices.Hub;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using System;
+using Olive;
+using Olive.Microservices.Hub;
 
 namespace ViewModel
 {
@@ -15,8 +14,10 @@ namespace ViewModel
         {
             if (BoardComponentSources.ContainsKey(type))
                 return BoardComponentSources[type].ToString(";");
+
             return "";
         }
+
         public static async Task SetBoardSources()
         {
             new Dictionary<string, List<string>>()
@@ -24,6 +25,7 @@ namespace ViewModel
             { "Person",new List<string>()},
             { "Project",new List<string>()},
             };
+
             try
             {
                 BoardComponentSources = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(await Features.Repository.Read("/Board/Sources.txt"));
