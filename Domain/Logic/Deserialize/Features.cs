@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Newtonsoft.Json;
@@ -17,7 +18,24 @@ namespace Olive.Microservices.Hub
 
         internal async static Task RefreshServiceFeatures()
         {
-            await Task.WhenAll(Service.All.Do(s => s.GetAndSaveFeaturesJson()));
+            if (Service.All?.Any() == true)
+            {
+                    var throttler = new SemaphoreSlim(initialCount: 10);
+                    var tasks = Service.All.Select(async service =>
+                    {
+                        await throttler.WaitAsync();
+                        try
+                        {
+                            await service.GetAndSaveFeaturesJson().ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            throttler.Release();
+                        }
+                    });
+                    await Task.WhenAll(tasks);
+            }
+            
             await RefreshFeatures();
         }
 
