@@ -15,14 +15,15 @@
 
         public static bool CanSee(this ClaimsPrincipal @this, Feature feature)
         {
-            foreach (var notPermission in feature.NotPermissions)
-                if (@this.IsInRole(notPermission)) return false;
+            if (feature.NotPermissions.Any(@this.IsInRole)) return false;
+
+            if (feature.Permissions.Contains("Anonymouse") && !@this.Identity.IsAuthenticated)
+                return true;
 
             if (feature.Permissions.None())
             {
                 foreach (var child in feature.Children)
-                    if (CanSee(@this, child) && child.ImplementationUrl.HasValue()) return true;
-
+                    if (child.ImplementationUrl.HasValue() && CanSee(@this, child)) return true;
 
                 return false;
             }
