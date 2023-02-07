@@ -8,7 +8,6 @@ namespace Olive.Microservices.Hub
 
         static Stack UsageTracker = new Stack(Palette);
 
-
         public static string Reset()
         {
             UsageTracker.Clear();

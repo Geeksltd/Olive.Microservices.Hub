@@ -26,8 +26,8 @@ namespace Olive.Microservices.Hub
             }
             catch
             {
-
             }
+
             return result;
         }
 
@@ -38,7 +38,7 @@ namespace Olive.Microservices.Hub
 
         static string Convert32toString(List<byte> input)
         {
-            var result = String.Empty;
+            var result = string.Empty;
 
             input.ForEach(x => result += Byte2Hex(x));
 
@@ -48,7 +48,8 @@ namespace Olive.Microservices.Hub
         static char Byte2Hex(byte input)
         {
             var hexnum = input % 16;
-            char result = (char)0;
+            var result = (char)0;
+
             switch (hexnum)
             {
                 case 1: result = '1'; break;
@@ -68,17 +69,20 @@ namespace Olive.Microservices.Hub
                 case 15: result = 'F'; break;
                 default: result = '0'; break;
             }
+
             return result;
         }
 
         static List<byte> Conver256to32(List<int> input)
         {
             var result = new List<byte>();
+
             for (int i = 0; i < 256; i += 8)
             {
                 var temp = (i % 2 == 0) ? input.GetRange(i, 8).Min() : input.GetRange(i, 8).Max();
                 result.Add((byte)(temp % 16));
             }
+
             return result;
         }
 
@@ -98,6 +102,7 @@ namespace Olive.Microservices.Hub
                     if (hashtable[i] == -1)
                     {
                         int temp;
+
                         if (i == 0)
                         {
                             temp = (hashtable[255] == -1 ? 0 : hashtable[255]) * 255 + (hashtable[254] == -1 ? 0 : hashtable[254]) * 254;
@@ -110,10 +115,12 @@ namespace Olive.Microservices.Hub
                         {
                             temp = (hashtable[i - 1] == -1 ? 0 : hashtable[i - 1]) * (i - 1) + (hashtable[i - 2] == -1 ? 0 : hashtable[i - 2]) * (i - 2);
                         }
+
                         hashtable[i] = temp % 256;
                     }
                 }
             }
+
             return hashtable;
         }
 

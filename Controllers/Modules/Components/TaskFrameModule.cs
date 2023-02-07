@@ -5,8 +5,6 @@ using vm = ViewModel;
 
 namespace ViewComponents
 {
-
-
     public partial class TaskFrameModule : ViewComponent
     {
         public async Task<IViewComponentResult> InvokeAsync(vm.TaskFrameModule info)
@@ -18,8 +16,6 @@ namespace ViewComponents
 
 namespace Controllers
 {
-
-
     public partial class TaskFrameModuleController : BaseController
     {
     }
@@ -27,8 +23,6 @@ namespace Controllers
 
 namespace ViewModel
 {
-
-
     [BindingController(typeof(Controllers.TaskFrameModuleController))]
     public partial class TaskFrameModule : IViewModel
     {

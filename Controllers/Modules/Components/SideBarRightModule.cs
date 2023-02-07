@@ -5,7 +5,6 @@ using vm = ViewModel;
 
 namespace ViewComponents
 {
-
 #pragma warning disable
     public partial class SideBarRightModule : ViewComponent
     {
@@ -18,7 +17,6 @@ namespace ViewComponents
 
 namespace Controllers
 {
-
 #pragma warning disable
     public partial class SideBarRightModuleController : BaseController
     {
@@ -27,7 +25,6 @@ namespace Controllers
 
 namespace ViewModel
 {
-
 #pragma warning disable
     [BindingController(typeof(Controllers.SideBarRightModuleController))]
     public partial class SideBarRightModule : IViewModel

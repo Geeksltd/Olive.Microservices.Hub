@@ -133,7 +133,7 @@
             }
 
             var ul = new XElement("ul", new XAttribute("class", "nav navbar-nav dropped-submenu"), new XAttribute("id", rootMEnuId));
-            //items= items.OrderBy(x=>x.Feature.Title).ToList();
+            // items= items.OrderBy(x=>x.Feature.Title).ToList();
             foreach (var item in items)
             {
                 var feature = item.Feature;
@@ -175,8 +175,9 @@
 
                 var children = FeatureSecurityFilter.GetAuthorizedFeatures(Context.Current.User(), parent: feature);
 
-                if (children.Any()){
-                    children=children.OrderBy(child=>child.Feature.Title).ToArray();
+                if (children.Any())
+                {
+                    children = children.OrderBy(child => child.Feature.Title).ToArray();
                     li.Add(RenderMenu(currentFeature, children));
                 }
             }
@@ -220,7 +221,7 @@
         {
             var menuITems = new HashSet<JsonMenu>();
 
-            if(items.HasAny()) items = items.OrderBy(x => x.Feature.Title).ToArray();
+            if (items.HasAny()) items = items.OrderBy(x => x.Feature.Title).ToArray();
 
             foreach (var item in items)
             {

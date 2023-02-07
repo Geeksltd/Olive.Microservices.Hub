@@ -16,9 +16,11 @@ namespace Olive.Microservices.Hub
         {
             LoadServices();
             LoadFeatures();
-
-            Task.Factory.RunSync(ViewModel.BoardComponents.SetBoardSources);
-            Task.Factory.RunSync(ViewModel.GlobalSearch.SetSearchSources);
+            if (Context.Current.Environment().EnvironmentName != "Development")
+            {
+                Task.Factory.RunSync(ViewModel.BoardComponents.SetBoardSources);
+                Task.Factory.RunSync(ViewModel.GlobalSearch.SetSearchSources);
+            }      
 
         }
 
@@ -30,7 +32,6 @@ namespace Olive.Microservices.Hub
         {
             Run("LoadServices", () => Service.All == null, () =>
                {
-
                    try
                    {
                        Task.Factory.RunSync(SetServicesFromXml);
@@ -49,14 +50,14 @@ namespace Olive.Microservices.Hub
                              InjectSingleSignon = Config.Get("Microservice:" + x + ":Sso").ToLower() == "true",
                          });
                    }
-
                });
         }
 
-        private static async Task SetServicesFromXml()
+        static async Task SetServicesFromXml()
         {
             var serviceXml = await Features.Repository.Read("/Services.xml");
             var environment = Context.Current.Environment().EnvironmentName.ToLower();
+
             Service.All = (from x in serviceXml.To<XDocument>().Root.Elements()
                            let envDomain = x.Parent.GetValue<string>("@" + environment)
                            let url = x.GetValue<string>("@" + environment) ?? x.GetValue<string>("@url")
@@ -101,9 +102,11 @@ namespace Olive.Microservices.Hub
                     LastLoad = LocalTime.UtcNow;
                     await Features.Load();
                 }
+
                 await next(ctx);
             };
         }
+
         internal static RequestDelegate ReloadSources(RequestDelegate next)
         {
             return async ctx =>
@@ -114,13 +117,13 @@ namespace Olive.Microservices.Hub
                     await ViewModel.BoardComponents.SetBoardSources();
                     await ViewModel.GlobalSearch.SetSearchSources();
                 }
+
                 await next(ctx);
             };
         }
 
         internal static void AddSources(string[] boards, Service service, bool globalsearch)
         {
-
             if (ViewModel.BoardComponents.BoardComponentSources == null)
                 ViewModel.BoardComponents.BoardComponentSources = new Dictionary<string, List<string>>()
                 {
@@ -140,6 +143,7 @@ namespace Olive.Microservices.Hub
                 ViewModel.GlobalSearch.Sources += service.GetGlobalSearchUrl();
             }
         }
+
         internal static void AddService(Service service)
         {
             if (Service.All.Where(x => x.Name == service.Name).HasAny()) return;
@@ -147,22 +151,27 @@ namespace Olive.Microservices.Hub
             services.AddRange(Service.All);
             Service.All = services.ToList();
         }
+
         internal static void AddFeatures(FeatureDefinition[] features)
         {
             if (!features.HasAny()) return;
             var actualFeatures = Features.GetActualFeatures(features).ToList();
+
             if (Feature.All.HasAny())
             {
                 var featuresFullPath = Feature.All.Select(y => y.GetFullPathSlashSeperated());
                 actualFeatures = actualFeatures.Where(x => !x.GetFullPathSlashSeperated().IsAnyOf(featuresFullPath)).ToList();
                 actualFeatures.AddRange(Feature.All);
             }
+
             Feature.All = actualFeatures;
+
             foreach (var item in Feature.All.OrEmpty())
             {
                 item.Children = Feature.All.Where(x => x.Parent?.GetFullPathSlashSeperated() == item.GetFullPathSlashSeperated());
                 item.Children.Do(x => x.Parent = item);
             }
+
             foreach (var item in Feature.All.OrEmpty().Where(x => x.ImplementationUrl.IsEmpty())) item.Order = item.GetOrder();
             foreach (var item in Feature.All.OrEmpty().Where(x => x.Order == int.MaxValue)) item.Order = 100;
             Feature.All = Feature.All.OrderBy(x => x.Order);

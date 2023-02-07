@@ -18,8 +18,9 @@ namespace Olive.Microservices.Hub
         public string GetGlobalSearchUrl()
         {
             if (UseIframe)
-                //return GetAbsoluteImplementationUrl("global-search.axd") + "#" + Icon;
+                // return GetAbsoluteImplementationUrl("global-search.axd") + "#" + Icon;
                 return null;
+
             return GetAbsoluteImplementationUrl("api/global-search") + "#" + Icon;
         }
 
@@ -90,6 +91,7 @@ namespace Olive.Microservices.Hub
                 Log.For(typeof(Features)).Warning(url + " failed:\n" + ex.ToString());
             }
         }
+
         public async Task GetBoardComponentSources()
         {
             var url = GetAbsoluteImplementationUrl("olive/board/sources").AsUri();
@@ -109,6 +111,7 @@ namespace Olive.Microservices.Hub
                 Log.For(typeof(Service)).Warning(url + " failed:\n" + ex.ToString());
             }
         }
+
         public async Task GetGlobalSearchSources()
         {
             var url = GetAbsoluteImplementationUrl("/api/global-search?searcher=s");

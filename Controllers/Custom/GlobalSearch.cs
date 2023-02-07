@@ -1,9 +1,7 @@
-﻿using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
 using Olive;
 using Olive.Microservices.Hub;
-using System.Collections.Generic;
-using System;
 
 namespace ViewModel
 {
@@ -23,7 +21,6 @@ namespace ViewModel
                 Log.For(typeof(GlobalSearch)).Warning(" failed to read search sources:\n" + ex.ToString());
                 await SearchSources.SetSearchSourceTxt();
             }
-
         }
         public class GlobalSearchModel
         {

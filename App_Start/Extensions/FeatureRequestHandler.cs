@@ -66,7 +66,7 @@ namespace Controllers
             //    return Redirect(info.RequestPath.Substring(4));
 
             ViewData["Title"] = info.Item?.GetFullPath();
-            //Log.Error(info.RequestPath + " | " + Request.ToPathAndQuery() + " | " + Request.ToRawUrl());
+            // Log.Error(info.RequestPath + " | " + Request.ToPathAndQuery() + " | " + Request.ToRawUrl());
 
             if (info.Item == null)
             {
@@ -105,20 +105,21 @@ namespace Controllers
             }
 
             ViewBag.PageSource = "";
+
             if (info.Path.Contains("/serverside"))
             {
-                string baseUrl = "";
+                var baseUrl = "";
+
                 if (info.Item is null)
                     baseUrl = Service.All.FirstOrDefault(s => info.Path.StartsWith(s.Name, caseSensitive: false))?.BaseUrl;
                 else
                     baseUrl = info.Item.Service.BaseUrl;
 
-                string body = await (baseUrl + info.Path.RemoveBefore("/")).AsUri().Download();
+                var body = await (baseUrl + info.Path.RemoveBefore("/")).AsUri().Download();
                 ViewBag.PageSource = body;
 
                 var title = body.Between("<!--title", "title-->");
-                if (title.HasValue())
-                    ViewData["Title"] = title;
+                if (title.HasValue()) ViewData["Title"] = title;
                 var metaTag = body.Between("<!--metaTag", "metaTag-->");
                 ViewData["metaTag"] = metaTag;
             }
