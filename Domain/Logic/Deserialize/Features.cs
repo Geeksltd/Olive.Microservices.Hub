@@ -19,11 +19,9 @@ namespace Olive.Microservices.Hub
             if (Service.All?.Any() == true)
             {
                 var throttler = new SemaphoreSlim(initialCount: 10);
-
                 var tasks = Service.All.Select(async service =>
                 {
                     await throttler.WaitAsync();
-
                     try
                     {
                         await service.GetAndSaveFeaturesJson().ConfigureAwait(false);
@@ -33,7 +31,6 @@ namespace Olive.Microservices.Hub
                         throttler.Release();
                     }
                 });
-
                 await Task.WhenAll(tasks);
             }
 
