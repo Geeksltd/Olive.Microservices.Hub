@@ -1,8 +1,12 @@
 ﻿@{ var timeout = Config.Get("Authentication:Timeout", defaultValue: 20).Minutes().TotalSeconds + 10;}
 @using Microsoft.AspNetCore.Hosting;
+@using Olive.Microservices.Hub.Domain.Utilities;
 @{
     var leftMenu = ViewData["LeftMenu"].ToStringOrEmpty();
     var hasFullViewContent = ((await Request.Get<Olive.Microservices.Hub.Feature>("feature"))?.HasSecondLevelMenu()).GetValueOrDefault() == false;
+    var root = ThemeProvider.GetRootPath(false);
+    var themeRoot = ThemeProvider.GetRootPath(true);
+    var primaryColor = ThemeProvider.GetPrimaryColor();
 }
 
 <!DOCTYPE html>
@@ -12,46 +16,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="refresh" content="@timeout">
     <title>@ViewData["Title"]</title>
-    <link rel='stylesheet' href="~/styles/default/styles@(".min".OnlyWhen(Environment.IsProduction())).css?v=%APP_VERSION%" type='text/css' />
-    <link rel="icon" media="all" type="image/x-icon" href="~/img/favicon.png" />
-    <link rel="shortcut icon" href="~/img/favicon.ico">
+	<link rel='stylesheet' href="@root/styles/default/styles@(".min".OnlyWhen(Environment.IsProduction())).css?v=%APP_VERSION%" type='text/css' />
+    <link rel='stylesheet' href="@themeRoot/styles.css" type='text/css' />
+    <link rel="icon" media="all" type="image/x-icon" href="@themeRoot/img/favicon.png" />
+    <link rel="shortcut icon" href="@themeRoot/img/favicon.ico">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="#42AAA9">
+    <meta name="apple-mobile-web-app-status-bar-style" content="@primaryColor">
     <meta name="apple-mobile-web-app-title" content="Hub Application">
 
-    <link rel="mask-icon" href="/images/fav/safari-pinned-tab.svg" color="#5bbad5" style="user-select: text;">
-    <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" href="/img/pwa/splash/iphonexsmax_splash.png" style="user-select: text;">
-    <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" href="/img/pwa/splash/iphonexr_splash.png" style="user-select: text;">
-    <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="/img/pwa/splash/iphonex_splash.png" style="user-select: text;">
-    <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="/img/pwa/splash/iphone6_splash.png" style="user-select: text;">
-    <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" href="/img/pwa/splash/iphoneplus_splash.png" style="user-select: text;">
-    <link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="/img/pwa/splash/iphone5_splash.png" style="user-select: text;">
+    <link rel="mask-icon" href="@themeRoot/img/safari-pinned-tab.svg" color="@primaryColor" style="user-select: text;">
+    <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" href="@themeRoot/img/pwa/splash/iphonexsmax_splash.png" style="user-select: text;">
+    <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" href="@themeRoot/img/pwa/splash/iphonexr_splash.png" style="user-select: text;">
+    <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="@themeRoot/img/pwa/splash/iphonex_splash.png" style="user-select: text;">
+    <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="@themeRoot/img/pwa/splash/iphone6_splash.png" style="user-select: text;">
+    <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" href="@themeRoot/img/pwa/splash/iphoneplus_splash.png" style="user-select: text;">
+    <link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="@themeRoot/img/pwa/splash/iphone5_splash.png" style="user-select: text;">
 
-    <link rel="apple-touch-icon" sizes="57x57" href="~/img/pwa/icon57.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="~/img/pwa/icon76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="~/img/pwa/icon114.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="~/img/pwa/icon167.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="~/img/pwa/icon144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="~/img/pwa/icon152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="~/img/pwa/icon180.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="~/img/pwa/icon192.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="@themeRoot/img/pwa/icon57.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="@themeRoot/img/pwa/icon76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="@themeRoot/img/pwa/icon114.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="@themeRoot/img/pwa/icon167.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="@themeRoot/img/pwa/icon144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="@themeRoot/img/pwa/icon152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="@themeRoot/img/pwa/icon180.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="@themeRoot/img/pwa/icon192.png">
 
-    <meta name="msapplication-TileImage" content="~/img/pwa/icon144.png">
+    <meta name="msapplication-TileImage" content="@themeRoot/img/pwa/icon144.png">
     <meta name="msapplication-TileColor" content="green">
     <meta name="msapplication-starturl" content="/">
 
     <!-- Manifest.json-->
     <link rel="manifest" href="~/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#42AAA9">
+    <meta name="theme-color" content="@primaryColor">
 
     <script type="text/javascript">
         window["services"] = @Olive.Microservices.Hub.Service.ToJson()?.Raw();
     </script>
 
-    <script src="~/lib/olive.microservices.hubjs/dist/bundle-built.js"></script>
-    <script src="~/scripts/js.js"></script>
+    <script src="@root/lib/olive.microservices.hubjs/dist/bundle-built.js"></script>
+    <script src="@root/scripts/js.js"></script>
     @*<script src="~/lib/olive.microservices.hubjs/dist/bundle-built@(".min".OnlyWhen(Request?.Query["jsdebug"].ToString() != "true")).js?v=%APP_VERSION%"></script>*@
     @*<script src="~/lib/olive.microservices.hubjs/dist/bundle-built@(".min".OnlyWhen(Request?.Query["jsdebug"].ToString() != "true")).js?v=%APP_VERSION%"></script>*@
 
