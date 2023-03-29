@@ -2,7 +2,7 @@ name: Publish Package
 
 on:
   push:
-    branches: [ main, UAT, Institude]
+    branches: [ main, UAT, Institute]
     
 jobs:
  build:
