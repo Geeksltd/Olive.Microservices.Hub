@@ -177,7 +177,7 @@
 
                 if (children.Any())
                 {
-                    children = children.OrderBy(child => child.Feature.Title).ToArray();
+                    children = children.OrderBy(child=>child.Feature.Order).ThenBy(child => child.Feature.Title).ToArray();
                     li.Add(RenderMenu(currentFeature, children));
                 }
             }

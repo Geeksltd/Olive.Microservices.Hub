@@ -33,7 +33,5 @@ namespace ViewModel
     {
         public string FeatureId { get; set; }
 
-        [ValidateNever]
-        public Board Item { get; set; }
     }
 }

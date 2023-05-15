@@ -14,15 +14,7 @@ namespace Olive.Microservices.Hub
     {
         public static IEnumerable<Service> All { get; internal set; }
         public string FeaturesJsonPath() => $"/features/services/{Name}.json";
-
-        public string GetBoardSourceUrl()
-        {
-            if (UseIframe)
-                return GetAbsoluteImplementationUrl("board-components.axd") + "#" + Icon;
-
-            return GetAbsoluteImplementationUrl("api/board-components") + "#" + Icon;
-        }
-
+        public string GetBoardSourceUrl() => GetAbsoluteImplementationUrl("olive/board/features/");
         public string GetGlobalSearchUrl()
         {
             if (UseIframe)
@@ -87,7 +79,7 @@ namespace Olive.Microservices.Hub
 
         public async Task GetAndSaveFeaturesJson()
         {
-            var url = (BaseUrl + "/olive/features").AsUri();
+            var url = GetAbsoluteImplementationUrl("olive/features").AsUri();
 
             try
             {
@@ -102,13 +94,12 @@ namespace Olive.Microservices.Hub
 
         public async Task GetBoardComponentSources()
         {
-            var url = (BaseUrl + "/olive/board/sources").AsUri();
+            var url = GetAbsoluteImplementationUrl("olive/board/sources").AsUri();
 
             try
             {
                 var sources = JsonConvert.DeserializeObject<string[]>(await url.Download(timeOutSeconds: 10));
-
-                foreach (var source in sources)
+                foreach (var source in sources.Select(x => x.ToLower()))
                 {
                     if (BoardSources.BoardComponentSources.ContainsKey(source))
                         BoardSources.BoardComponentSources[source].Add(GetBoardSourceUrl());
@@ -123,10 +114,9 @@ namespace Olive.Microservices.Hub
 
         public async Task GetGlobalSearchSources()
         {
-            var url = (BaseUrl + "/api/global-search?searcher=s");
-
+            var url = GetAbsoluteImplementationUrl("/api/global-search?searcher=s");
             if (UseIframe)
-                url = (BaseUrl + "/global-search.axd?searcher=s");
+                url = GetAbsoluteImplementationUrl("/global-search.axd?searcher=s");
 
             try
             {

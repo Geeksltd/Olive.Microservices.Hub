@@ -21,8 +21,6 @@
             if (env.EnvironmentName != "Development") Features.SetRepository(new S3FeatureRepository());
             else Features.SetRepository(new IOFeatureRepository());
 
-            if (env.EnvironmentName != "Development") Board.SetRepository(new S3BoardsRepository());
-            else Board.SetRepository(new IOBoardsRepository());
         }
 
         protected virtual bool IsProduction() => false;
@@ -74,7 +72,7 @@
 
             Feature.DataProvider.Register();
             Service.DataProvider.Register();
-            Board.DataProvider.Register();
+
         }
 
         protected override void ConfigureMiddlewares(IApplicationBuilder app)
@@ -110,7 +108,9 @@
                 DisplayName = Config.Get("Authentication:SimulateLogin:DisplayName"),
                 IsActive = true,
                 ID = Config.Get("Authentication:SimulateLogin:Id").To<Guid>(),
-                Roles = Config.Get("Authentication:SimulateLogin:Roles")
+                Roles = Config.Get("Authentication:SimulateLogin:Roles"),
+                AuthenticatorKey =  "salt",
+                Enable2FA = false
             });
         }
     }

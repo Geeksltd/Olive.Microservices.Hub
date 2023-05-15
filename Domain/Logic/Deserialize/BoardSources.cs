@@ -11,8 +11,8 @@ namespace Olive.Microservices.Hub
         {
             BoardComponentSources = new Dictionary<string, List<string>>()
             {
-            { "Person",new List<string>()},
-            { "Project",new List<string>()},
+            { "person",new List<string>()},
+            { "project",new List<string>()},
             };
 
             await Task.WhenAll(Service.All.Do(s => s.GetBoardComponentSources()));

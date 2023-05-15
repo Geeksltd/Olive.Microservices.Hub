@@ -1,4 +1,6 @@
-﻿@{ var timeout = Config.Get("Authentication:Timeout", defaultValue: 20).Minutes().TotalSeconds + 10;}
+﻿@{
+    var timeout = Config.Get("Authentication:Timeout", defaultValue: 20).Minutes().TotalSeconds + 10;
+}
 @using Microsoft.AspNetCore.Hosting;
 @{
     var leftMenu = ViewData["LeftMenu"].ToStringOrEmpty();
@@ -60,8 +62,8 @@
     @*<script src="~/lib/requirejs/require.js" data-main="/scripts/hub/appPage.js"></script>*@
     @*<script src="~/scripts/hub/appPage.js"></script>*@
     @*<script type="text/javascript">
-            requirejs(["/hub/appPage"], function () { });
-        </script>*@
+    requirejs(["/hub/appPage"], function () { });
+    </script>*@
     @*<script src="~/scripts/bundle-built.js?v=%APP_VERSION%" ></script>*@
     @*<script src="~/lib/requirejs/require.js" data-main="/scripts/bundle-built@(".min".OnlyWhen(Request?.Query["jsdebug"].ToString() != "true")).js?v=%APP_VERSION%"></script>*@
 </head>
@@ -111,10 +113,10 @@
         </div>
     </div>
     @Html.DevCommandsWidget()
-   @* @if (User.Identity.IsAuthenticated){
-        <a href="https://auditlog.app.geeks.ltd/improvement" target="$modal" class="float no-print" title="Request a system improvement">
-            <i class="fas fa-comment-medical my-float" title="Request a system improvement"></i>
-        </a>
+    @* @if (User.Identity.IsAuthenticated){
+    <a href="https://auditlog.app.geeks.ltd/improvement" target="$modal" class="float no-print" title="Request a system improvement">
+    <i class="fas fa-comment-medical my-float" title="Request a system improvement"></i>
+    </a>
     }*@
 </body>
 </html>

@@ -16,13 +16,12 @@ namespace Olive.Microservices.Hub
         {
             LoadServices();
             LoadFeatures();
-            if (Feature.All.HasAny() && Context.Current.Environment().EnvironmentName != "Development") LoadBoards();
-
             if (Context.Current.Environment().EnvironmentName != "Development")
             {
                 Task.Factory.RunSync(ViewModel.BoardComponents.SetBoardSources);
                 Task.Factory.RunSync(ViewModel.GlobalSearch.SetSearchSources);
-            }
+            }      
+
         }
 
         public static async Task RefreshFeatures() => await Features.RefreshFeatures();
@@ -45,9 +44,9 @@ namespace Olive.Microservices.Hub
                          new Service
                          {
                              Name = x,
+                             Icon = Config.Get("Microservice:" + x + ":Icon"),
                              UseIframe = Config.Get("Microservice:" + x + ":Iframe").ToLower() == "true",
                              BaseUrl = Config.Get("Microservice:" + x + ":Url"),
-                             Icon = Config.Get("Microservice:" + x + ":Icon"),
                              InjectSingleSignon = Config.Get("Microservice:" + x + ":Sso").ToLower() == "true",
                          });
                    }
@@ -85,17 +84,6 @@ namespace Olive.Microservices.Hub
 
             Console.WriteLine($"########################### Finished running {actionName} in " + LocalTime.Now.Subtract(start).ToNaturalTime());
         }
-
-        static IEnumerable<XElement> ReadXml(string fileName, string content)
-        {
-            var start = LocalTime.Now;
-            var result = content.To<XDocument>().Root.Elements();
-            Console.WriteLine($"########################### Finished running ReadXml for {fileName} in " + LocalTime.Now.Subtract(start).ToNaturalTime());
-            return result;
-        }
-
-        static FileInfo GetFromRoot(string filename) => AppDomain.CurrentDomain.WebsiteRoot().GetFile(filename);
-
         static void LoadFeatures()
         {
             Run("LoadFeatures", () => Feature.All == null, () =>
@@ -137,20 +125,18 @@ namespace Olive.Microservices.Hub
         internal static void AddSources(string[] boards, Service service, bool globalsearch)
         {
             if (ViewModel.BoardComponents.BoardComponentSources == null)
-                new Dictionary<string, List<string>>()
+                ViewModel.BoardComponents.BoardComponentSources = new Dictionary<string, List<string>>()
                 {
-                { "Person",new List<string>()},
-                { "Project",new List<string>()},
+                { "person",new List<string>()},
+                { "project",new List<string>()},
                 };
-
-            foreach (var board in boards)
+            foreach (var board in boards.Select(x => x.ToLower()))
             {
                 if (!ViewModel.BoardComponents.BoardComponentSources.ContainsKey(board))
                     ViewModel.BoardComponents.BoardComponentSources.Add(board, new List<string> { service.GetBoardSourceUrl() });
                 else if (!ViewModel.BoardComponents.BoardComponentSources[board].Contains(service.GetBoardSourceUrl()))
                     ViewModel.BoardComponents.BoardComponentSources[board].Append(service.GetBoardSourceUrl());
             }
-
             if (globalsearch && !ViewModel.GlobalSearch.Sources.Contains(service.GetGlobalSearchUrl()))
             {
                 if (ViewModel.GlobalSearch.Sources.HasValue()) ViewModel.GlobalSearch.Sources += ";";
@@ -190,17 +176,7 @@ namespace Olive.Microservices.Hub
             foreach (var item in Feature.All.OrEmpty().Where(x => x.Order == int.MaxValue)) item.Order = 100;
             Feature.All = Feature.All.OrderBy(x => x.Order);
         }
-
-        static void LoadBoards()
-        {
-            Run("LoadBoards", () => Board.All == null, () =>
-                {
-                    Board.All = ReadXml("Boards.xml", GetBoardsXml().RiskDeadlockAndAwaitResult()).Select(x => new Board(x)).ToList();
-                });
-        }
-
         public static async Task<string> GetFeaturesJson() => await Features.Repository.Read("/features/features.json");
 
-        public static async Task<string> GetBoardsXml() => await Board.Repository.Read("/Boards.xml");
     }
 }
