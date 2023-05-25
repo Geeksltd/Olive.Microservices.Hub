@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Amazon.S3.Model.Internal.MarshallTransformations;
 using Newtonsoft.Json;
 using Olive;
 using Olive.Entities;
@@ -54,7 +55,18 @@ namespace Olive.Microservices.Hub
             => GetHubImplementationUrlPrefix().AppendUrlPath(relativeUrl);
 
         public string GetAbsoluteImplementationUrl(string relativeUrl) => BaseUrl.AppendUrlPath(relativeUrl);
-
+        public static Service GetServiceFromURL(string relativeUrl)
+        {
+            Service hub = null;
+            foreach (var service in All)
+            {
+                if (service.Name.ToLower() != "hub" && relativeUrl.StartsWith(service.BaseUrl))
+                    return service;
+                else if (service.Name.ToLower() == "hub" && relativeUrl.StartsWith(service.BaseUrl))
+                    hub = service;
+            }
+            return hub;
+        }
         public static Service FindByName(string name)
         {
             var result = All.FirstOrDefault(s => s.Name == name);
