@@ -2,7 +2,7 @@
 	if (Request.IsAjaxCall())
 		Layout = null;
 	else
-		Layout = ((bool?)ViewData["NoLayout"]) == true ? "~/Views/Layouts/Default.NoLayout.cshtml" : "~/Views/Layouts/Default.Container.cshtml";
+		Layout = ((bool?)ViewData["NoNav"]) == true ? "~/Views/Layouts/Default.NoNav.cshtml" : "~/Views/Layouts/Default.Container.cshtml";
 }
 
 <main class="hub-service">

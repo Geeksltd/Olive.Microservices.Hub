@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Olive;
@@ -26,7 +27,7 @@ namespace Controllers
 			{
 				return Redirect(Url.Index("Login", new { ReturnUrl = Url.Current() }));
 			}
-			info.NoLayout = Request.Query["open"] == "true";
+			info.NoNav = Request.Query.ContainsKey("$no-nav");
 			return await Execute(info);
 		}
 	}
@@ -39,6 +40,6 @@ namespace ViewModel
 	{
 		[ValidateNever]
 		public Feature Item { get; set; }
-		public bool NoLayout { get; set; }
+		public bool NoNav { get; set; }
 	}
 }
