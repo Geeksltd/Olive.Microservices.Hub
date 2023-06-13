@@ -8,9 +8,11 @@
     <div class="d-inline-block">
         @if (User.Identity.IsAuthenticated)
         {
-            <a href="/person/@Model.Email">
-                <img src="@Model.UserImage" alt="@User?.Identity.Name" class="sidebar-top-module-profile">
-            </a>
+            <div style="width: 45px;height: 45px;background: linear-gradient(0deg, @Model.SecondaryDISCColour 25%, @Model.PrimaryDISCColour 0%);border-radius: 25px;">
+                <a href="/person/@Model.Email">
+                    <img src="@Model.UserImage" alt="@User?.Identity.Name" class="sidebar-top-module-profile" style="margin: 6%;">
+                </a>
+            </div>
         }
         else
         {

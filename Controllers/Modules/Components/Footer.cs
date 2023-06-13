@@ -18,7 +18,9 @@ namespace ViewComponents
             info = new vm.Footer()
             {
                 Email = email,
-                UserImage = user?.ImageUrl
+                UserImage = user?.ImageUrl,
+                PrimaryDISCColour=(user!=null && user.PrimaryDISCColour.HasValue())?user.PrimaryDISCColour:"transparent",
+                SecondaryDISCColour= (user != null && user.SecondaryDISCColour.HasValue()) ? user.SecondaryDISCColour : "transparent"
             };
 
             return View(info);
@@ -42,5 +44,7 @@ namespace ViewModel
     {
         public string Email { get; set; }
         public string UserImage { get; set; }
+        public string PrimaryDISCColour { get; set; }
+        public string SecondaryDISCColour { get; set; }
     }
 }

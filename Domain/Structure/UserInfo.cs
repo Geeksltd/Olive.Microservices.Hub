@@ -32,6 +32,12 @@
         /// <summary>Gets or sets a value indicating whether this User info instance is Enable2FA.</summary>
         public bool? Enable2FA { get; set; }
 
+        [System.ComponentModel.DisplayName("PrimaryDISCColour")]
+        public string PrimaryDISCColour { get; set; }
+
+        [System.ComponentModel.DisplayName("SecondaryDISCColour")]
+        public string SecondaryDISCColour { get; set; }
+
         /// <summary>Gets or sets the value of ImageUrl on this User info instance.</summary>
         [System.ComponentModel.DisplayName("ImageUrl")]
         public string ImageUrl { get; set; }
