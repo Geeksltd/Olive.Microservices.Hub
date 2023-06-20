@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Olive;
 using Olive.Mvc;
@@ -15,12 +16,17 @@ namespace ViewComponents
 
             var user = await Context.Current.Database().FirstOrDefault<PeopleService.UserInfo>(x => x.Email == email);
 
+            var sidebarProfileUrl= Config.Get<string>("SidebarProfileUrl", "https://hub.%DOMAIN%/person/%EMAIL%")
+                .Replace("%EMAIL%",email)
+                .Replace("%ID%",user?.ID.ToString().OrEmpty());
+
             info = new vm.Footer()
             {
                 Email = email,
                 UserImage = user?.ImageUrl,
-                PrimaryDISCColour=(user!=null && user.PrimaryDISCColour.HasValue())?user.PrimaryDISCColour:"transparent",
-                SecondaryDISCColour= (user != null && user.SecondaryDISCColour.HasValue()) ? user.SecondaryDISCColour : "transparent"
+                PrimaryDISCColour= user?.PrimaryDISCColour.Or("transparent"),
+                SecondaryDISCColour= user?.SecondaryDISCColour.Or("transparent"),
+                ProfileUrl = sidebarProfileUrl
             };
 
             return View(info);
@@ -43,6 +49,7 @@ namespace ViewModel
     public partial class Footer : IViewModel
     {
         public string Email { get; set; }
+        public string ProfileUrl { get; set; }
         public string UserImage { get; set; }
         public string PrimaryDISCColour { get; set; }
         public string SecondaryDISCColour { get; set; }

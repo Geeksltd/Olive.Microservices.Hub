@@ -8,7 +8,7 @@
     <div class="d-inline-block">
         @if (User.Identity.IsAuthenticated)
         {
-            <a href="/person/@Model.Email">
+            <a href="@Model.ProfileUrl">
                 <img src="@Model.UserImage" alt="@User?.Identity.Name" class="sidebar-top-module-profile" style="margin: 6%;">
             </a>
         }
@@ -20,7 +20,7 @@
         }
     </div>
     <div class="sidebar-top-module-profile-text">
-        Hi <a href="/person/@Model.Email">@(User?.Identity.Name ?? "Guest")</a><br />
+        Hi <a href="@Model.ProfileUrl">@(User?.Identity.Name ?? "Guest")</a><br />
         @if (User.Identity.IsAuthenticated)
         {
             <a name="SignOut" href="/logout" default-button="true">Sign out</a>
