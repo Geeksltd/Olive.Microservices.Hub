@@ -24,9 +24,9 @@ namespace ViewComponents
             {
                 Email = email,
                 UserImage = user?.ImageUrl,
-                PrimaryDISCColour= user?.PrimaryDISCColour.Or("transparent"),
-                SecondaryDISCColour= user?.SecondaryDISCColour.Or("transparent"),
-                ProfileUrl = sidebarProfileUrl
+                PrimaryDISCColour = user?.PrimaryDISCColour.Or("transparent"),
+                SecondaryDISCColour = user?.SecondaryDISCColour.Or("transparent"),
+                ProfileUrl = sidebarProfileUrl,
             };
 
             return View(info);

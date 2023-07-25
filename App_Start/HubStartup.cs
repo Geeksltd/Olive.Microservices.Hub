@@ -110,7 +110,8 @@
                 ID = Config.Get("Authentication:SimulateLogin:Id").To<Guid>(),
                 Roles = Config.Get("Authentication:SimulateLogin:Roles"),
                 AuthenticatorKey =  "salt",
-                Enable2FA = false
+                Enable2FA = false,
+                OrganisationId = null
             });
         }
     }

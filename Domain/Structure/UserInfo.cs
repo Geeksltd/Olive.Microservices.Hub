@@ -1,5 +1,6 @@
 ﻿namespace PeopleService
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -37,6 +38,10 @@
 
         [System.ComponentModel.DisplayName("SecondaryDISCColour")]
         public string SecondaryDISCColour { get; set; }
+
+        /// <summary>Gets or sets the value of OrganisationID on this User info instance.</summary>
+        [System.ComponentModel.DisplayName("OrganisationId")]
+        public Guid? OrganisationId { get; set; }
 
         /// <summary>Gets or sets the value of ImageUrl on this User info instance.</summary>
         [System.ComponentModel.DisplayName("ImageUrl")]
