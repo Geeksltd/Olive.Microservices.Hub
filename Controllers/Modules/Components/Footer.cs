@@ -1,9 +1,14 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Olive;
+using Olive.Microservices.Hub;
 using Olive.Mvc;
 using vm = ViewModel;
+using Microsoft.Extensions.Configuration;
 
 namespace ViewComponents
 {
@@ -15,10 +20,9 @@ namespace ViewComponents
             var email = Context.Current.User().GetEmail();
 
             var user = await Context.Current.Database().FirstOrDefault<PeopleService.UserInfo>(x => x.Email == email);
+            var userRoles = user.Roles.Split(',');
 
-            var sidebarProfileUrl= Config.Get<string>("SidebarProfileUrl", "https://hub.%DOMAIN%/person/%EMAIL%")
-                .Replace("%EMAIL%",email)
-                .Replace("%ID%",user?.ID.ToString().OrEmpty());
+            var sidebarProfileUrl = GetSidebarProfileUrl(user?.ID.ToString().OrEmpty(), email, userRoles);
 
             info = new vm.Footer()
             {
@@ -30,6 +34,32 @@ namespace ViewComponents
             };
 
             return View(info);
+        }
+
+        private string GetSidebarProfileUrl(string userId, string email, string[] userRoles)
+        {
+            var sidebarProfileUrl = "";
+
+            var roles = Config.GetSection("SidebarProfileUrl:Roles")
+                .GetChildren()
+                  .ToDictionary(x => x.Key, x => x.Value);
+
+            if (roles != null)
+                sidebarProfileUrl = TryGetSidebarProfileUrlByRole(roles, userRoles);
+
+            if (sidebarProfileUrl.IsEmpty())
+                sidebarProfileUrl = Config.Get<string>("SidebarProfileUrl:Default", "https://hub.%DOMAIN%/person/%EMAIL%");
+
+            return sidebarProfileUrl.Replace("%EMAIL%", email).Replace("%ID%", userId);
+        }
+
+        private string TryGetSidebarProfileUrlByRole(Dictionary<string, string> roles, string[] userRoles)
+        {
+            foreach (var keyValue in roles)
+                if (userRoles.Any(a => a.Equals(keyValue.Key, false)))
+                    return keyValue.Value;
+            
+            return null;
         }
     }
 }
