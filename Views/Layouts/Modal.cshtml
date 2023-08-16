@@ -1,4 +1,6 @@
-﻿@{Layout = Request.IsAjaxRequest() ? null : "~/Views/Layouts/Modal.Container.cshtml";}
+﻿@{
+    Layout = Request.IsAjaxRequest() ? null : "Modal.Container";
+}
 <main class="hub-service">
     <div class="container-fluid">
         <div class="page">

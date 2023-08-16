@@ -25,13 +25,11 @@ namespace Olive.Microservices.Hub
             return GetAbsoluteImplementationUrl("api/global-search") + "#" + Icon;
         }
 
-        public static string ToJson()
+        public static object GetAllForJsVariables()
         {
-            var items = All
+            return All
                 .Select(x => new { x.BaseUrl, x.Name })
                 .ToList();
-
-            return JsonConvert.SerializeObject(items);
         }
 
         protected override async Task OnValidating(EventArgs e)
