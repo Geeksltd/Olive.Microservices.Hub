@@ -1,4 +1,4 @@
-﻿using FS.Shared.Website.IsolatedRoute;
+﻿using FS.Shared.Website.IsolatedRoutes.Contracts;
 using Newtonsoft.Json;
 using Olive;
 using Olive.Mvc;

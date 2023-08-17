@@ -9,79 +9,65 @@ using Olive.Microservices.Hub;
 using Olive.Mvc;
 using vm = ViewModel;
 using Microsoft.Extensions.Configuration;
+using FS.Shared.Website.IsolatedRoutes.Contracts;
 
 namespace ViewComponents
 {
 #pragma warning disable
-    public partial class Footer : ViewComponent
-    {
-        public async Task<IViewComponentResult> InvokeAsync(vm.Footer info)
-        {
-            var email = Context.Current.User().GetEmail();
+	public partial class Footer : ViewComponent
+	{
+		private readonly IIsolatedRouteProvider _isolatedRouteProvider;
 
-            var user = await Context.Current.Database().FirstOrDefault<PeopleService.UserInfo>(x => x.Email == email);
-            var userRoles = user.Roles.Split(',');
+		public Footer(IIsolatedRouteProvider isolatedRouteProvider)
+		{
+			_isolatedRouteProvider = isolatedRouteProvider;
+		}
 
-            var sidebarProfileUrl = GetSidebarProfileUrl(user?.ID.ToString().OrEmpty(), email, userRoles);
+		public async Task<IViewComponentResult> InvokeAsync(vm.Footer info)
+		{
+			var email = Context.Current.User().GetEmail();
 
-            info = new vm.Footer()
-            {
-                Email = email,
-                UserImage = user?.ImageUrl,
-                PrimaryDISCColour = user?.PrimaryDISCColour.Or("transparent"),
-                SecondaryDISCColour = user?.SecondaryDISCColour.Or("transparent"),
-                ProfileUrl = sidebarProfileUrl,
-            };
+			var user = await Context.Current.Database().FirstOrDefault<PeopleService.UserInfo>(x => x.Email == email);
+			var userRoles = user.Roles.Split(',');
 
-            return View(info);
-        }
+			var sidebarProfileUrl = await _isolatedRouteProvider.GetSidebarProfileUrl(userRoles, new Dictionary<string, string>
+			{
+				{ "ID", user?.ID.ToString().OrEmpty() },
+				{ "EMAIL", email },
+			});
 
-        private string GetSidebarProfileUrl(string userId, string email, string[] userRoles)
-        {
-            var sidebarProfileUrl = "";
+			info = new vm.Footer()
+			{
+				Email = email,
+				UserImage = user?.ImageUrl,
+				PrimaryDISCColour = user?.PrimaryDISCColour.Or("transparent"),
+				SecondaryDISCColour = user?.SecondaryDISCColour.Or("transparent"),
+				ProfileUrl = sidebarProfileUrl,
+			};
 
-            var roles = Config.GetSection("SidebarProfileUrl:Roles")
-                .GetChildren()
-                  .ToDictionary(x => x.Key, x => x.Value);
-
-            if (roles != null)
-                sidebarProfileUrl = TryGetSidebarProfileUrlByRole(roles, userRoles);
-
-            if (sidebarProfileUrl.IsEmpty())
-                sidebarProfileUrl = Config.Get<string>("SidebarProfileUrl:Default", "https://hub.%DOMAIN%/person/%EMAIL%");
-
-            return sidebarProfileUrl.Replace("%EMAIL%", email).Replace("%ID%", userId);
-        }
-
-        private string TryGetSidebarProfileUrlByRole(Dictionary<string, string> roles, string[] userRoles)
-        {
-            foreach (var keyValue in roles)
-                if (userRoles.Any(a => a.Equals(keyValue.Key, false)))
-                    return keyValue.Value;
-            
-            return null;
-        }
-    }
+			return View(info);
+		}
+	}
 }
 
 namespace Controllers
 {
 #pragma warning disable
-    public partial class FooterController : BaseController
-    {
-    }
+	public partial class FooterController : BaseController
+	{
+	}
 }
 
 namespace ViewModel
 {
 #pragma warning disable
-    [BindingController(typeof(Controllers.FooterController))]
-    public partial class Footer : IViewModel
-    {
-        public string Email { get; set; }
-        public string ProfileUrl { get; set; }
-        public string UserImage { get; set; }
-        public string PrimaryDISCColour { get; set; }
-        public string SecondaryDISCColour { get; set; }
-    }
+	[BindingController(typeof(Controllers.FooterController))]
+	public partial class Footer : IViewModel
+	{
+		public string Email { get; set; }
+		public string ProfileUrl { get; set; }
+		public string UserImage { get; set; }
+		public string PrimaryDISCColour { get; set; }
+		public string SecondaryDISCColour { get; set; }
+	}
 }

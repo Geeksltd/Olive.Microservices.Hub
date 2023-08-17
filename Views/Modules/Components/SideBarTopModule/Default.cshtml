@@ -1,9 +1,8 @@
-﻿;
-@model ViewModel.SideBarTopModule
-@inject FS.Shared.Website.Theme.IThemeProvider themeProvider
+﻿@model ViewModel.SideBarTopModule
+@inject FS.Shared.Website.IsolatedRoutes.Contracts.IIsolatedRouteProvider isolatedRouteProvider
 @(Layout = null)
 @{
-	var themeRoot = await themeProvider.GetRootPath(true);
+	var themeRoot = await isolatedRouteProvider.GetThemeRootPath(true);
 }
 
 <!-- «Start| SideBarTopModule» -->

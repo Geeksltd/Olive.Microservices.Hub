@@ -2,15 +2,15 @@
 	var timeout = Config.Get("Authentication:Timeout", defaultValue: 20).Minutes().TotalSeconds + 10;
 }
 
-@inject FS.Shared.Website.Theme.IThemeProvider themeProvider
+@inject FS.Shared.Website.IsolatedRoutes.Contracts.IIsolatedRouteProvider isolatedRouteProvider
 @inject Olive.Microservices.Hub.Domain.Utilities.JsVariable.IJsVariableProvider jsVariableProvider
 
 @{
 	var leftMenu = ViewData["LeftMenu"].ToStringOrEmpty();
 	var hasFullViewContent = ((await Request.Get<Olive.Microservices.Hub.Feature>("feature"))?.HasSecondLevelMenu()).GetValueOrDefault() == false;
-	var root = await themeProvider.GetRootPath(false);
-	var themeRoot = await themeProvider.GetRootPath(true);
-	var primaryColor = await themeProvider.GetPrimaryColor();
+	var root = await isolatedRouteProvider.GetThemeRootPath(false);
+	var themeRoot = await isolatedRouteProvider.GetThemeRootPath(true);
+	var primaryColor = await isolatedRouteProvider.GetThemePrimaryColor();
 }
 
 <!DOCTYPE html>
