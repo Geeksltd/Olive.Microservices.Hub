@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.Extensions.Logging;
 using Olive;
 using Olive.Microservices.Hub;
 using Olive.Mvc;
@@ -60,7 +61,7 @@ namespace Controllers
                 // it's mandatory, otherwise Challenge() immediately returns to Login page
                 throw new InvalidOperationException("Request has no ReturnUrl.");
             }
-
+            Log.LogError(" I am here and ready to setup.");
             await Context.Current.Http().ChallengeAsync(provider, new AuthenticationProperties
             {
                 RedirectUri = $"/ExternalLoginCallback?ReturnUrl={Context.Current.Request().Param("ReturnUrl")}",
