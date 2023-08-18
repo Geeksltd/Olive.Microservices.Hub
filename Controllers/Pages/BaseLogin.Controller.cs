@@ -53,7 +53,7 @@ namespace Controllers
         {
             // await OAuth.Instance.LoginBy("Google" + "OpenIdConnect".OnlyWhen(Environment.IsUAT()));
 
-            var provider = "Google" + "OpenIdConnect".OnlyWhen(Environment.IsUAT());
+            var provider = "Google";//+ "OpenIdConnect".OnlyWhen(Environment.IsUAT());
 
             if (Context.Current.Request().Param("ReturnUrl").IsEmpty())
             {
@@ -66,6 +66,7 @@ namespace Controllers
                 RedirectUri = $"/ExternalLoginCallback?ReturnUrl={Context.Current.Request().Param("ReturnUrl")}",
                 //RedirectUri = $"/ExternalLoginCallback?ReturnUrl={Context.Current.Request().Param("ReturnUrl")}",
                 Items = { new KeyValuePair<string, string>("LoginProvider", provider) }
+                
 
             });
 
