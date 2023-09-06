@@ -1,8 +1,8 @@
 ﻿@model ViewModel.SideBarTopModule
-@inject FS.Shared.Website.IsolatedRoutes.Contracts.IIsolatedRouteProvider isolatedRouteProvider
+@inject Olive.Microservices.Hub.Domain.Theme.Contracts.IThemeProvider ThemeProvider
 @(Layout = null)
 @{
-	var themeRoot = await isolatedRouteProvider.GetThemeRootPath(true);
+	var themeRoot = await ThemeProvider.GetRootPath(true);
 }
 
 <!-- «Start| SideBarTopModule» -->

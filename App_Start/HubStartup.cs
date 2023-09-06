@@ -1,4 +1,6 @@
-﻿namespace Olive.Microservices.Hub
+﻿using Olive.Microservices.Hub.Domain.Theme;
+
+namespace Olive.Microservices.Hub
 {
 	using System;
 	using System.Linq;
@@ -31,6 +33,8 @@
 
 		public override void ConfigureServices(IServiceCollection services)
 		{
+			services.AddThemes();
+
 			services.AddResponseCompression();
 
 			if (Subdomains.Any())
@@ -52,6 +56,12 @@
 			base.ConfigureServices(services);
 
 			services.AddScoped<IJsVariableProvider, JsVariableProvider>();
+
+			services.Configure<RazorViewEngineOptions>(options =>
+			{
+				options.ViewLocationExpanders.Clear();
+				options.ViewLocationExpanders.Add(new ThemeViewLocationExpander());
+			});
 		}
 
 		public override void Configure(IApplicationBuilder app)

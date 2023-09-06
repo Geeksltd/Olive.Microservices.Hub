@@ -1,27 +1,22 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Olive.Microservices.Hub.Domain.Theme.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Olive;
-using Olive.Microservices.Hub;
 using Olive.Mvc;
 using vm = ViewModel;
-using Microsoft.Extensions.Configuration;
-using FS.Shared.Website.IsolatedRoutes.Contracts;
 
 namespace ViewComponents
 {
 #pragma warning disable
 	public partial class Footer : ViewComponent
 	{
-		private readonly IIsolatedRouteProvider _isolatedRouteProvider;
+        private readonly IThemeProvider _themeProvider;
 
-		public Footer(IIsolatedRouteProvider isolatedRouteProvider)
-		{
-			_isolatedRouteProvider = isolatedRouteProvider;
-		}
+        public Footer(IThemeProvider themeProvider)
+        {
+            _themeProvider = themeProvider;
+        }
 
 		public async Task<IViewComponentResult> InvokeAsync(vm.Footer info)
 		{
@@ -30,7 +25,7 @@ namespace ViewComponents
 			var user = await Context.Current.Database().FirstOrDefault<PeopleService.UserInfo>(x => x.Email == email);
 			var userRoles = user.Roles.Split(',');
 
-			var sidebarProfileUrl = await _isolatedRouteProvider.GetSidebarProfileUrl(userRoles, new Dictionary<string, string>
+			var sidebarProfileUrl = await _themeProvider.GetSidebarProfileUrl(userRoles, new Dictionary<string, string>
 			{
 				{ "ID", user?.ID.ToString().OrEmpty() },
 				{ "EMAIL", email },

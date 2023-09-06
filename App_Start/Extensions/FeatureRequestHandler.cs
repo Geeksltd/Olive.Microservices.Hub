@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using FS.Shared.Website.IsolatedRoutes.Contracts;
+using Olive.Microservices.Hub.Domain.Theme.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,8 +33,8 @@ namespace ViewModel
 
 			if (Path.IsEmpty())
 			{
-				var isolatedRouteProvider = Context.Current.ServiceProvider.GetService<IIsolatedRouteProvider>();
-				RequestPath = Path = (isolatedRouteProvider == null ? "dashboard/home.aspx" : await isolatedRouteProvider.GetHomePageUrl());
+				var themeProvider = Context.Current.ServiceProvider.GetService<IThemeProvider>();
+				RequestPath = Path = (themeProvider == null ? "dashboard/home.aspx" : await themeProvider.GetHomePageUrl());
 				HostAndPath = request.RootUrl() + Path.TrimStart("/");
 			}
 		}

@@ -1,29 +1,16 @@
-﻿using FS.Shared.Website.IsolatedRoutes.Contracts;
-using Newtonsoft.Json;
-using Olive;
-using Olive.Mvc;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Olive.Microservices.Hub.Domain.Utilities.JsVariable
 {
 	public class JsVariableProvider : IJsVariableProvider
 	{
-		private readonly IIsolatedRouteProvider _isolatedRouteProvider;
-
-		public JsVariableProvider(IIsolatedRouteProvider isolatedRouteProvider)
+		public string Render()
 		{
-			_isolatedRouteProvider = isolatedRouteProvider;
-		}
-
-		public async Task<string> Render()
-		{
-			var isolatedRoute = await _isolatedRouteProvider.GetCurrent();
-
 			var boardsAssemblyName =
 				AppDomain.CurrentDomain
 					.GetBaseDirectory()
@@ -43,7 +30,6 @@ namespace Olive.Microservices.Hub.Domain.Utilities.JsVariable
 			{
 				{ "services", Service.GetAllForJsVariables() },
 				{ "boards", boards },
-				{ "isolatedRoute", new{ isolatedRoute?.Path } }
 			};
 
 			var builder = new StringBuilder();

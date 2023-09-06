@@ -2,14 +2,14 @@
 	var timeout = Config.Get("Authentication:Timeout", defaultValue: 20).Minutes().TotalSeconds + 10;
 }
 
-@inject FS.Shared.Website.IsolatedRoutes.Contracts.IIsolatedRouteProvider isolatedRouteProvider
-@inject Olive.Microservices.Hub.Domain.Utilities.JsVariable.IJsVariableProvider jsVariableProvider
+@inject Olive.Microservices.Hub.Domain.Theme.Contracts.IThemeProvider ThemeProvider
+@inject Olive.Microservices.Hub.Domain.Utilities.JsVariable.IJsVariableProvider JsVariableProvider
 @{
 	var leftMenu = ViewData["LeftMenu"].ToStringOrEmpty();
 	var hasFullViewContent = ((await Request.Get<Olive.Microservices.Hub.Feature>("feature"))?.HasSecondLevelMenu()).GetValueOrDefault() == false;
-	var root = await isolatedRouteProvider.GetThemeRootPath(false);
-	var themeRoot = await isolatedRouteProvider.GetThemeRootPath(true);
-	var primaryColor = await isolatedRouteProvider.GetThemePrimaryColor();
+	var root = await ThemeProvider.GetRootPath(false);
+	var themeRoot = await ThemeProvider.GetRootPath(true);
+	var primaryColor = await ThemeProvider.GetPrimaryColor();
 }
 
 <!DOCTYPE html>
@@ -20,7 +20,7 @@
 	<meta http-equiv="refresh" content="@timeout">
 	<title>@ViewData["Title"]</title>
 	<link rel='stylesheet' href="@themeRoot/styles@(".min".OnlyWhen(Environment.IsProduction())).css?v=%APP_VERSION%" type='text/css' />
-	<link rel='stylesheet' href="@themeRoot/extra-styles.css" type='text/css' />
+	@((await ThemeProvider.ExtraStylesTag()).Raw())
 	<link rel="icon" media="all" type="image/x-icon" href="@themeRoot/img/favicon.png" />
 	<link rel="shortcut icon" href="@themeRoot/img/favicon.ico">
 
@@ -55,7 +55,7 @@
 	<meta name="theme-color" content="@primaryColor">
 
 	<script type="text/javascript">
-		@((await jsVariableProvider.Render()).Raw())
+		@JsVariableProvider.Render().Raw()
 	</script>
 
 	<script src="@root/lib/olive.microservices.hubjs/dist/bundle-built.js"></script>
@@ -96,7 +96,7 @@
 				@if (User.Identity.IsAuthenticated)
 				{
 					<div class="w-100 d-flex d-lg-none mobile-top-menu">
-						<a class="home" href="@isolatedRouteProvider.Url("/under")" data-redirect="ajax"><i class="fas fa-home"></i></a>
+						<a class="home" href="/under" data-redirect="ajax"><i class="fas fa-home"></i></a>
 						@(await Component.InvokeAsync<GlobalSearch>())
 					</div>
 					@(await Component.InvokeAsync<BreadcrumbWrapper>())
