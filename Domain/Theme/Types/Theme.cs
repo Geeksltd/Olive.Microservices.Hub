@@ -12,6 +12,8 @@
 		};
 
 		public string? LoginUrl { get; set; } = "/login";
+		public string? LoginTitle { get; set; }
+		public string? Copyright { get; set; }
 
 
 		public override string ToString()
