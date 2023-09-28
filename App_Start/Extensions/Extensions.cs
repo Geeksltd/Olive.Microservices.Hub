@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Olive;
 using Olive.Microservices.Hub;
+using Olive.Security;
 
 namespace System
 {
@@ -18,14 +19,46 @@ namespace System
         {
             var mobile = Context.Current.Request().IsSmartPhone();
 
-            return new Olive.Security.GenericLoginInfo
+            var loggingInfo = new GenericLoginInfo
             {
                 DisplayName = @this.DisplayName,
                 Email = @this.Email,
                 ID = @this.ID.ToString(),
                 Roles = @this.Roles.Split(',').Trim().ToArray(),
                 Timeout = mobile ? MobileTimeout.Minutes() : Timeout.Minutes()
-            }.LogOn(remember: mobile);
+            };
+
+            TryAddJwtToken(loggingInfo, mobile);
+
+            return loggingInfo.LogOn(remember: mobile);
+        }
+
+        private static void TryAddJwtToken(GenericLoginInfo loggingInfo, bool mobile)
+        {
+            try
+            {
+                var jwt = loggingInfo.CreateJwtToken(remember: mobile);
+                if (jwt.IsEmpty()) return;
+
+                var cookieName = Config.Get("Authentication:JWT:Cookie:Name");
+                if (cookieName.IsEmpty()) return;
+
+                var cookieDomain = Config.Get("Authentication:JWT:Cookie:Domain").Or(Config.Get("Authentication:Cookie:Domain"));
+                if (cookieDomain.IsEmpty()) return;
+
+                Context.Current.Http().Response.Cookies.Append(cookieName, jwt, new CookieOptions
+                {
+                    Domain = cookieDomain,
+                    MaxAge = loggingInfo.Timeout,
+                    Secure = Context.Current.Request().IsHttps,
+                    HttpOnly = false,
+                    SameSite = SameSiteMode.Lax
+                });
+            }
+            catch (Exception e)
+            {
+                // ignore
+            }
         }
 
         public static Feature[] SubItems(this Feature @this)
