@@ -10,10 +10,11 @@
 
     partial class AuthroziedFeatureInfo
     {
-        public static XElement RenderMenu(Feature currentFeature)
+        public static XElement RenderMenu(Feature currentFeature, bool renderEveryThingItem)
         {
             var items = FeatureSecurityFilter.GetAuthorizedFeatures(Context.Current.User());
-            items = AddEverythingItem(items);
+            if (renderEveryThingItem)
+                items = AddEverythingItem(items);
             return RenderMenu(currentFeature, items);
         }
 
@@ -177,7 +178,7 @@
 
                 if (children.Any())
                 {
-                    children = children.OrderBy(child=>child.Feature.Order).ThenBy(child => child.Feature.Title).ToArray();
+                    children = children.OrderBy(child => child.Feature.Order).ThenBy(child => child.Feature.Title).ToArray();
                     li.Add(RenderMenu(currentFeature, children));
                 }
             }

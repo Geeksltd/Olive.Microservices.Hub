@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Olive.Microservices.Hub;
+using Olive.Microservices.Hub.Domain.Theme.Contracts;
 using Olive.Mvc;
 using vm = ViewModel;
 
@@ -22,10 +23,18 @@ namespace Controllers
 #pragma warning disable
     public partial class FeaturesSideMenuController : BaseController
     {
+        private readonly IThemeProvider _themeProvider;
+
+        public FeaturesSideMenuController(IThemeProvider themeProvider)
+        {
+            _themeProvider = themeProvider;
+        }
+
         [NonAction, OnBound]
         public async Task OnBound(vm.FeaturesSideMenu info)
         {
-            info.Markup = (AuthroziedFeatureInfo.RenderMenu(FeatureContext.ViewingFeature)).ToString();
+            var theme = await _themeProvider.GetCurrentTheme();
+            info.Markup = (AuthroziedFeatureInfo.RenderMenu(FeatureContext.ViewingFeature, !theme.HideEveryThingMenuItem)).ToString();
         }
     }
 }
