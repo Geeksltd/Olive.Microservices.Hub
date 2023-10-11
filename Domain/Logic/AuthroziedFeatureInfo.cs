@@ -122,7 +122,7 @@
             return subLink;
         }
 
-        static XElement RenderMenu(Feature currentFeature, IEnumerable<AuthroziedFeatureInfo> items)
+        static XElement RenderMenu(Feature currentFeature, AuthroziedFeatureInfo[] items)
         {
             if (items.None()) return null;
 
@@ -206,7 +206,7 @@
             return result;
         }
 
-        public async static Task<string> RenderJsonMenu()
+        public static async Task<string> RenderJsonMenu()
         {
             var items = FeatureSecurityFilter.GetAuthorizedFeatures(Context.Current.User());
 
@@ -218,9 +218,9 @@
             return JsonConvert.SerializeObject(await GetAllMenuItems(items), Formatting.None, jsonSerializerSettings);
         }
 
-        public async static Task<HashSet<JsonMenu>> GetAllMenuItems(IEnumerable<AuthroziedFeatureInfo> items)
+        public static async Task<HashSet<JsonMenu>> GetAllMenuItems(AuthroziedFeatureInfo[] items)
         {
-            var menuITems = new HashSet<JsonMenu>();
+            var menuItems = new HashSet<JsonMenu>();
 
             if (items.HasAny()) items = items.OrderBy(x => x.Feature.Title).ToArray();
 
@@ -245,10 +245,10 @@
                     sumMenu.Children = await GetAllMenuItems(children);
                 }
 
-                menuITems.Add(sumMenu);
+                menuItems.Add(sumMenu);
             }
 
-            return menuITems;
+            return menuItems;
         }
 
         public class JsonMenu

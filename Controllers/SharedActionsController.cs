@@ -74,11 +74,15 @@
         public async Task<ActionResult> LocalSetup()
         {
             if (Context.Current.Environment().EnvironmentName != "Development") return Content("error-404");
+            
             var data = JsonConvert.DeserializeObject<LocalIncommingData>(await Request.Body.ReadAllText());
+            if (data == null) return Content("Data is null");
+
             StructureDeserializer.AddService(data.Service);
             data.Features.Do(x => x.For(data.Service));
             StructureDeserializer.AddFeatures(data.Features);
             StructureDeserializer.AddSources(data.BoardSources, data.Service, data.GlobalySearchable);
+
             return Content("OK");
         }
     }

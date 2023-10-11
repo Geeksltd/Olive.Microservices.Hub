@@ -14,7 +14,7 @@ namespace Olive.Microservices.Hub
 
         internal static void SetRepository(IFeatureRepository featureRepository) => Repository = featureRepository;
 
-        internal async static Task RefreshServiceFeatures()
+        internal static async Task RefreshServiceFeatures()
         {
             if (Service.All?.Any() == true)
             {
@@ -37,7 +37,7 @@ namespace Olive.Microservices.Hub
             await RefreshFeatures();
         }
 
-        internal async static Task RefreshFeatures()
+        internal static async Task RefreshFeatures()
         {
             var features = new List<FeatureDefinition>();
 
@@ -46,6 +46,7 @@ namespace Olive.Microservices.Hub
                 try
                 {
                     var batch = JsonConvert.DeserializeObject<FeatureDefinition[]>(await Repository.Read(service.FeaturesJsonPath()));
+                    if (batch == null) continue;
                     batch.Do(x => x.For(service));
                     features.AddRange(batch);
                 }

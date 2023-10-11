@@ -58,7 +58,7 @@ namespace Olive.Microservices.Hub
             var serviceXml = await Features.Repository.Read("/Services.xml");
             var environment = Context.Current.Environment().EnvironmentName.ToLower();
 
-            Service.All = (from x in serviceXml.To<XDocument>().Root.Elements()
+            Service.All = (from x in serviceXml.To<XDocument>().Root?.Elements()
                            let envDomain = x.Parent.GetValue<string>("@" + environment)
                            let url = x.GetValue<string>("@" + environment) ?? x.GetValue<string>("@url")
                            select new Service

@@ -140,7 +140,7 @@ namespace Olive.Microservices.Hub
         }
 
         public string GetTitle(Feature relativeTo)
-            => ToString().Substring(relativeTo.ToStringOrEmpty().Length).TrimStart(" > ");
+            => ToString()?.Substring(relativeTo.ToStringOrEmpty().Length).TrimStart(" > ");
 
         public string GetIcon()
         {
@@ -205,8 +205,8 @@ namespace Olive.Microservices.Hub
         internal int GetOrder()
         {
             if (ImplementationUrl.HasValue()) return Order;
-            var childrenOrder = Children?.Select(x => x.GetOrder());
-            if (childrenOrder.HasAny()) return childrenOrder.Min();
+            var childrenOrder = Children?.Select(x => x.GetOrder()).ToArray();
+            if (childrenOrder.HasAny()) return childrenOrder?.Min() ?? 0;
             return 100;
         }
 

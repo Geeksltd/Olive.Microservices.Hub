@@ -19,10 +19,10 @@ namespace Olive.Microservices.Hub
             lock (Palette)
             {
                 if (UsageTracker.Count <= 0)
-                    for (var i = 0; i < Palette.Length; i++)
-                        UsageTracker.Push(Palette[i]);
+                    foreach (var c in Palette)
+                        UsageTracker.Push(c);
 
-                return UsageTracker.Pop().ToString();
+                return UsageTracker.Pop()?.ToString()?? Palette[0];
             }
         }
     }

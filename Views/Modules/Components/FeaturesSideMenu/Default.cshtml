@@ -4,7 +4,7 @@
 <!-- «Start| FeaturesSideMenu» -->
 <div data-module="FeaturesSideMenu" class="features-side-menu">
     @Html.StartupActionsJson()
-    @if (User.Identity.IsAuthenticated)
+    @if (User.Identity?.IsAuthenticated == true)
     {
         @info.Markup.Raw()
     }

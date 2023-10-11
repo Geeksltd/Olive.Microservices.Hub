@@ -76,7 +76,7 @@
 <body>
 	<div class="container-fluid p-0">
 		<div class="page row m-0">
-			@if (leftMenu.HasValue() && User.Identity.IsAuthenticated)
+			@if (leftMenu.HasValue() && User.Identity?.IsAuthenticated == true)
 			{
 				<div class="side-bar d-none d-lg-flex p-0 @(Request.Cookies[".side-bar"].OrEmpty() == "collapsed" ? "collapsed" : string.Empty )">
 					@(await Component.InvokeAsync<ViewComponents.SideBarTopModule>())
@@ -93,7 +93,7 @@
 			<div class="content">
 				@(await Component.InvokeAsync<FeaturesTopMenuWrapper>())
 
-				@if (User.Identity.IsAuthenticated)
+				@if (User.Identity?.IsAuthenticated == true)
 				{
 					<div class="w-100 d-flex d-lg-none mobile-top-menu">
 						<a class="home" href="/under" data-redirect="ajax"><i class="fas fa-home"></i></a>

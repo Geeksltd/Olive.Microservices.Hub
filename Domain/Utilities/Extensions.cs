@@ -17,7 +17,7 @@
         {
             if (feature.NotPermissions.Any(@this.IsInRole)) return false;
 
-            if (feature.Permissions.Contains("Anonymouse") && !@this.Identity.IsAuthenticated)
+            if (feature.Permissions.Contains("Anonymouse") && @this.Identity?.IsAuthenticated != true)
                 return true;
 
             if (feature.Permissions.None())

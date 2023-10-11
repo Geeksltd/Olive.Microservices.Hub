@@ -39,17 +39,17 @@ namespace Controllers
             }
 
             // Set the items
-            info.Items = info.Parent.Children;
+            info.Items = info.Parent.Children.ToArray();
 
             if (info.Parent.ImplementationUrl.HasValue())
             {
                 // Include the parent if it has implementation
-                info.Items = new[] { info.Parent }.Union(info.Items);
+                info.Items = new[] { info.Parent }.Union(info.Items).ToArray();
             }
 
             if (info.Items.HasAny())
             {
-                info.Items = info.Items.OrderBy(x => x.Title).ToList();
+                info.Items = info.Items.OrderBy(x => x.Title).ToArray();
             }
         }
 
@@ -86,7 +86,7 @@ namespace ViewModel
         public Feature ViewingFeature { get; set; }
 
         [ReadOnly(true)]
-        public IEnumerable<Feature> Items { get; set; }
+        public Feature[] Items { get; set; }
 
         public string ActiveItem { get; set; }
     }
