@@ -1,13 +1,23 @@
 ﻿@model ViewModel.SideBarIconsModule
 @(Layout = null)
 
+@inject Olive.Microservices.Hub.Domain.Theme.Contracts.IThemeProvider ThemeProvider
+@(Layout = null)
+@{
+    var themeRoot = await ThemeProvider.GetRootPath(true);
+}
+
 <!-- «Start| SideBarIconsModule» -->
 <div data-module="SideBarIconsModule" class="side-bar-icons-module">
     @Html.StartupActionsJson()
-    <div></div>
+    <div>
+        <a href="https://hub.app.geeks.ltd/dashboard/user/recognise.aspx" class="side-bar-recognise no-print" title="Recognise">
+            <img src="@themeRoot/img/side_bar_icons/recognise.png" alt="Recognise" />
+        </a>
+    </div>
     <div>
         <a href="https://auditlog.app.geeks.ltd/improvement" target="$modal" class="side-bar-improvement no-print" title="Request a system improvement">
-            <i class="fas fa-comment-medical" title="Request a system improvement"></i>             
+            <img src="@themeRoot/img/side_bar_icons/improvement.png" alt="Request a system improvement" />
         </a>
     </div>
     <div></div>
