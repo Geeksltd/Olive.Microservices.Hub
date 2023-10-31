@@ -126,14 +126,14 @@
         {
             if (items.None()) return null;
 
-            var rootMEnuId = Guid.NewGuid();
+            var rootMenuId = Guid.NewGuid();
 
-            if (currentFeature != null)
-            {
-                rootMEnuId = currentFeature.ID;
-            }
+            //if (currentFeature != null)
+            //{
+            //    rootMEnuId = currentFeature.ID;
+            //}
 
-            var ul = new XElement("ul", new XAttribute("class", "nav navbar-nav dropped-submenu"), new XAttribute("id", rootMEnuId));
+            var ul = new XElement("ul", new XAttribute("class", "nav navbar-nav dropped-submenu"), new XAttribute("id", rootMenuId));
             // items= items.OrderBy(x=>x.Feature.Title).ToList();
             foreach (var item in items)
             {
