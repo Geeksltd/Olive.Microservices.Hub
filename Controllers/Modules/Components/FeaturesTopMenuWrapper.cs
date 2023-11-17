@@ -25,7 +25,7 @@ namespace Controllers
         [NonAction, OnBound]
         public async Task OnBound(vm.FeaturesTopMenuWrapper info)
         {
-            info.Markup = (await AuthroziedFeatureInfo.RenderMenuJson()).ToString();
+            info.Markup = "";//(await AuthroziedFeatureInfo.RenderMenuJson()).ToString();
 
             info.IsVisible = User.Identity.IsAuthenticated;
         }
