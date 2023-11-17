@@ -20,17 +20,16 @@
 
         static AuthroziedFeatureInfo[] AddEverythingItem(AuthroziedFeatureInfo[] items)
         {
-           
             var everything = new AuthroziedFeatureInfo
             {
                 Feature = new Feature
                 {
                     Title = "Everything",
-                    LoadUrl = "/[hub]/everything", 
+                    LoadUrl = "/[hub]/everything",
                     Icon = "fas fa-th"
                 }
             };
-              
+
             return items.Prepend(everything).ToArray();
         }
 
@@ -134,7 +133,7 @@
             //    rootMEnuId = currentFeature.ID;
             //}
 
-            var ul = new XElement("ul", new XAttribute("class", "nav navbar-nav dropped-submenu"), new XAttribute("id", rootMenuId));
+            var ul = new XElement("ul", new XAttribute("class", "dropped-submenu"), new XAttribute("id", rootMenuId));
             // items= items.OrderBy(x=>x.Feature.Title).ToList();
             foreach (var item in items)
             {
@@ -195,16 +194,21 @@
 
             var result = Feature.LoadUrl;
 
-            if (Feature.Pass.HasAny() && query.Any())
-            {
-                var queryStringItems = (from key in Feature.Pass.Split(",")
-                                        where query.ContainsKey(key)
-                                        select key + "=" + query[key]).ToString("&");
+            var queryStringItems = new List<string>();
 
-                return $"{result.TrimEnd("/")}{queryStringItems.WithPrefix("?")}";
+            if (Feature.NoNav)
+            {
+                queryStringItems.Add("$no-nav");
             }
 
-            return result;
+            if (Feature.Pass.HasAny() && query.Any())
+            {
+                queryStringItems.AddRange(from key in Feature.Pass.Split(",", StringSplitOptions.RemoveEmptyEntries).Distinct()
+                                          where query.ContainsKey(key)
+                                          select key + "=" + query[key]);
+            }
+
+            return $"{result.TrimEnd("/")}{queryStringItems.ToString("&").WithPrefix("?")}";
         }
 
         public static async Task<string> RenderJsonMenu()
