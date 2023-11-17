@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Olive;
@@ -90,16 +91,18 @@ namespace System
             return "";
         }
 
-        static string RenderHeaderButton(HeaderButton button)
+        static string RenderHeaderButton(HeaderButton button, string cssClass = "")
         {
+            if (button.Divider) return "<div class=\"dropdown-divider\"></div>";
+
             var attr = HeaderButtonTargetAttr(button);
 
             var url = button.Url.ToLower().StartsWith("http") ? button.Url : Microservice.Of("Hub").Url(button.Url);
             var style = button.Colour.IsEmpty() ? "" : $"style='color:{button.Colour}' title='{button.Title}'";
             return @$"
-        <a class="""" href=""{url}"" {attr} {style}>
-            <i class=""{button.Icon}""></i>
-        </a> ";
+                    <a class=""{cssClass}"" href=""{url}"" {attr} {style}>
+                        <i class=""{button.Icon}""></i> {button.Text}
+                    </a> ";
         }
 
         public static string RenderHeaderButtons(this IHtmlHelper htmlHelper)
@@ -113,6 +116,18 @@ namespace System
                 result += RenderHeaderButton(button);
 
             return $"<div class=\"sidebar-top-module-profile-buttons\">{result}</div>";
+        }
+        public static List<string> GetHeaderButtons(this IHtmlHelper htmlHelper, string cssClass)
+        {
+            var result = new List<string>();
+            var buttons = Config.Bind<List<HeaderButton>>("HeaderButtons:Buttons");
+            if (buttons == null || buttons.None()) return result;
+            var user = Context.Current.User();
+
+            foreach (var button in buttons.Where(x => x.Roles.IsEmpty() || x.Roles.Split(",").ContainsAny(user.GetRoles().ToArray())))
+                result.Add(RenderHeaderButton(button, cssClass));
+
+            return result;
         }
     }
 }
