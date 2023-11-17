@@ -56,6 +56,9 @@
         /// <summary>Gets or sets the value of Order on this Feature instance.</summary>
         public int Order { get; set; }
 
+        /// <summary>Gets or sets the value of NoNav on this Feature instance.</summary>
+        public bool NoNav { get; set; }
+
         /// <summary>Gets or sets the value of Pass on this Feature instance.</summary>
         [System.ComponentModel.DataAnnotations.StringLength(200)]
         public string Pass { get; set; }

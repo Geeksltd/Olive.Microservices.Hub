@@ -28,6 +28,7 @@ namespace Olive.Microservices.Hub
                 ShowOnRight = ShowOnRight,
                 Parent = parent,
                 Order = Order ?? int.MaxValue,
+                NoNav = NoNav,
                 Permissions = Permissions.OrEmpty().Split(",").Trim().Where(x => !x.StartsWith("!")).ToArray(),
                 NotPermissions = Permissions.OrEmpty().Split(",").Trim().Where(x => x.StartsWith("!")).Select(x => x.TrimStart("!")).ToArray(),
                 Service = Service.FindByName(ServiceName),
