@@ -25,7 +25,7 @@
                 Feature = new Feature
                 {
                     Title = "Everything",
-                    LoadUrl = "/[hub]/everything",
+                    LoadUrl = "/[hub]/everything", 
                     Icon = "fas fa-th"
                 }
             };
