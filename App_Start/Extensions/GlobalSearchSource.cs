@@ -8,7 +8,7 @@ namespace Olive.Microservices.Hub
     {
         public override async Task Process(ClaimsPrincipal user)
         {
-            Add("Logout", "/logout");
+            // Add("Logout", "/logout");
 
             foreach (var feature in Feature.All)
             {
