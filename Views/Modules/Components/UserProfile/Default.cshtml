@@ -1,0 +1,35 @@
+﻿@model ViewModel.UserProfile
+@(Layout = null)
+
+<!-- «Start| UserProfile» -->
+<form data-module="UserProfile" method="post" action="@Url.Current()" class="logout-box">
+    @Html.AntiForgeryToken()
+    @Html.StartupActionsJson()
+    <div class="d-inline-block">
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a href="@Model.ProfileUrl">
+                <img src="@Model.UserImage" alt="@User.Identity?.Name" class="sidebar-top-module-profile" style="margin: 6%;">
+            </a>
+        }
+        else
+        {
+            <a href="#">
+                <img src="~/img/icons/user.svg" class="sidebar-top-module-profile">
+            </a>
+        }
+    </div>
+    <div class="sidebar-top-module-profile-text">
+        Hi <a href="@Model.ProfileUrl">@(User.Identity?.Name ?? "Guest")</a><br />
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a name="SignOut" href="/logout" default-button="true">Sign out</a>
+            @Html.RenderHeaderButtons().Raw()
+        }
+        else
+        {
+            <a name="SignIn" href="/login" default-button="true"> Sign in</a>
+        }
+    </div>
+</form>
+<!-- «End| UserProfile» -->
