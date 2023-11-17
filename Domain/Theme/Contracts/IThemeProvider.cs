@@ -12,4 +12,5 @@ public interface IThemeProvider
     Task<string> GetSidebarProfileUrl(string[] userRoles, Dictionary<string, string> parameters);
     Task<string?> GetLoginUrl();
     Task<string> ExtraStylesTag();
+    string AppResourceVersion { get; }
 }

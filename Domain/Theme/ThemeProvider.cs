@@ -6,139 +6,143 @@ using Microsoft.Extensions.Hosting;
 
 namespace Olive.Microservices.Hub.Domain.Theme
 {
-	using Olive.Microservices.Hub.Domain.Theme.Contracts;
-	using Olive.Microservices.Hub.Domain.Theme.Types;
-	using Microsoft.Extensions.Configuration;
-	using Olive;
-	using System;
-	using System.Collections.Generic;
+    using Olive.Microservices.Hub.Domain.Theme.Contracts;
+    using Olive.Microservices.Hub.Domain.Theme.Types;
+    using Microsoft.Extensions.Configuration;
+    using Olive;
+    using System;
+    using System.Collections.Generic;
 
-	internal class ThemeProvider : IThemeProvider
-	{
-		private readonly IThemeValidations _themeValidations;
-		private readonly IWebHostEnvironment _environment;
-		private Theme _currentTheme = new();
-		private bool _initialized;
+    internal class ThemeProvider : IThemeProvider
+    {
+        private readonly IThemeValidations _themeValidations;
+        private readonly IWebHostEnvironment _environment;
+        private Theme _currentTheme = new();
+        private bool _initialized;
 
-		public ThemeProvider(IThemeValidations themeValidations, IWebHostEnvironment environment)
-		{
-			_themeValidations = themeValidations;
-			_environment = environment;
-		}
+        public ThemeProvider(IThemeValidations themeValidations, IWebHostEnvironment environment)
+        {
+            _themeValidations = themeValidations;
+            _environment = environment;
+        }
 
-		public static T? GetConfig<T>(string sectionName)
-		{
-			var section = Config.GetSection(sectionName);
-			var data = section.Get<T>();
-			return data;
+        public static T? GetConfig<T>(string sectionName)
+        {
+            var section = Config.GetSection(sectionName);
+            var data = section.Get<T>();
+            return data;
 
-		}
+        }
 
-		public async Task<Theme> GetCurrentTheme()
-		{
-			if (_initialized) return _currentTheme;
+        public async Task<Theme> GetCurrentTheme()
+        {
+            if (_initialized) return _currentTheme;
 
-			var themes = GetConfig<Theme[]>("Themes");
+            var themes = GetConfig<Theme[]>("Themes");
 
-			if (themes != null)
-			{
-				foreach (var item in themes)
-				{
-					if (!await _themeValidations.IsValid(item)) continue;
+            if (themes != null)
+            {
+                foreach (var item in themes)
+                {
+                    if (!await _themeValidations.IsValid(item)) continue;
 
-					_currentTheme = item;
-					break;
-				}
-			}
+                    _currentTheme = item;
+                    break;
+                }
+            }
 
-			_initialized = true;
+            _initialized = true;
 
-			return _currentTheme;
-		}
+            _currentTheme.Copyright = _currentTheme.Copyright?.Replace("%Year%", DateTime.Now.Year.ToString());
 
-		public async Task<string> GetRootPath(bool withCurrentTheme)
-		{
-			var root = Microservice.Me.Url().TrimEnd("/");
-			if (root.Contains("hub.")) root = root.Remove("hub.") + "/hub";
+            return _currentTheme;
+        }
 
-			var theme = await GetCurrentTheme();
+        public async Task<string> GetRootPath(bool withCurrentTheme)
+        {
+            var root = Microservice.Me.Url().TrimEnd("/");
+            if (root.Contains("hub.")) root = root.Remove("hub.") + "/hub";
 
-			return withCurrentTheme
-				? $"{root}/themes/{theme.Name}"
-				: root;
-		}
+            var theme = await GetCurrentTheme();
 
-		public async Task<string> GetPrimaryColor()
-		{
-			var theme = await GetCurrentTheme();
-			return theme.PrimaryColor;
-		}
+            return withCurrentTheme
+                ? $"{root}/themes/{theme.Name}"
+                : root;
+        }
 
-		public async Task<string?> GetLoginUrl()
-		{
-			if (!_initialized) await GetCurrentTheme();
-			return _currentTheme.LoginUrl.Or(Config.Get<string>("LoginUrl"));
-		}
+        public async Task<string> GetPrimaryColor()
+        {
+            var theme = await GetCurrentTheme();
+            return theme.PrimaryColor;
+        }
 
-		public async Task<string> ExtraStylesTag()
-		{
-			var root = await GetRootPath(true);
-			var extraStylesPath = Path.Combine(_environment.WebRootPath, "themes",_currentTheme.Name, "extra-styles.css");
-			var tag = File.Exists(extraStylesPath)
-				? $"<link rel='stylesheet' href='{root}/extra-styles.css' type='text/css' />"
-				: "";
-			return tag;
-		}
+        public async Task<string?> GetLoginUrl()
+        {
+            if (!_initialized) await GetCurrentTheme();
+            return _currentTheme.LoginUrl.Or(Config.Get<string>("LoginUrl"));
+        }
 
-		public async Task<string> GetHomePageUrl()
-		{
-			if (!_initialized) await GetCurrentTheme();
-			return (_currentTheme.HomePageUrl).Or(Config.Get<string>("HomePageUrl", "dashboard/home.aspx"));
-		}
+        public async Task<string> ExtraStylesTag()
+        {
+            var root = await GetRootPath(true);
+            var extraStylesPath = Path.Combine(_environment.WebRootPath, "themes", _currentTheme.Name, "extra-styles.css");
+            var tag = File.Exists(extraStylesPath)
+                ? $"<link rel='stylesheet' href='{root}/extra-styles.css?v={AppResourceVersion}' type='text/css' />"
+                : "";
+            return tag;
+        }
 
-		public async Task<SidebarProfileUrl?> GetSidebarProfile()
-		{
-			if (!_initialized) await GetCurrentTheme();
-			if (_currentTheme.SidebarProfileUrl != null) return _currentTheme.SidebarProfileUrl;
-			return GetConfig<SidebarProfileUrl>(nameof(SidebarProfileUrl));
-		}
+        public string AppResourceVersion => Config.Get("App.Resource.Version");
 
-		public async Task<string> GetSidebarProfileUrl(string[] userRoles, Dictionary<string, string> parameters)
-		{
-			var profile = await GetSidebarProfile();
-			return GetSidebarProfileUrl(profile, userRoles, parameters);
-		}
+        public async Task<string> GetHomePageUrl()
+        {
+            if (!_initialized) await GetCurrentTheme();
+            return (_currentTheme.HomePageUrl).Or(Config.Get<string>("HomePageUrl", "dashboard/home.aspx"));
+        }
 
-		private string GetSidebarProfileUrl(SidebarProfileUrl? profile, string[] userRoles, Dictionary<string, string> parameters)
-		{
-			string? sidebarProfileUrl = "";
+        public async Task<SidebarProfileUrl?> GetSidebarProfile()
+        {
+            if (!_initialized) await GetCurrentTheme();
+            if (_currentTheme.SidebarProfileUrl != null) return _currentTheme.SidebarProfileUrl;
+            return GetConfig<SidebarProfileUrl>(nameof(SidebarProfileUrl));
+        }
 
-			if (profile?.Roles != null)
-				sidebarProfileUrl = TryGetSidebarProfileUrlByRole(profile.Roles, userRoles);
+        public async Task<string> GetSidebarProfileUrl(string[] userRoles, Dictionary<string, string> parameters)
+        {
+            var profile = await GetSidebarProfile();
+            return GetSidebarProfileUrl(profile, userRoles, parameters);
+        }
 
-			if (sidebarProfileUrl.IsEmpty())
-				sidebarProfileUrl = profile?.Default;
+        private string GetSidebarProfileUrl(SidebarProfileUrl? profile, string[] userRoles, Dictionary<string, string> parameters)
+        {
+            string? sidebarProfileUrl = "";
 
-			return RenderSidebarProfileUrl(sidebarProfileUrl.Or("https://hub.%DOMAIN%/person/%EMAIL%"), parameters);
-		}
+            if (profile?.Roles != null)
+                sidebarProfileUrl = TryGetSidebarProfileUrlByRole(profile.Roles, userRoles);
 
-		private string RenderSidebarProfileUrl(string sidebarProfileUrl, Dictionary<string, string> parameters)
-		{
-			foreach (var key in parameters.Keys)
-			{
-				sidebarProfileUrl = sidebarProfileUrl.Replace($"%{key}%", parameters[key]);
-			}
+            if (sidebarProfileUrl.IsEmpty())
+                sidebarProfileUrl = profile?.Default;
 
-			return sidebarProfileUrl;
-		}
+            return RenderSidebarProfileUrl(sidebarProfileUrl.Or("https://hub.%DOMAIN%/person/%EMAIL%"), parameters);
+        }
 
-		private string? TryGetSidebarProfileUrlByRole(Dictionary<string, string> roles, string[] userRoles)
-		{
-			foreach (var keyValue in roles)
-				if (userRoles.Any(a => a.Equals(keyValue.Key, false)))
-					return keyValue.Value;
+        private string RenderSidebarProfileUrl(string sidebarProfileUrl, Dictionary<string, string> parameters)
+        {
+            foreach (var key in parameters.Keys)
+            {
+                sidebarProfileUrl = sidebarProfileUrl.Replace($"%{key}%", parameters[key]);
+            }
 
-			return null;
-		}
-	}
+            return sidebarProfileUrl;
+        }
+
+        private string? TryGetSidebarProfileUrlByRole(Dictionary<string, string> roles, string[] userRoles)
+        {
+            foreach (var keyValue in roles)
+                if (userRoles.Any(a => a.Equals(keyValue.Key, false)))
+                    return keyValue.Value;
+
+            return null;
+        }
+    }
 }
