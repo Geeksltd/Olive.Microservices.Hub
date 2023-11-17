@@ -1,37 +1,46 @@
 ﻿@model ViewModel.ChildFeaturesList
 <!-- «Start| ChildFeaturesList» -->
 <form data-module="ChildFeaturesList" method="get" action="@Url.Current()" data-redirect="ajax" class="feature-children">
-   @Html.StartupActionsJson()
-   <div class="search d-none d-lg-block">
-      <h2>@info.Parent</h2>
-      <div class="form-group row">
-         <div class="group-control">
-            <input type="text" asp-for="InstantSearch" class="form-control" placeholder="Search..." />
-         </div>
-      </div>
-   </div>
-   @if (Model.Items.Any())
-   {
-   @ColourPalette.Reset();
-   <div class='list-items'>
-      @foreach (var listItem in Model.Items)
-      {
-      var item = listItem.Item;
-      <div class='item'>
-         <a name="Title" class="feature-button olive-instant-search-item badge-number" href="@item.LoadUrl" id="@item.ID" @("data-redirect='ajax'".OnlyWhen(!item.UseIframe).Raw()) data-badgeurl="@item.GetBadgeUrl()" data-service="@item.Service?.Name" style="color:@item.GetColour();"><i class="@item.GetIcon()" aria-hidden="true"></i>
-            @item.GetTitle(Model.Parent)
-            <small>
-               @item.GetDescription()
-            </small></a>
-      </div>
-      }
-   </div>
-   }
-   @if (Model.Items.None())
-   {
-   <div class="empty-list">
-      There are no features to display.
-   </div>
-   }
+    @Html.StartupActionsJson()
+    <div class="search d-none d-lg-block">
+        <h2>@info.Parent</h2>
+        <div class="form-group row">
+            <div class="group-control">
+                <input type="text" asp-for="InstantSearch" class="form-control" placeholder="Search..." />
+            </div>
+        </div>
+    </div>
+    @if (Model.Items.Any())
+    {
+        @ColourPalette.Reset();
+        <div class='list-items'>
+            @foreach (var listItem in Model.Items)
+            {
+                var item = listItem.Item;
+                <div class='item'>
+                    <a name="Title"
+                       class="feature-button olive-instant-search-item badge-number"
+                       href="@item.LoadUrl@(item.NoNav?"$no-nav".WithPrefix(item.LoadUrl.Contains("?")?"&":"?"):"")"
+                       id="@item.ID"
+                    @("data-redirect='ajax'".OnlyWhen(!item.UseIframe && !item.NoNav).Raw())
+                       data-badgeurl="@item.GetBadgeUrl()"
+                       data-service="@item.Service?.Name"
+                       style="color:@item.GetColour();">
+                        <i class="@item.GetIcon()" aria-hidden="true"></i>
+                        @item.GetTitle(Model.Parent)
+                        <small>
+                            @item.GetDescription()
+                        </small>
+                    </a>
+                </div>
+            }
+        </div>
+    }
+    @if (Model.Items.None())
+    {
+        <div class="empty-list">
+            There are no features to display.
+        </div>
+    }
 </form>
 <!-- «End| ChildFeaturesList» -->
