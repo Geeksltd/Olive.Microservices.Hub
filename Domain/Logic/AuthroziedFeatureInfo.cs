@@ -30,16 +30,8 @@
                     Icon = "fas fa-th"
                 }
             };
-            var aiRiskRegister = new AuthroziedFeatureInfo
-            {
-                Feature = new Feature
-                {
-                    Title = "AI Register v2(beta)",
-                    LoadUrl = "https://airiskregisterv2.app.geeks.ltd/ai-registers",
-                    Icon = "fas fa-th",
-                }
-            };   
-            return items.Prepend(aiRiskRegister).Prepend(everything).ToArray();
+              
+            return items.Prepend(everything).ToArray();
         }
 
         public static async Task<XElement> RenderMenuJson()
