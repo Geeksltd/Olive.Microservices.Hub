@@ -1,4 +1,5 @@
 ﻿@{ var timeout = Config.Get("Authentication:Timeout", defaultValue: 20).Minutes().TotalSeconds + 10;}
+@inject Olive.Microservices.Hub.Domain.Theme.Contracts.IThemeProvider ThemeProvider
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,10 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="refresh" content="@timeout">
     <title>@ViewData["Title"]</title>
-    <link rel='stylesheet' href="~/styles/theme.min.css?v=%APP_VERSION%" type='text/css' />
+    <link rel='stylesheet' href="~/styles/theme.min.css?v=@ThemeProvider.AppResourceVersion" type='text/css' />
 </head>
 <body>
-    @*<script src="~/lib/requirejs/require.js" data-main="/scripts/bundle-built@(".min".OnlyWhen(Request?.Query["jsdebug"].ToString() != "true")).js?v=%APP_VERSION%"></script>*@
+    @*<script src="~/lib/requirejs/require.js" data-main="/scripts/bundle-built@(".min".OnlyWhen(Request?.Query["jsdebug"].ToString() != "true")).js?v=@ThemeProvider.AppResourceVersion"></script>*@
     <script src="~/lib/requirejs/require.js" data-main="/scripts/config.js"></script>
 
     <service of="hub">

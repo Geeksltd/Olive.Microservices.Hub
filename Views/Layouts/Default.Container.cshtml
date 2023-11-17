@@ -19,7 +19,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<meta http-equiv="refresh" content="@timeout">
 	<title>@ViewData["Title"]</title>
-	<link rel='stylesheet' href="@themeRoot/styles@(".min".OnlyWhen(Environment.IsProduction())).css?v=%APP_VERSION%" type='text/css' />
+	<link rel='stylesheet' href="@themeRoot/styles@(".min".OnlyWhen(Environment.IsProduction())).css?v=@ThemeProvider.AppResourceVersion" type='text/css' />
 	@((await ThemeProvider.ExtraStylesTag()).Raw())
 	<link rel="icon" media="all" type="image/x-icon" href="@themeRoot/img/favicon.png" />
 	<link rel="shortcut icon" href="@themeRoot/img/favicon.ico">
@@ -60,8 +60,8 @@
 
 	<script src="@root/lib/olive.microservices.hubjs/dist/bundle-built.js"></script>
 	<script src="@root/scripts/js.js"></script>
-	@*<script src="~/lib/olive.microservices.hubjs/dist/bundle-built@(".min".OnlyWhen(Request?.Query["jsdebug"].ToString() != "true")).js?v=%APP_VERSION%"></script>*@
-	@*<script src="~/lib/olive.microservices.hubjs/dist/bundle-built@(".min".OnlyWhen(Request?.Query["jsdebug"].ToString() != "true")).js?v=%APP_VERSION%"></script>*@
+	@*<script src="~/lib/olive.microservices.hubjs/dist/bundle-built@(".min".OnlyWhen(Request?.Query["jsdebug"].ToString() != "true")).js?v=@ThemeProvider.AppResourceVersion"></script>*@
+	@*<script src="~/lib/olive.microservices.hubjs/dist/bundle-built@(".min".OnlyWhen(Request?.Query["jsdebug"].ToString() != "true")).js?v=@ThemeProvider.AppResourceVersion"></script>*@
 
 	@*<script src="~/scripts/js.js"></script>*@
 
@@ -70,8 +70,8 @@
 	@*<script type="text/javascript">
 	requirejs(["/hub/appPage"], function () { });
 	</script>*@
-	@*<script src="~/scripts/bundle-built.js?v=%APP_VERSION%" ></script>*@
-	@*<script src="~/lib/requirejs/require.js" data-main="/scripts/bundle-built@(".min".OnlyWhen(Request?.Query["jsdebug"].ToString() != "true")).js?v=%APP_VERSION%"></script>*@
+	@*<script src="~/scripts/bundle-built.js?v=@ThemeProvider.AppResourceVersion" ></script>*@
+	@*<script src="~/lib/requirejs/require.js" data-main="/scripts/bundle-built@(".min".OnlyWhen(Request?.Query["jsdebug"].ToString() != "true")).js?v=@ThemeProvider.AppResourceVersion"></script>*@
 </head>
 <body>
 	<div class="container-fluid p-0">
@@ -95,10 +95,6 @@
 
 				@if (User.Identity?.IsAuthenticated == true)
 				{
-					<div class="w-100 d-flex d-lg-none mobile-top-menu">
-						<a class="home" href="/under" data-redirect="ajax"><i class="fas fa-home"></i></a>
-						@(await Component.InvokeAsync<GlobalSearch>())
-					</div>
 					@(await Component.InvokeAsync<BreadcrumbWrapper>())
 				}
 
