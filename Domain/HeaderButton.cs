@@ -9,5 +9,6 @@
         public string Colour { get; set; }
         public string Roles { get; set; }
         public string Title { get; set; }
+        public bool Divider { get; set; }
     }
 }
