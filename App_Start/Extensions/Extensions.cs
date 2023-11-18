@@ -97,10 +97,10 @@ namespace System
 
             var attr = HeaderButtonTargetAttr(button);
 
-            var url = button.Url.ToLower().StartsWith("http") ? button.Url : Microservice.Of("Hub").Url(button.Url);
-            var style = button.Colour.IsEmpty() ? "" : $"style='color:{button.Colour}' title='{button.Title}'";
+            var url = button.Url.Contains("://") ? button.Url : Microservice.Of("Hub").Url(button.Url);
+            var style = button.Colour.IsEmpty() ? "" : $"style='color:{button.Colour}'";
             return @$"
-                    <a class=""{cssClass}"" href=""{url}"" {attr} {style}>
+                    <a class=""{cssClass}"" href=""{url}"" {attr} {style} title='{button.Title}'>
                         <i class=""{button.Icon}""></i> {button.Text}
                     </a> ";
         }
