@@ -46,7 +46,7 @@ namespace Olive.Microservices.Hub
                              Name = x,
                              Icon = Config.Get("Microservice:" + x + ":Icon"),
                              UseIframe = Config.Get("Microservice:" + x + ":Iframe").ToLower() == "true",
-                             BaseUrl = GetServiceBaseUrl(Config.Get("Microservice:" + x + ":Url"), Config.Get<bool>("Microservice:" + x + ":HasApiBackend")),
+                             BaseUrl = Config.Get("Microservice:" + x + ":Url"),
                              HasApiBackend =  Config.Get<bool>("Microservice:" + x + ":HasApiBackend", false),
                              InjectSingleSignon = Config.Get("Microservice:" + x + ":Sso").ToLower() == "true",
                          });
@@ -66,20 +66,12 @@ namespace Olive.Microservices.Hub
                            {
                                Name = x.GetCleanName(),
                                UseIframe = x.GetValue<bool?>("@iframe") ?? false,
-                               BaseUrl = GetServiceBaseUrl(url.StartsWith("http") ? url : $"https://{url}.{envDomain}", x.GetValue<bool?>("@hasapibackend") ?? false).ToLower(),
+                               BaseUrl = (url.StartsWith("http") ? url : $"https://{url}.{envDomain}").ToLower(),
                                Icon = x.GetValue<string>("@icon"),
                                InjectSingleSignon = x.GetValue<bool?>("@sso") ?? false,
                                HasApiBackend = x.GetValue<bool?>("@hasapibackend") ?? false
 
                            }).ToList();
-        }
-
-        static string GetServiceBaseUrl(string baseUrl, bool hasApiBackend)
-        {
-            if (!hasApiBackend) return baseUrl;
-            var domain = Config.Get("Authentication:Cookie:Domain").Trim('/');
-            baseUrl = baseUrl.Replace("." + domain, "api." + domain);
-            return baseUrl;
         }
 
         static void Run(string actionName, Func<bool> condition, Action action)

@@ -8,6 +8,7 @@ using Olive;
 using Olive.Entities;
 using Olive.Entities.Data;
 using Olive.Microservices.Hub.Utilities.UrlExtensions;
+using Polly.Caching;
 
 namespace Olive.Microservices.Hub
 {
@@ -52,7 +53,7 @@ namespace Olive.Microservices.Hub
         public string GetHubImplementationUrl(string relativeUrl)
             => GetHubImplementationUrlPrefix().AppendUrlPath(relativeUrl);
 
-        public string GetAbsoluteImplementationUrl(string relativeUrl) => BaseUrl.AppendUrlPath(relativeUrl);
+        public string GetAbsoluteImplementationUrl(string relativeUrl, bool withApi = false) => (withApi ? GetServiceBaseUrlWithApi(BaseUrl, HasApiBackend) : BaseUrl).AppendUrlPath(relativeUrl);
         public static Service GetServiceFromURL(string relativeUrl)
         {
             Service hub = null;
@@ -87,9 +88,17 @@ namespace Olive.Microservices.Hub
             }
         }
 
+        string GetServiceBaseUrlWithApi(string baseUrl, bool hasApiBackend)
+        {
+            if (!hasApiBackend) return baseUrl;
+            var domain = Config.Get("Authentication:Cookie:Domain").Trim('/');
+            baseUrl = baseUrl.Replace("." + domain, "api." + domain);
+            return baseUrl;
+        }
+
         public async Task GetAndSaveFeaturesJson()
         {
-            var url = GetAbsoluteImplementationUrl("olive/features").AsUri();
+            var url = GetAbsoluteImplementationUrl("olive/features", true).AsUri();
 
             try
             {
