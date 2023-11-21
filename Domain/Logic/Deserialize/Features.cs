@@ -14,8 +14,10 @@ namespace Olive.Microservices.Hub
 
         internal static void SetRepository(IFeatureRepository featureRepository) => Repository = featureRepository;
 
-        internal static async Task RefreshServiceFeatures()
+        internal static async Task<List<string>> RefreshServiceFeatures()
         {
+            var errors = new ConcurrentList<string>();
+
             if (Service.All?.Any() == true)
             {
                 var throttler = new SemaphoreSlim(initialCount: 10);
@@ -26,6 +28,11 @@ namespace Olive.Microservices.Hub
                     {
                         await service.GetAndSaveFeaturesJson().ConfigureAwait(false);
                     }
+                    catch (Exception e)
+                    {
+                        Log.For(typeof(Feature)).Error(e);
+                        errors.Add(e.ToString());
+                    }
                     finally
                     {
                         throttler.Release();
@@ -35,6 +42,8 @@ namespace Olive.Microservices.Hub
             }
 
             await RefreshFeatures();
+
+            return errors.ToList();
         }
 
         internal static async Task RefreshFeatures()

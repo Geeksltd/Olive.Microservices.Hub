@@ -20,13 +20,13 @@ namespace Olive.Microservices.Hub
             {
                 Task.Factory.RunSync(ViewModel.BoardComponents.SetBoardSources);
                 Task.Factory.RunSync(ViewModel.GlobalSearch.SetSearchSources);
-            }      
+            }
 
         }
 
         public static async Task RefreshFeatures() => await Features.RefreshFeatures();
 
-        public static async Task RefreshServiceFeatures() => await Features.RefreshServiceFeatures();
+        public static async Task<List<string>> RefreshServiceFeatures() => await Features.RefreshServiceFeatures();
 
         static void LoadServices()
         {
@@ -46,7 +46,8 @@ namespace Olive.Microservices.Hub
                              Name = x,
                              Icon = Config.Get("Microservice:" + x + ":Icon"),
                              UseIframe = Config.Get("Microservice:" + x + ":Iframe").ToLower() == "true",
-                             BaseUrl = Config.Get("Microservice:" + x + ":Url"),
+                             BaseUrl = GetServiceBaseUrl(Config.Get("Microservice:" + x + ":Url"), Config.Get<bool>("Microservice:" + x + ":HasApiBackend")),
+                             HasApiBackend =  Config.Get<bool>("Microservice:" + x + ":HasApiBackend", false),
                              InjectSingleSignon = Config.Get("Microservice:" + x + ":Sso").ToLower() == "true",
                          });
                    }
@@ -65,11 +66,20 @@ namespace Olive.Microservices.Hub
                            {
                                Name = x.GetCleanName(),
                                UseIframe = x.GetValue<bool?>("@iframe") ?? false,
-                               BaseUrl = (url.StartsWith("http") ? url : $"https://{url}.{envDomain}").ToLower(),
+                               BaseUrl = GetServiceBaseUrl(url.StartsWith("http") ? url : $"https://{url}.{envDomain}", x.GetValue<bool?>("@hasapibackend") ?? false).ToLower(),
                                Icon = x.GetValue<string>("@icon"),
-                               InjectSingleSignon = x.GetValue<bool?>("@sso") ?? false
+                               InjectSingleSignon = x.GetValue<bool?>("@sso") ?? false,
+                               HasApiBackend = x.GetValue<bool?>("@hasapibackend") ?? false
 
                            }).ToList();
+        }
+
+        static string GetServiceBaseUrl(string baseUrl, bool hasApiBackend)
+        {
+            if (!hasApiBackend) return baseUrl;
+            var domain = Config.Get("Authentication:Cookie:Domain").Trim('/');
+            baseUrl = baseUrl.Replace("." + domain, "api." + domain);
+            return baseUrl;
         }
 
         static void Run(string actionName, Func<bool> condition, Action action)

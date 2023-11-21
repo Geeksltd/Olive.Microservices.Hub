@@ -123,7 +123,8 @@ namespace Olive.Microservices.Hub.Domain.Theme
             if (sidebarProfileUrl.IsEmpty())
                 sidebarProfileUrl = profile?.Default;
 
-            return RenderSidebarProfileUrl(sidebarProfileUrl.Or("https://hub.%DOMAIN%/person/%EMAIL%"), parameters);
+            return RenderSidebarProfileUrl(sidebarProfileUrl.Or(
+                $"https://hub.{Config.Get("Authentication:Cookie:Domain").EnsureEndsWith("/")}person/%EMAIL%"), parameters);
         }
 
         private string RenderSidebarProfileUrl(string sidebarProfileUrl, Dictionary<string, string> parameters)

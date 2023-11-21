@@ -29,6 +29,9 @@
 
         /// <summary>Gets or sets a value indicating whether this Service instance Inject single signon.</summary>
         public bool InjectSingleSignon { get; set; }
+        
+        /// <summary>Gets or sets a value indicating whether this Service instance Inject single signon.</summary>
+        public bool HasApiBackend { get; set; }
 
         /// <summary>Gets or sets the value of Name on this Service instance.</summary>
         [System.ComponentModel.DataAnnotations.StringLength(200)]
