@@ -7,36 +7,37 @@ namespace Olive.Microservices.Hub
 {
     internal class HubEncoder
     {
-        public static Guid ConvertStringToGuid(string inputstr)
+        public static Guid ConvertStringToGuid(string inputStr)
         {
             var result = Guid.NewGuid();
-            if (inputstr.IsEmpty()) return result;
+            if (inputStr.IsEmpty()) return result;
 
             try
             {
-                var hashedstring = HashString(inputstr);
+                var hashedString = HashString(inputStr);
 
-                var hashed32 = Conver256to32(hashedstring);
+                var hashed32 = Convert256To32(hashedString);
 
-                var hashed32tostring = Convert32toString(hashed32);
+                var hashed32ToString = Convert32ToString(hashed32);
 
-                var guidstring = HexToGuid(hashed32tostring);
+                var guidString = HexToGuid(hashed32ToString);
 
-                result = guidstring.To<Guid>();
+                result = guidString.To<Guid>();
             }
             catch
             {
+                // ignored
             }
 
             return result;
         }
 
-        static string HexToGuid(string hexstring)
+        static string HexToGuid(string hexString)
         {
-            return $"{hexstring.Substring(0, 8)}-{hexstring.Substring(8, 4)}-{hexstring.Substring(12, 4)}-{hexstring.Substring(16, 4)}-{hexstring.Substring(20, 12)}";
+            return $"{hexString.Substring(0, 8)}-{hexString.Substring(8, 4)}-{hexString.Substring(12, 4)}-{hexString.Substring(16, 4)}-{hexString.Substring(20, 12)}";
         }
 
-        static string Convert32toString(List<byte> input)
+        static string Convert32ToString(List<byte> input)
         {
             var result = string.Empty;
 
@@ -47,10 +48,10 @@ namespace Olive.Microservices.Hub
 
         static char Byte2Hex(byte input)
         {
-            var hexnum = input % 16;
+            var hexNum = input % 16;
             var result = (char)0;
 
-            switch (hexnum)
+            switch (hexNum)
             {
                 case 1: result = '1'; break;
                 case 2: result = '2'; break;
@@ -73,11 +74,11 @@ namespace Olive.Microservices.Hub
             return result;
         }
 
-        static List<byte> Conver256to32(List<int> input)
+        static List<byte> Convert256To32(List<int> input)
         {
             var result = new List<byte>();
 
-            for (int i = 0; i < 256; i += 8)
+            for (var i = 0; i < 256; i += 8)
             {
                 var temp = (i % 2 == 0) ? input.GetRange(i, 8).Min() : input.GetRange(i, 8).Max();
                 result.Add((byte)(temp % 16));
@@ -89,15 +90,15 @@ namespace Olive.Microservices.Hub
         static List<int> HashString(string input)
         {
             var hashtable = new List<int>();
-            for (int i = 0; i < 256; ++i) hashtable.Add(-1);
+            for (var i = 0; i < 256; ++i) hashtable.Add(-1);
 
-            var tobytearray = ConvertStr2Byte(input);
+            var toByteArray = ConvertStr2Byte(input);
 
-            for (int i = 0; i < tobytearray.Count; ++i) hashtable[tobytearray[i]] = 1 + i;
+            for (var i = 0; i < toByteArray.Count; ++i) hashtable[toByteArray[i]] = 1 + i;
 
             while (hashtable.Contains(-1))
             {
-                for (int i = 0; i < hashtable.Count; ++i)
+                for (var i = 0; i < hashtable.Count; ++i)
                 {
                     if (hashtable[i] == -1)
                     {
