@@ -35,6 +35,13 @@ namespace Controllers
         {
             ViewData["LeftMenu"] = "FeaturesSideMenu";
             var item = Feature.All.FirstOrDefault(x => x.ID == feature);
+
+            // When user refresh unauthorized page
+            if (item != null && User.Identity?.IsAuthenticated == true)
+            {
+                if (User.CanSee(item)) return Redirect(item.LoadUrl);
+            }
+
             return View(item);
         }
     }

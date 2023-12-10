@@ -1,10 +1,10 @@
 ﻿@model Feature
 <!-- «Start| UnauthorizedAccess» -->
 <form data-module="UnauthorizedAccess" method="post" action="@Url.Current()" class="error unauthorized">
-   @Html.AntiForgeryToken()
-   @Html.StartupActionsJson()
-   <div class="view-body">
-      <div class="form-group row">
+    @Html.AntiForgeryToken()
+    @Html.StartupActionsJson()
+    <div class="view-body">
+        <div class="form-group row">
             <div class="group-control">
                 <h2>Access denied 🔒</h2>
                 <p>
@@ -12,12 +12,32 @@
                 </p>
                 <p>
                     You are currently logged in as @User?.GetEmail().
-                </p><h5 style="margin-top: 30px;">
+                </p>
+
+                <h5 style="margin-top: 30px;">
                     Suggestions
-                </h5><hr>
-                <ul><li><a href="/login?returnurl=@Url.Current()">Log in</a> as a different user.</li><li>Request to be granted permission for this page.</li></ul><p></p>
+                </h5>
+
+                <hr>
+                <ul>
+                    @if (User?.Identity?.IsAuthenticated!=true)
+                    {
+                        <li>
+                            <a href="/login?returnurl=@(Model?.LoadUrl ?? Url.Current())">Log in</a>.
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <a href="/login?returnurl=@(Model?.LoadUrl ?? Url.Current())">Log in</a> as a different user.
+                        </li>
+                        <li>
+                            Request to be granted permission for this page.
+                        </li>
+                    }
+                </ul>
             </div>
-         </div>
-      </div>
-   </form>
+        </div>
+    </div>
+</form>
 <!-- «End| UnauthorizedAccess» -->
