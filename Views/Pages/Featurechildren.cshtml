@@ -20,7 +20,7 @@
                 <div class='item'>
                     <a name="Title"
                        class="feature-button olive-instant-search-item badge-number"
-                       href="@item.LoadUrl@(item.NoNav?"$no-nav".WithPrefix(item.LoadUrl.Contains("?")?"&":"?"):"")"
+                       href="@item.LoadUrl@(item.NoNav?"_nav=no".WithPrefix(item.LoadUrl.Contains("?")?"&":"?"):"")"
                        id="@item.ID"
                     @("data-redirect='ajax'".OnlyWhen(!item.UseIframe && !item.NoNav).Raw())
                        data-badgeurl="@item.GetBadgeUrl()"

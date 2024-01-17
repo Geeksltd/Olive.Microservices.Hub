@@ -198,7 +198,7 @@
 
             if (Feature.NoNav)
             {
-                queryStringItems.Add("$no-nav");
+                queryStringItems.Add("_nav=no");
             }
 
             if (Feature.Pass.HasAny() && query.Any())
