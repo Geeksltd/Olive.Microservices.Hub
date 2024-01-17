@@ -87,4 +87,8 @@ namespace ViewModel
         [ValidateNever]
         public User Item { get; set; }
     }
+    public partial class AutoLoginForm : IViewModel
+    {
+        public string Token { get; set; }
+    }
 }
