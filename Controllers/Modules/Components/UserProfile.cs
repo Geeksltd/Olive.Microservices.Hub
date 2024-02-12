@@ -34,7 +34,7 @@ namespace ViewComponents
 			info = new vm.UserProfile()
 			{
 				Email = email,
-				UserImage = user?.ImageUrl,
+				UserImage = await _themeProvider.GetUserImage(user),
 				PrimaryDISCColour = user?.PrimaryDISCColour.Or("transparent"),
 				SecondaryDISCColour = user?.SecondaryDISCColour.Or("transparent"),
 				ProfileUrl = sidebarProfileUrl,

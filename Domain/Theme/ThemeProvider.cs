@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using PeopleService;
 
 namespace Olive.Microservices.Hub.Domain.Theme
 {
@@ -74,6 +75,15 @@ namespace Olive.Microservices.Hub.Domain.Theme
         {
             var theme = await GetCurrentTheme();
             return theme.PrimaryColor;
+        }
+
+        public async Task<string?> GetUserImage(UserInfo? user)
+        {
+            if (user is null) return null;
+            var theme = await GetCurrentTheme();
+            return theme.UserImageUrlTemplate.HasValue() 
+                ? theme.UserImageUrlTemplate?.Replace("%USER_ID%", user.ID.ToString()) 
+                : user.ImageUrl;
         }
 
         public async Task<string?> GetLoginUrl()

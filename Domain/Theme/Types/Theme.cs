@@ -15,6 +15,7 @@
 		public string? LoginTitle { get; set; }
 		public string? Copyright { get; set; }
         public bool HideEveryThingMenuItem { get; set; }
+        public string? UserImageUrlTemplate { get; set; }
 
 
         public override string ToString()
