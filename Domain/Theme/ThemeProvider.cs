@@ -141,8 +141,7 @@ namespace Olive.Microservices.Hub.Domain.Theme
         {
             foreach (var key in parameters.Keys)
             {
-                var value = key == "EMAIL" ? parameters[key].Replace("+", "%252B") : parameters[key];
-                sidebarProfileUrl = sidebarProfileUrl.Replace($"%{key}%", value);
+                sidebarProfileUrl = sidebarProfileUrl.Replace($"%{key}%", parameters[key]);
             }
 
             return sidebarProfileUrl;
