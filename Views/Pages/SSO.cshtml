@@ -34,5 +34,5 @@
      function waitTime() { if (screen.width < 500) return 3000; else return 1000; }
      
      // Redirect
-     setTimeout(function() { window.location.href='@Microservice.Me.GetHubUrl(Request.GetReturnUrl())' }, waitTime())
+     setTimeout(function() { window.location.href='@Microservice.Me.GetHubUrl(Url.ReturnUrl())' }, waitTime())
 </script>
