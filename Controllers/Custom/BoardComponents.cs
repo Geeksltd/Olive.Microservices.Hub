@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Olive;
@@ -13,7 +14,14 @@ namespace ViewModel
         public string GetBoardSources(string type)
         {
             if (BoardComponentSources.ContainsKey(type.ToLower()))
-                return BoardComponentSources[type.ToLower()].ToString(";");
+            {
+                var items = BoardComponentSources[type.ToLower()];
+                if (items != null)
+                {
+                    return items.Distinct().ToString(";");
+                }
+            }
+
             return "";
         }
 
