@@ -42,6 +42,7 @@ namespace Controllers
                 if (User.CanSee(item)) return Redirect(item.LoadUrl);
             }
 
+            Response.StatusCode = User.Identity?.IsAuthenticated == true ? 403 : 401;
             return View(item);
         }
     }
