@@ -23,7 +23,8 @@ namespace ViewComponents
 			var email = Context.Current.User().GetEmail();
 
 			var user = await Context.Current.Database().FirstOrDefault<PeopleService.UserInfo>(x => x.Email == email);
-			var userRoles = user.Roles.Split(',');
+            if (user is null) return Content("User not recognised: " + email);
+            var userRoles = user.Roles.Split(',');
 
 			var sidebarProfileUrl = await _themeProvider.GetSidebarProfileUrl(userRoles, new Dictionary<string, string>
 			{
