@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using vm = ViewModel;
 using Olive.Microservices.Hub;
 using ViewModel;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Controllers
 {
@@ -40,6 +41,12 @@ namespace Controllers
             if (item != null && User.Identity?.IsAuthenticated == true)
             {
                 if (User.CanSee(item)) return Redirect(item.LoadUrl);
+
+                if (await Context.Current.User().LoadUser() is null)
+                {
+                    await HttpContext.SignOutAsync();
+                    return Content("Invalid user: " + HttpContext.User.GetEmail());
+                }
             }
 
             Response.StatusCode = User.Identity?.IsAuthenticated == true ? 403 : 401;

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Olive;
 using Olive.Mvc;
 using vm = ViewModel;
+using System;
 
 namespace ViewComponents
 {
@@ -20,9 +21,8 @@ namespace ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(vm.UserProfile info)
         {
+            var user = await Context.Current.User().LoadUser();
             var email = Context.Current.User().GetEmail();
-
-            var user = await Context.Current.Database().FirstOrDefault<PeopleService.UserInfo>(x => x.Email == email);
             if (user is null) return Content("User not recognised: " + email);
 
             var userRoles = user.Roles.Split(',');

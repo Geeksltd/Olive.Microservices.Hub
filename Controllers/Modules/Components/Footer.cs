@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Olive;
 using Olive.Mvc;
 using vm = ViewModel;
+using System;
 
 namespace ViewComponents
 {
@@ -20,10 +21,10 @@ namespace ViewComponents
 
 		public async Task<IViewComponentResult> InvokeAsync(vm.Footer info)
 		{
-			var email = Context.Current.User().GetEmail();
-
-			var user = await Context.Current.Database().FirstOrDefault<PeopleService.UserInfo>(x => x.Email == email);
+			var user = await Context.Current.User().LoadUser();
+            var email = Context.Current.User().GetEmail();
             if (user is null) return Content("User not recognised: " + email);
+
             var userRoles = user.Roles.Split(',');
 
 			var sidebarProfileUrl = await _themeProvider.GetSidebarProfileUrl(userRoles, new Dictionary<string, string>

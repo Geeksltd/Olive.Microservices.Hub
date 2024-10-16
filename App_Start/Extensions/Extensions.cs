@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -33,7 +34,12 @@ namespace System
             return loggingInfo.LogOn(remember: mobile);
         }
 
-
+        public static async Task<PeopleService.UserInfo> LoadUser(this ClaimsPrincipal principal)
+        {
+            var email = Context.Current.User().GetEmail();
+            if (email.IsEmpty()) return null;
+            return await Context.Current.Database().FirstOrDefault<PeopleService.UserInfo>(x => x.Email == email);
+        }
 
         private static void TryAddJwtToken(GenericLoginInfo loggingInfo, bool mobile)
         {
