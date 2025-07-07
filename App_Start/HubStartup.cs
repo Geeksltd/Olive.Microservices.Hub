@@ -18,7 +18,7 @@ namespace Olive.Microservices.Hub
 
 	public abstract class HubStartup<TTaskManager> : FS.Shared.Website.Startup<ReferenceData, BackgroundTask, TTaskManager> where TTaskManager : BackgroundJobsPlan, new()
 	{
-		protected HubStartup(IWebHostEnvironment env, IConfiguration config, ILoggerFactory factory) : base(env, config, factory)
+		protected HubStartup(IWebHostEnvironment env, IConfiguration config) : base(env, config)
 		{
 			Subdomains = config["HubSubdomain"]?.Split(",") ?? new string[0];
 
