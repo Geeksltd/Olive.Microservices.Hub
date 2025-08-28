@@ -48,6 +48,7 @@
                 .GetChildren()
                 .Select(x => x.GetValue<string>("Name"))
                 .ExceptNull()
+                .Distinct()
                 .Cast<string>()
                 .ToArray();
 
