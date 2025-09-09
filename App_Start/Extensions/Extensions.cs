@@ -19,7 +19,7 @@ namespace System
         static int Timeout => Config.Get<int>("Authentication:Cookie:Timeout");
         static int MobileTimeout => Config.Get<int>("Authentication:Cookie:TimeoutMobile");
 
-        public static async Task LogOn(this PeopleService.UserInfo @this)
+        public static async Task<string> LogOn(this PeopleService.UserInfo @this)
         {
             var mobile = Context.Current.Request().IsSmartPhone();
 
@@ -36,24 +36,24 @@ namespace System
 
             await loggingInfo.LogOn(remember: mobile);
 
-            Context.Current.Http().SetAuthHeader();
+            return Context.Current.Http().GetAuthToken();
         }
 
-        public static void SetAuthHeader(this HttpContext httpContext)
+        public static string GetAuthToken(this HttpContext httpContext)
         {
             var cookieOptions = httpContext.RequestServices.GetService<IOptionsMonitor<CookieAuthenticationOptions>>();
             var cookieName = cookieOptions?.Get(CookieAuthenticationDefaults.AuthenticationScheme).Cookie.Name;
 
             if (cookieName.IsEmpty())
             {
-                return;
+                return "";
             }
 
             var authCookie = httpContext.Response.Headers["Set-Cookie"]
             .FirstOrDefault(h => h.StartsWith($"{cookieName}="));
 
             var token = authCookie?.Split(';')[0].Split('=')[1];
-            httpContext.Response.Headers["X-Auth-Token"] = token;
+            return token;
         }
 
         public static async Task<PeopleService.UserInfo> LoadUser(this ClaimsPrincipal principal)
