@@ -1,13 +1,16 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Olive;
+using Olive.Microservices.Hub;
+using Olive.Security;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Olive;
-using Olive.Microservices.Hub;
-using Olive.Security;
 
 namespace System
 {
@@ -16,7 +19,7 @@ namespace System
         static int Timeout => Config.Get<int>("Authentication:Cookie:Timeout");
         static int MobileTimeout => Config.Get<int>("Authentication:Cookie:TimeoutMobile");
 
-        public static Task LogOn(this PeopleService.UserInfo @this)
+        public static async Task LogOn(this PeopleService.UserInfo @this)
         {
             var mobile = Context.Current.Request().IsSmartPhone();
 
@@ -31,7 +34,26 @@ namespace System
 
             TryAddJwtToken(loggingInfo, mobile);
 
-            return loggingInfo.LogOn(remember: mobile);
+            await loggingInfo.LogOn(remember: mobile);
+
+            Context.Current.Http().SetAuthHeader();
+        }
+
+        public static void SetAuthHeader(this HttpContext httpContext)
+        {
+            var cookieOptions = httpContext.RequestServices.GetService<IOptionsMonitor<CookieAuthenticationOptions>>();
+            var cookieName = cookieOptions?.Get(CookieAuthenticationDefaults.AuthenticationScheme).Cookie.Name;
+
+            if (cookieName.IsEmpty())
+            {
+                return;
+            }
+
+            var authCookie = httpContext.Response.Headers["Set-Cookie"]
+            .FirstOrDefault(h => h.StartsWith($"{cookieName}="));
+
+            var token = authCookie?.Split(';')[0].Split('=')[1];
+            httpContext.Response.Headers["X-Auth-Token"] = token;
         }
 
         public static async Task<PeopleService.UserInfo> LoadUser(this ClaimsPrincipal principal)
