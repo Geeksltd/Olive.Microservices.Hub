@@ -5,6 +5,7 @@ using Olive;
 
 namespace Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class BaseController : Olive.Mvc.Controller
     {
         public BaseController()
