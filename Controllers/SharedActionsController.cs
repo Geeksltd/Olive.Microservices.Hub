@@ -41,43 +41,30 @@
         }
 
         [Route("healthcheck/all")]
-        public async Task<ActionResult> HealthCheckAll([FromServices] IConfiguration configuration)
+        public async Task<ActionResult> HealthCheckAll()
         {
-            var microserviceKeys = configuration
-                .GetSection("Microservice")
-                .GetChildren()
-                .Select(x => x.GetValue<string>("Name"))
-                .ExceptNull()
-                .Distinct()
-                .Cast<string>()
-                .ToArray();
+            var microservices = Microservice.All();
 
-            var result = new ConcurrentDictionary<string, string>(microserviceKeys.ToDictionary(
-                key => key,
-                key => ""
+            var result = new ConcurrentDictionary<string, string>(microservices.ToDictionary(
+                service => service.Name,
+                service => ""
             ));
 
-            await Parallel.ForEachAsync(microserviceKeys, async (key, token) =>
+            await Parallel.ForEachAsync(microservices, async (service, token) =>
             {
                 try
                 {
-                    var service = Microservice.Of(key);
-                    if (service == null)
-                    {
-                        result[key] = "Not Configured";
-                        return;
-                    }
                     var url = service.Url("healthcheck");
                     var client = new HttpClient();
                     var response = await client.GetStringAsync(url);
                     if (response.HasValue())
-                        result[key] = "OK: " + response;
+                        result[service.Name] = "OK: " + response;
                     else
-                        result[key] = "No Response";
+                        result[service.Name] = "No Response";
                 }
                 catch (Exception ex)
                 {
-                    result[key] = "Error: " + ex.Message;
+                    result[service.Name] = "Error: " + ex.Message;
                 }
             });
 
