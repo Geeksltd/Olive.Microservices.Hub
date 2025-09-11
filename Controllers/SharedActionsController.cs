@@ -43,7 +43,7 @@
         [Route("healthcheck/all")]
         public async Task<ActionResult> HealthCheckAll()
         {
-            var microservices = Microservice.All();
+            var microservices = AllMicroservices.GetServices();
 
             var result = new ConcurrentDictionary<string, string>(microservices.ToDictionary(
                 service => service.Name,
