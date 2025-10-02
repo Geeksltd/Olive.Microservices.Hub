@@ -3,11 +3,11 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
     using Olive;
     using Olive.Entities;
     using Olive.Microservices.Hub;
+    using Olive.Microservices.Hub.Domain.Theme.Contracts;
     using Olive.Mvc;
     using System;
     using System.Collections.Concurrent;
@@ -45,8 +45,8 @@
         {
             var microservices = AllMicroservices.GetServices();
 
-            var result = new ConcurrentDictionary<string, string>(microservices.ToDictionary(
-                service => service.Name,
+            var result = new ConcurrentDictionary<Microservice, string>(microservices.ToDictionary(
+                service => service,
                 service => ""
             ));
 
@@ -55,25 +55,62 @@
                 try
                 {
                     var url = service.Url("healthcheck");
-                    var client = new HttpClient();
+                    var client = new HttpClient() { Timeout = TimeSpan.FromSeconds(3) };
                     var response = await client.GetStringAsync(url);
                     if (response.HasValue())
-                        result[service.Name] = "OK: " + response;
+                        result[service] = $"<span class='text-success'>{response}</span>";
                     else
-                        result[service.Name] = "No Response";
+                        result[service] = "<span class='text-muted'>No Response</span>";
                 }
                 catch (Exception ex)
                 {
-                    result[service.Name] = "Error: " + ex.Message;
+                    result[service] = $"<span class='text-muted'>Error: {ex.Message}</span>";
                 }
             });
 
-            var html = "<h1>Health Check - All Microservices</h1><table border='1' cellpadding='5'>" +
-                "<tr><th>Microservice</th><th>Status</th></tr>" +
-                result.OrderBy(x => x.Key).Select(x => $"<tr><td>{x.Key}</td><td>{x.Value.HtmlEncode()}</td></tr>").ToString("") +
+            var themeProvider = Context.Current.GetService<IThemeProvider>();
+            var themeRoot = await themeProvider.GetRootPath(true);
+            var template = $@"
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <meta charset=""utf-8"" />          
+                        <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"" />
+                        <title>Health Check - All Microservices</title>
+                        <link rel=""stylesheet"" href=""{themeRoot}/styles.min.css?v={themeProvider.AppResourceVersion}"" type=""text/css"" />
+                    </head>
+                    <body>
+                        <div class='container-fluid py-5'>
+                            <div class='row'>
+                                <div class='col'>
+                                    {{0}}
+                                </div>
+                            </div>
+                        </div>
+                    </body>
+                </html>";
+
+            var html = @"
+                <h1 class='my-5'>Health Check - All Microservices</h1>
+                <table class='table table-stripped table-hover'>
+                    <tr>
+                        <th>Icon</th>
+                        <th>Microservice</th>
+                        <th>Status</th>
+                        <th>SSO</th>
+                        <th>Iframe</th>
+                    </tr>" +
+                        result.OrderBy(x => x.Key.Name).Select(x =>
+                    $@"<tr>
+                        <td>{(x.Key.Icon.HasValue() ? $"<i class='fa {x.Key.Icon}'></i>" : "")}</td>
+                        <td><a href='{x.Key.Url()}'>{x.Key.Name}</a></td>
+                        <td>{x.Value}</td>
+                        <td>{(x.Key.Sso ? $"<i class='fa fa-check text-success'></i>" : "<i class='fa fa-times text-muted'></i>")}</td>
+                        <td>{(x.Key.Iframe ? $"<i class='fa fa-check text-success'></i>" : "<i class='fa fa-times text-muted'></i>")}</td>
+                    </tr>").ToString("") +
                 "</table>";
 
-            return Content(html, "text/html");
+            return Content(string.Format(template, html), "text/html");
         }
 
         [Route("error")]
