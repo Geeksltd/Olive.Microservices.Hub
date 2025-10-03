@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Olive;
 using Olive.Entities;
 using Olive.Microservices.Hub;
 using Olive.Mvc;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 using vm = ViewModel;
 
 namespace Controllers
@@ -54,6 +54,8 @@ namespace Controllers
             {
                 info.Items = info.Items.OrderBy(x => x.Item.Title).ToList();
             }
+
+            info.NoNav = Request.Query.ContainsKey("_nav") && Request.Query["_nav"] == "no";
         }
 
         [NonAction]
@@ -85,6 +87,8 @@ namespace ViewModel
 
         [ReadOnly(true)]
         public List<ListItem> Items = new List<ListItem>();
+
+        public bool NoNav { get; set; }
 
         public partial class ListItem : IViewModel
         {
