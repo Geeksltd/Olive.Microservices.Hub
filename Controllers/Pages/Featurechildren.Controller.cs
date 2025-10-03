@@ -30,6 +30,7 @@ namespace Controllers
             }
 
             ViewData["LeftMenu"] = "FeaturesSideMenu";
+            ViewData["NoNav"] = info.NoNav;
 
             return View(info);
         }
