@@ -41,6 +41,7 @@
         }
 
         [Route("healthcheck/all")]
+        [Authorize(Roles = "DevOps")]
         public async Task<ActionResult> HealthCheckAll()
         {
             var microservices = AllMicroservices.GetServices();
@@ -55,7 +56,7 @@
                 try
                 {
                     var url = service.Url("healthcheck");
-                    var client = new HttpClient() { Timeout = TimeSpan.FromSeconds(3) };
+                    var client = new HttpClient() { Timeout = 5.Seconds() };
                     var response = await client.GetStringAsync(url);
                     if (response.HasValue())
                         result[service] = $"<span class='text-success'>{response}</span>";
