@@ -25,7 +25,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="EmailService.SendEmailCommand.EventBusCommand" Version="191220.12.2936" />
-		<PackageReference Include="FS.Shared.Website" Version="8.4.6" />
+		<PackageReference Include="FS.Shared.Website" Version="8.4.7" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.20" />
 		<PackageReference Include="NuGet.CommandLine" Version="6.14.0">
 			<PrivateAssets>all</PrivateAssets>
@@ -33,7 +33,7 @@
 		</PackageReference>
 		<PackageReference Include="Olive" Version="8.2.2" />
 		<PackageReference Include="Olive.Entities" Version="8.0.0" />
-		<PackageReference Include="Olive.Entities.Data" Version="8.0.2" />
+		<PackageReference Include="Olive.Entities.Data" Version="8.0.3" />
 		<PackageReference Include="Olive.Entities.Data.Replication" Version="8.0.2" />
 		<PackageReference Include="Olive.GlobalSearch.Source" Version="1.0.42" />
 		<PackageReference Include="Olive.Mvc.Microservices" Version="8.0.4" />
