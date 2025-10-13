@@ -1,13 +1,12 @@
-﻿using Olive;
-
-namespace Olive.Microservices.Hub.Domain.Theme
+﻿namespace Olive.Microservices.Hub.Domain.Theme
 {
-    using Olive.Microservices.Hub.Domain.Theme.Contracts;
     using Microsoft.AspNetCore.Http;
+    using Olive.Microservices.Hub.Domain.Theme.Contracts;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+
     public class ThemeValidations : IThemeValidations
     {
 

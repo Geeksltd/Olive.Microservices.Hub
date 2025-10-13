@@ -1,8 +1,8 @@
 ﻿
 namespace Olive.Microservices.Hub.Domain.Theme
 {
-    using Olive.Microservices.Hub.Domain.Theme.Contracts;
     using Microsoft.Extensions.DependencyInjection;
+    using Olive.Microservices.Hub.Domain.Theme.Contracts;
 
     public static class ThemeExtensions
     {
@@ -10,6 +10,7 @@ namespace Olive.Microservices.Hub.Domain.Theme
         {
             @this.AddScoped<IThemeProvider, ThemeProvider>();
             @this.AddScoped<IThemeValidations, ThemeValidations>();
+            @this.AddScoped<IThemeLoginLoggers, ThemeLoginLoggers>();
         }
     }
 }

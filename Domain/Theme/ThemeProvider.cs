@@ -1,29 +1,31 @@
-﻿using System.IO;
+﻿using Microsoft.AspNetCore.Hosting;
+using PeopleService;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using PeopleService;
 
 namespace Olive.Microservices.Hub.Domain.Theme
 {
-    using Olive.Microservices.Hub.Domain.Theme.Contracts;
-    using Olive.Microservices.Hub.Domain.Theme.Types;
     using Microsoft.Extensions.Configuration;
     using Olive;
+    using Olive.Microservices.Hub.Domain.Theme.Contracts;
+    using Olive.Microservices.Hub.Domain.Theme.LoginLoggers;
+    using Olive.Microservices.Hub.Domain.Theme.Types;
     using System;
     using System.Collections.Generic;
 
     internal class ThemeProvider : IThemeProvider
     {
         private readonly IThemeValidations _themeValidations;
+        private readonly IThemeLoginLoggers _loginLoggers;
         private readonly IWebHostEnvironment _environment;
         private Theme _currentTheme = new();
         private bool _initialized;
 
-        public ThemeProvider(IThemeValidations themeValidations, IWebHostEnvironment environment)
+        public ThemeProvider(IThemeValidations themeValidations, IThemeLoginLoggers loginLoggers, IWebHostEnvironment environment)
         {
             _themeValidations = themeValidations;
+            _loginLoggers = loginLoggers;
             _environment = environment;
         }
 
@@ -81,8 +83,8 @@ namespace Olive.Microservices.Hub.Domain.Theme
         {
             if (user is null) return null;
             var theme = await GetCurrentTheme();
-            return theme.UserImageUrlTemplate.HasValue() 
-                ? theme.UserImageUrlTemplate?.Replace("%USER_ID%", user.ID.ToString()) 
+            return theme.UserImageUrlTemplate.HasValue()
+                ? theme.UserImageUrlTemplate?.Replace("%USER_ID%", user.ID.ToString())
                 : user.ImageUrl;
         }
 
@@ -154,6 +156,12 @@ namespace Olive.Microservices.Hub.Domain.Theme
                     return keyValue.Value;
 
             return null;
+        }
+
+        public async Task LogLoginStatus(string email, LoginLogStatus status, string message = null)
+        {
+            if (!_initialized) await GetCurrentTheme();
+            await _loginLoggers.Log(_currentTheme, email, status, message);
         }
     }
 }

@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Olive;
 using Olive.Microservices.Hub;
+using Olive.Microservices.Hub.Domain.Theme.Contracts;
+using Olive.Microservices.Hub.Domain.Theme.LoginLoggers;
 using Olive.Mvc;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Threading.Tasks;
 using vm = ViewModel;
 
 namespace Controllers
@@ -15,13 +17,15 @@ namespace Controllers
 #pragma warning disable
     public abstract class BaseLoginController : BaseController
     {
+        Microsoft.AspNetCore.Hosting.IWebHostEnvironment Environment;
+        protected readonly IThemeProvider ThemeProvider;
+        
         public abstract Task<IActionResult> OnLoggedOut();
 
-        Microsoft.AspNetCore.Hosting.IWebHostEnvironment Environment;
-
-        public BaseLoginController(Microsoft.AspNetCore.Hosting.IWebHostEnvironment environment)
+        public BaseLoginController(Microsoft.AspNetCore.Hosting.IWebHostEnvironment environment, IThemeProvider themeProvider)
         {
             Environment = environment;
+            ThemeProvider = themeProvider;
         }
 
         // [Route("login/{item:Guid?}")]
