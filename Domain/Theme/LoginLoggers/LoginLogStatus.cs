@@ -14,5 +14,9 @@
         RequestAutoLogin,
         FailedAutoLogin,
         SuccessfulAutoLogin,
+
+        RequestShellLogin,
+        FailedShellLogin,
+        SuccessfulShellLogin,
     }
 }

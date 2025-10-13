@@ -12,18 +12,18 @@ namespace Olive.Microservices.Hub.Domain.Theme.LoginLoggers
 
         public async Task Log(string email, LoginLogStatus status, string? message = null)
         {
-            var fileKey = $"login-logs/{email}/{System.DateTime.Now:yyyy-MM-dd}.log";
+            var fileKey = $"login-logs/{email}/{DateTime.Now:yyyy-MM-dd}.log";
+
+            var returnUrl = Context.Current.Request().Param("ReturnUrl");
+            var logMessage = $"{DateTime.Now:HH:mm:ss} - {status}{(message.HasValue() ? $" - {message}" : "")} | ReturnUrl={returnUrl}";
+
             if (await RawS3.Exists(fileKey))
             {
                 var log = await RawS3.ReadTextFile(fileKey);
-                log = $"{System.DateTime.Now:HH:mm:ss} - {status}" + (message.HasValue() ? $" - {message}" : "") + Environment.NewLine + log;
-                await RawS3.WriteTextFile(fileKey, log);
+                logMessage = logMessage + Environment.NewLine + log;
             }
-            else
-            {
-                var log = $"{System.DateTime.Now:HH:mm:ss} - {status}" + (message.HasValue() ? $" - {message}" : "") + "\r\n";
-                await RawS3.WriteTextFile(fileKey, log);
-            }
+
+            await RawS3.WriteTextFile(fileKey, logMessage);
         }
     }
 }
