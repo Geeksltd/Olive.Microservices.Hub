@@ -5,7 +5,8 @@
         public string Name { get; set; } = "default";
         public string PrimaryColor { get; set; } = "#42AAA9";
         public string ValidationFunction { get; set; } = "ForceTrue";
-        public LogUserLogin? LogUserLogins { get; set; } = new();
+        public LogUserLogin? LogUserLogins { get; set; }
+        public MagicLink? MagicLink { get; set; }
         public string? HomePageUrl { get; set; } = "dashboard/home.aspx";
         public SidebarProfileUrl? SidebarProfileUrl { get; set; } = new()
         {
