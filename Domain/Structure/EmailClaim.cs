@@ -1,11 +1,11 @@
 ﻿namespace Olive.Microservices.Hub
 {
+    using Olive;
+    using Olive.Entities;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Olive;
-    using Olive.Entities;
 
     /// <summary>Represents an instance of Email claim entity type.</summary>
 
@@ -24,6 +24,9 @@
         /// <summary>Gets or sets the value of Token on this Email claim instance.</summary>
         [System.ComponentModel.DataAnnotations.StringLength(200)]
         public string Token { get; set; }
+
+        /// <summary>Gets or sets the value of Retry Count on this Email claim instance.</summary>
+        public int RetryCount { get; set; }
 
         /// <summary>
         /// Find and returns an instance of Email claim from the database by its Token.<para/>
