@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Olive;
 using Olive.Microservices.Hub;
 using Olive.Microservices.Hub.Domain.Theme.Contracts;
-using Olive.Microservices.Hub.Domain.Theme.LoginLoggers;
 using Olive.Mvc;
 using System;
 using System.Collections.Generic;
@@ -19,7 +18,7 @@ namespace Controllers
     {
         Microsoft.AspNetCore.Hosting.IWebHostEnvironment Environment;
         protected readonly IThemeProvider ThemeProvider;
-        
+
         public abstract Task<IActionResult> OnLoggedOut();
 
         public BaseLoginController(Microsoft.AspNetCore.Hosting.IWebHostEnvironment environment, IThemeProvider themeProvider)
@@ -90,6 +89,8 @@ namespace ViewModel
 
         [ValidateNever]
         public User Item { get; set; }
+        public string Token { get; set; }
+        public string Otp { get; set; }
     }
     public partial class AutoLoginForm : IViewModel
     {

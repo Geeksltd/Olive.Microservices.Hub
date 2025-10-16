@@ -1,6 +1,5 @@
 ﻿using Olive.Microservices.Hub.Domain.Theme.LoginLoggers;
 using PeopleService;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,8 +16,7 @@ public interface IThemeProvider
     Task<string?> GetLoginUrl();
     Task<string> ExtraStylesTag();
     Task LogLoginStatus(string email, LoginLogStatus status, string? message = null);
-    Task LogInvalidMagicLink(string? email, string token, DateTime? createOn);
-    Task<int> MagicLinkExpirationMinutes();
+    Task<int> OtpExpirationMinutes();
 
     string AppResourceVersion { get; }
 }

@@ -11,7 +11,6 @@ namespace Olive.Microservices.Hub.Domain.Theme
             @this.AddScoped<IThemeProvider, ThemeProvider>();
             @this.AddScoped<IThemeValidations, ThemeValidations>();
             @this.AddScoped<IThemeLoginLoggers, ThemeLoginLoggers>();
-            @this.AddScoped<IInvalidMagicLinkLoggers, InvalidMagicLinkLoggers>();
         }
     }
 }

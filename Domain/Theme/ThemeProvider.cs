@@ -18,16 +18,14 @@ namespace Olive.Microservices.Hub.Domain.Theme
     {
         private readonly IThemeValidations _themeValidations;
         private readonly IThemeLoginLoggers _loginLoggers;
-        private readonly IInvalidMagicLinkLoggers _invalidMagicLinkLoggers;
         private readonly IWebHostEnvironment _environment;
         private Theme _currentTheme = new();
         private bool _initialized;
 
-        public ThemeProvider(IThemeValidations themeValidations, IThemeLoginLoggers loginLoggers, IInvalidMagicLinkLoggers invalidMagicLinkLoggers, IWebHostEnvironment environment)
+        public ThemeProvider(IThemeValidations themeValidations, IThemeLoginLoggers loginLoggers, IWebHostEnvironment environment)
         {
             _themeValidations = themeValidations;
             _loginLoggers = loginLoggers;
-            _invalidMagicLinkLoggers = invalidMagicLinkLoggers;
             _environment = environment;
         }
 
@@ -160,23 +158,17 @@ namespace Olive.Microservices.Hub.Domain.Theme
             return null;
         }
 
-        public async Task LogLoginStatus(string email, LoginLogStatus status, string message = null)
+        public async Task LogLoginStatus(string email, LoginLogStatus status, string? message = null)
         {
             if (!_initialized) await GetCurrentTheme();
             await _loginLoggers.Log(_currentTheme, email, status, message);
         }
 
-        public async Task LogInvalidMagicLink(string email, string token, DateTime? createOn)
+        public async Task<int> OtpExpirationMinutes()
         {
             if (!_initialized) await GetCurrentTheme();
-            await _invalidMagicLinkLoggers.Log(_currentTheme, email, token, createOn);
-        }
-
-        public async Task<int> MagicLinkExpirationMinutes()
-        {
-            if (!_initialized) await GetCurrentTheme();
-            return _currentTheme.MagicLink?.ExpirationMinutes > 0
-                ? _currentTheme.MagicLink.ExpirationMinutes
+            return _currentTheme.Otp?.ExpirationMinutes > 0
+                ? _currentTheme.Otp.ExpirationMinutes.Value
                 : 10;
         }
     }
