@@ -95,14 +95,16 @@
                 <h1 class='my-5'>Health Check - All Microservices</h1>
                 <table class='table table-stripped table-hover'>
                     <tr>
+                        <th>#</th>
                         <th>Icon</th>
                         <th>Microservice</th>
                         <th>Status</th>
                         <th>SSO</th>
                         <th>Iframe</th>
                     </tr>" +
-                        result.OrderBy(x => x.Key.Name).Select(x =>
+                        result.OrderBy(x => x.Key.Name).Select((x, i) =>
                     $@"<tr>
+                        <td>{i + 1}</td>
                         <td>{(x.Key.Icon.HasValue() ? $"<i class='fa {x.Key.Icon}'></i>" : "")}</td>
                         <td><a href='{x.Key.Url()}'>{x.Key.Name}</a></td>
                         <td>{x.Value}</td>
@@ -112,6 +114,42 @@
                 "</table>";
 
             return Content(string.Format(template, html), "text/html");
+        }
+
+        [Route("healthcheck/alert")]
+        public async Task<ActionResult> HealthCheckAlert()
+        {
+            var emailAddress = Config.Get("HealthCheckAlertRecipients");
+            if (emailAddress.Length == 0) return Content("Please define health-check alert recipients");
+            var emails = emailAddress.Split(',', StringSplitOptions.RemoveEmptyEntries).Where(x => x.IsEmailAddress()).ToArray();
+            if (emails.Length == 0) return Content("Please define health-check alert recipients");
+
+            var microservices = AllMicroservices.GetServices();
+
+            await Parallel.ForEachAsync(microservices, async (service, token) =>
+            {
+                try
+                {
+                    var url = service.Url("healthcheck");
+                    var client = new HttpClient() { Timeout = 10.Seconds() };
+                    var response = await client.GetStringAsync(url);
+                }
+                catch (Exception ex)
+                {
+                    await emails.DoAsync(async email =>
+                    {
+                        await new EmailService.SendEmailCommand
+                        {
+                            To = email,
+                            Html = true,
+                            Subject = $"Service is down: {service.Name} @ {LocalTime.Now}",
+                            Body = $"Service is down: {service.Name} @ {LocalTime.Now}<br/>{ex.Message}"
+                        }.Publish();
+                    });
+                }
+            });
+
+            return Content("Done");
         }
 
         [Route("error")]
