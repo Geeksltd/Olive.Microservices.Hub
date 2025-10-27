@@ -9,6 +9,7 @@ namespace Olive.Microservices.Hub
     using Microsoft.Extensions.DependencyInjection;
     using Olive;
     using Olive.Entities.Data;
+    using Olive.Microservices.Hub.Domain.Utilities;
     using Olive.Microservices.Hub.Domain.Utilities.JsVariable;
     using System;
     using System.Linq;
@@ -55,6 +56,8 @@ namespace Olive.Microservices.Hub
             base.ConfigureServices(services);
 
             services.AddScoped<IJsVariableProvider, JsVariableProvider>();
+            services.AddHttpClient();
+            services.AddScoped<IHealthCheckService, HealthCheckService>();
 
             services.Configure<RazorViewEngineOptions>(options =>
             {
