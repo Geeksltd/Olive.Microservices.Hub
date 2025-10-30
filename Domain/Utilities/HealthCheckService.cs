@@ -24,7 +24,7 @@ namespace Olive.Microservices.Hub.Domain.Utilities
 
         public async Task<string> HealthCheckAll()
         {
-            var microservices = AllMicroservices.GetServices();
+            var microservices = AllMicroservices.GetServices().Where(x => x.Name != Microservice.Me.Name).ToArray();
 
             var result = new ConcurrentDictionary<Microservice, string>(microservices.ToDictionary(
                 service => service,
@@ -81,7 +81,7 @@ namespace Olive.Microservices.Hub.Domain.Utilities
             var emails = emailAddress.Split(',', StringSplitOptions.RemoveEmptyEntries).Where(x => x.IsEmailAddress()).ToArray();
             if (emails.Length == 0) throw new Exception("Please define health-check alert recipients");
 
-            var microservices = AllMicroservices.GetServices();
+            var microservices = AllMicroservices.GetServices().Where(x => x.Name != Microservice.Me.Name).ToArray();
 
             await Parallel.ForEachAsync(microservices, async (service, token) =>
             {
