@@ -8,6 +8,7 @@
         RequestManualLogin,
         FailedManualLogin,
         SuccessfulManualLogin,
+        WrongOtp,
 
         Logout,
 

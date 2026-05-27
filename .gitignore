@@ -194,3 +194,5 @@ Website/yarn.lock
 /Website/Blob/Person.ProfilePhoto
 M#/lib/netcoreapp3.1/
 *.nupkg
+/.claude/settings.local.json
+/CLAUDE.md
