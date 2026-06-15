@@ -5,6 +5,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using System.Threading.Tasks;
 
     public class ThemeValidations : IThemeValidations
@@ -31,14 +32,11 @@
 
         void LoadMap()
         {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a =>
+            var types = new[]
                 {
-                    var name = a.GetName().Name;
-                    return name is "website" or "Olive.Microservices.Hub";
-                });
-
-            var types = assemblies
+                    typeof(IThemeValidator).Assembly,
+                    Assembly.Load("website")
+                }
                 .SelectMany(a => a.GetTypes())
                 .Where(t =>
                     t.IsClass &&

@@ -3,6 +3,7 @@ using Olive.Microservices.Hub.Domain.Theme.LoginLoggers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Olive.Microservices.Hub.Domain.Theme
@@ -28,14 +29,11 @@ namespace Olive.Microservices.Hub.Domain.Theme
 
         void LoadMap()
         {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a =>
+            var types = new[]
                 {
-                    var name = a.GetName().Name;
-                    return name is "website" or "Olive.Microservices.Hub";
-                });
-
-            var types = assemblies
+                    typeof(IThemeValidator).Assembly,
+                    Assembly.Load("website")
+                }
                 .SelectMany(a => a.GetTypes())
                 .Where(a => a.IsClass && typeof(IThemeLoginLogger).IsAssignableFrom(a))
                 .ToList();
