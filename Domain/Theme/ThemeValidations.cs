@@ -5,6 +5,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using System.Threading.Tasks;
 
     public class ThemeValidations : IThemeValidations
@@ -31,15 +32,28 @@
 
         void LoadMap()
         {
-            var types = AppDomain.CurrentDomain
-                .GetAssemblies()
-                .SelectMany(a => a.GetTypes())
-                .Where(a => a.IsClass && typeof(IThemeValidator).IsAssignableFrom(a))
-                .ToList();
+            var types = new List<Type>();
+
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                try
+                {
+                    types.AddRange(
+                        assembly.GetTypes()
+                            .Where(t => t.IsClass && typeof(IThemeValidator).IsAssignableFrom(t)));
+                }
+                catch (ReflectionTypeLoadException ex)
+                {
+                    Console.WriteLine($"Failed assembly: {assembly.FullName}");
+
+                    foreach (var loaderEx in ex.LoaderExceptions)
+                        Console.WriteLine(loaderEx);
+                }
+            }
 
             _validators = types
-                .Select(a => Activator.CreateInstance(a) as IThemeValidator)
-                .Where(a => a is not null)
+                .Select(t => Activator.CreateInstance(t) as IThemeValidator)
+                .Where(v => v != null)
                 .Cast<IThemeValidator>()
                 .ToList();
         }
