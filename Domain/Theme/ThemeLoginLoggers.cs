@@ -28,8 +28,14 @@ namespace Olive.Microservices.Hub.Domain.Theme
 
         void LoadMap()
         {
-            var types = AppDomain.CurrentDomain
-                .GetAssemblies()
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(a =>
+                {
+                    var name = a.GetName().Name;
+                    return name is "website" or "Olive.Microservices.Hub";
+                });
+
+            var types = assemblies
                 .SelectMany(a => a.GetTypes())
                 .Where(a => a.IsClass && typeof(IThemeLoginLogger).IsAssignableFrom(a))
                 .ToList();
