@@ -112,6 +112,12 @@ namespace Olive.Microservices.Hub.Domain.Theme
             return (_currentTheme.HomePageUrl).Or(Config.Get<string>("HomePageUrl", "dashboard/home.aspx"));
         }
 
+        public async Task<string> GetSupportEmail()
+        {
+            if (!_initialized) await GetCurrentTheme();
+            return (_currentTheme.SupportEmail).Or(Config.Get<string>("SupportEmail", ""));
+        }
+
         public async Task<SidebarProfileUrl?> GetSidebarProfile()
         {
             if (!_initialized) await GetCurrentTheme();

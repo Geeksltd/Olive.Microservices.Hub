@@ -55,7 +55,7 @@
 	<meta name="theme-color" content="@primaryColor">
 
 	<script type="text/javascript">
-		@JsVariableProvider.Render().Raw()
+		@((await JsVariableProvider.Render()).Raw())
 	</script>
 
 	<script src="@root/lib/olive.microservices.hubjs/dist/bundle-built.js"></script>

@@ -7,6 +7,6 @@ namespace Olive.Microservices.Hub.Domain.Utilities.JsVariable
 {
 	public interface IJsVariableProvider
 	{
-		string Render();
+		Task<string> Render();
 	}
 }

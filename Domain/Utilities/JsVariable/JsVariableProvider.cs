@@ -1,15 +1,21 @@
 ﻿using Newtonsoft.Json;
+using Olive.Microservices.Hub.Domain.Theme.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Olive.Microservices.Hub.Domain.Utilities.JsVariable
 {
 	public class JsVariableProvider : IJsVariableProvider
 	{
-		public string Render()
+		readonly IThemeProvider ThemeProvider;
+
+		public JsVariableProvider(IThemeProvider themeProvider) => ThemeProvider = themeProvider;
+
+		public async Task<string> Render()
 		{
 			var boardsAssemblyName =
 				AppDomain.CurrentDomain
@@ -30,6 +36,8 @@ namespace Olive.Microservices.Hub.Domain.Utilities.JsVariable
 			{
 				{ "services", Service.GetAllForJsVariables() },
 				{ "boards", boards },
+				{ "isEmployee", Context.Current.User()?.IsInRole("Employee") == true },
+				{ "supportEmail", await ThemeProvider.GetSupportEmail() },
 			};
 
 			var builder = new StringBuilder();

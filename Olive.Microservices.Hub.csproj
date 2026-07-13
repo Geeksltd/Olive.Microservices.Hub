@@ -8,7 +8,7 @@
 		<Authors>Geeks Ltd</Authors>
 		<RepositoryUrl>https://github.com/Geeksltd/Olive.Microservices.Hub/tree/master/Olive.Microservices.Hub</RepositoryUrl>
 		<PackageIcon>icon.png</PackageIcon>
-		<Version>10.0.0</Version>
+		<Version>10.0.1</Version>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 		<Nullable>enable</Nullable>

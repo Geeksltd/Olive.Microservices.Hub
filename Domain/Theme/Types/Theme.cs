@@ -13,6 +13,7 @@
             Default = "/person/%EMAIL%"
         };
 
+        public string? SupportEmail { get; set; }
         public string? LoginUrl { get; set; } = "/login";
         public string? LoginTitle { get; set; }
         public string? Copyright { get; set; }
