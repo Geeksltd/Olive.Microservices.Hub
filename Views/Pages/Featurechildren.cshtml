@@ -22,7 +22,7 @@
                        class="feature-button olive-instant-search-item badge-number"
                        href="@item.LoadUrl@(item.NoNav?"_nav=no".WithPrefix(item.LoadUrl.Contains("?")?"&":"?"):"")"
                        id="@item.ID"
-                    @("data-redirect='ajax'".OnlyWhen(!item.UseIframe && !item.NoNav).Raw())
+                        @("data-redirect='ajax'".OnlyWhen(!item.UseIframe && !item.NoNav).TrustedRaw())
                        data-badgeurl="@item.GetBadgeUrl()"
                        data-service="@item.Service?.Name"
                        style="color:@item.GetColour();">

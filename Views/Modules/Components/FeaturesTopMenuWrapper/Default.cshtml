@@ -5,7 +5,7 @@
 {
     <form data-module="FeaturesTopMenuWrapper" class="">
         @Html.StartupActionsJson()
-        @info.Markup.Raw()
+        @info.Markup.TrustedRaw()
         <button type="button" id="sidebarCollapse" class="navbar-btn d-none d-lg-block @(Request.Cookies[".side-bar"].OrEmpty() == "collapsed" ? "collapse" : string.Empty )">
             <i class="fa @(Request.Cookies[".side-bar"].OrEmpty() == "collapsed" ? "fa-chevron-right" : "fa-chevron-left")" aria-hidden="true"></i></button>
         <ul class='features-sub-menu feature-top-menu d-none d-lg-flex'>

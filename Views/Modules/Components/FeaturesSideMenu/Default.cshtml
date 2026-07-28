@@ -6,7 +6,7 @@
     @Html.StartupActionsJson()
     @if (User.Identity?.IsAuthenticated == true)
     {
-        @info.Markup.Raw()
+        @info.Markup.TrustedRaw()
     }
 </div>
 <!-- «End| FeaturesSideMenu» -->

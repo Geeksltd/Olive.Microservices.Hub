@@ -3,7 +3,7 @@
 <form data-module="SingleSignOn" method="get" action="@Url.Current()" data-redirect="ajax">
    @Html.StartupActionsJson()
    <h2>Logging in to other apps...</h2>
-   @Model.Errors.Raw()
+    @Model.Errors.TrustedRaw()
    @if (Model.Items.Any())
    {
    <div class='list-items'>

@@ -24,7 +24,7 @@
         @if (User.Identity?.IsAuthenticated == true)
         {
             <a name="SignOut" href="/logout" default-button="true">Sign out</a>
-            @Html.RenderHeaderButtons().Raw()
+            @Html.RenderHeaderButtons().TrustedRaw()
         }
         else
         {
