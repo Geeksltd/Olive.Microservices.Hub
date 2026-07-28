@@ -115,7 +115,12 @@ namespace Olive.Microservices.Hub.Domain.Theme
         public async Task<string> GetSupportEmail()
         {
             if (!_initialized) await GetCurrentTheme();
-            return (_currentTheme.SupportEmail).Or(Config.Get<string>("SupportEmail", ""));
+
+            var configured = (_currentTheme.SupportEmail).Or(Config.Get<string>("SupportEmail", ""));
+            if (configured.HasValue()) return configured;
+
+            var domain = Config.Get("Authentication:Cookie:Domain").Or("app.geeks.ltd").RemoveBefore(".").Trim('.');
+            return $"support@{domain}";
         }
 
         public async Task<SidebarProfileUrl?> GetSidebarProfile()
