@@ -44,13 +44,26 @@ namespace Controllers
 
                 if (await Context.Current.User().LoadUser() is null)
                 {
-                    await HttpContext.SignOutAsync();
-                    return Content("Invalid user: " + HttpContext.User.GetEmail());
+                    return await LoginError("Account not found. Your account may not have been created yet, " +
+                        "or there may be an issue with your account. Please contact support if this issue persists.");
                 }
             }
 
             Response.StatusCode = User.Identity?.IsAuthenticated == true ? 403 : 401;
             return View(item);
+        }
+
+        /// <summary>Signs the user out and sends them back to the login page with the given message,
+        /// exactly as the login page itself does when an invalid email is entered.</summary>
+        [NonAction]
+        async Task<ActionResult> LoginError(string message)
+        {
+            await HttpContext.SignOutAsync();
+
+            TempData["LoginErrorMessage"] = message;
+
+            var returnUrl = Request.Param("returnUrl").Or("/");
+            return Redirect($"/login?ReturnUrl={Uri.EscapeDataString(returnUrl)}");
         }
     }
 }
