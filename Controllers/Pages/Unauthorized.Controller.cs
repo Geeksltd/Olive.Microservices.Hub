@@ -58,7 +58,7 @@ namespace Controllers
         [NonAction]
         async Task<ActionResult> LoginError(string message)
         {
-            await HttpContext.SignOutAsync();
+            await HttpContext.LogOff();
 
             TempData["LoginErrorMessage"] = message;
 

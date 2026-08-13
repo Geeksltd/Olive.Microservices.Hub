@@ -46,6 +46,10 @@ namespace Controllers
         [HttpGet, Route("logout")]
         public Task<IActionResult> Logout(ViewModel.LoginForm _)
         {
+            // The JWT cookie is separate from the authentication cookie, so signing out does not
+            // remove it. Clear it here so every implementation of OnLoggedOut() is covered.
+            HttpContext.ClearJwtToken();
+
             return OnLoggedOut();
             // await HttpContext.SignOutAsync();
             // return Redirect(Microservice.Of("Dashboard").Url("/login/logout.aspx"));

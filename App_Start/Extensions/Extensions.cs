@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,11 @@ namespace System
     {
         static int Timeout => Config.Get<int>("Authentication:Cookie:Timeout");
         static int MobileTimeout => Config.Get<int>("Authentication:Cookie:TimeoutMobile");
+
+        static string JwtCookieName => Config.Get("Authentication:JWT:Cookie:Name");
+
+        static string JwtCookieDomain => Config.Get("Authentication:JWT:Cookie:Domain")
+            .Or(Config.Get("Authentication:Cookie:Domain"));
 
         public static async Task<string> LogOn(this PeopleService.UserInfo @this)
         {
@@ -63,6 +69,36 @@ namespace System
             return await Context.Current.Database().FirstOrDefault<PeopleService.UserInfo>(x => x.Email == email);
         }
 
+        /// <summary>Signs the user out of cookie authentication and removes the JWT cookie.
+        /// Use this rather than SignOutAsync() on its own, which leaves the JWT cookie behind.</summary>
+        public static async Task LogOff(this HttpContext @this)
+        {
+            await @this.SignOutAsync();
+            @this.ClearJwtToken();
+        }
+
+        /// <summary>Removes the JWT cookie issued by <see cref="LogOn"/>. It is a separate cookie
+        /// on the shared parent domain, so cookie authentication's SignOutAsync() does not touch it.
+        /// Unless it is deleted explicitly it stays in the browser, and valid, until it expires.</summary>
+        public static void ClearJwtToken(this HttpContext @this)
+        {
+            var cookieName = JwtCookieName;
+            if (cookieName.IsEmpty()) return;
+
+            var cookieDomain = JwtCookieDomain;
+            if (cookieDomain.IsEmpty()) return;
+
+            // These must mirror the options used to append it, otherwise the browser treats this
+            // as a different cookie and keeps the original one.
+            @this.Response.Cookies.Delete(cookieName, new CookieOptions
+            {
+                Domain = cookieDomain,
+                Secure = @this.Request.IsHttps,
+                HttpOnly = false,
+                SameSite = SameSiteMode.Lax
+            });
+        }
+
         private static void TryAddJwtToken(GenericLoginInfo loggingInfo, bool mobile)
         {
             try
@@ -70,10 +106,10 @@ namespace System
                 var jwt = loggingInfo.CreateJwtToken(remember: mobile);
                 if (jwt.IsEmpty()) return;
 
-                var cookieName = Config.Get("Authentication:JWT:Cookie:Name");
+                var cookieName = JwtCookieName;
                 if (cookieName.IsEmpty()) return;
 
-                var cookieDomain = Config.Get("Authentication:JWT:Cookie:Domain").Or(Config.Get("Authentication:Cookie:Domain"));
+                var cookieDomain = JwtCookieDomain;
                 if (cookieDomain.IsEmpty()) return;
 
                 Context.Current.Http().Response.Cookies.Append(cookieName, jwt, new CookieOptions
