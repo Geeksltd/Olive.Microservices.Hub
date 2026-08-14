@@ -106,10 +106,26 @@ namespace Olive.Microservices.Hub.Domain.Theme
 
         public string AppResourceVersion => Config.Get("App.Resource.Version");
 
-        public async Task<string> GetHomePageUrl()
+        public async Task<HomePageUrl?> GetHomePage()
         {
             if (!_initialized) await GetCurrentTheme();
-            return (_currentTheme.HomePageUrl).Or(Config.Get<string>("HomePageUrl", "dashboard/home.aspx"));
+            if (_currentTheme.HomePageUrl != null) return _currentTheme.HomePageUrl;
+            return GetConfig<HomePageUrl>(nameof(HomePageUrl));
+        }
+
+        public async Task<string> GetHomePageUrl(string[] userRoles)
+        {
+            var home = await GetHomePage();
+
+            string? homePageUrl = "";
+
+            if (home?.Roles != null)
+                homePageUrl = TryGetUrlByRole(home.Roles, userRoles);
+
+            if (homePageUrl.IsEmpty())
+                homePageUrl = home?.Default;
+
+            return homePageUrl.Or("dashboard/home.aspx");
         }
 
         public async Task<string> GetSupportEmail()
@@ -141,7 +157,7 @@ namespace Olive.Microservices.Hub.Domain.Theme
             string? sidebarProfileUrl = "";
 
             if (profile?.Roles != null)
-                sidebarProfileUrl = TryGetSidebarProfileUrlByRole(profile.Roles, userRoles);
+                sidebarProfileUrl = TryGetUrlByRole(profile.Roles, userRoles);
 
             if (sidebarProfileUrl.IsEmpty())
                 sidebarProfileUrl = profile?.Default;
@@ -160,7 +176,7 @@ namespace Olive.Microservices.Hub.Domain.Theme
             return sidebarProfileUrl;
         }
 
-        private string? TryGetSidebarProfileUrlByRole(Dictionary<string, string> roles, string[] userRoles)
+        private string? TryGetUrlByRole(Dictionary<string, string> roles, string[] userRoles)
         {
             foreach (var keyValue in roles)
                 if (userRoles.Any(a => a.Equals(keyValue.Key, false)))

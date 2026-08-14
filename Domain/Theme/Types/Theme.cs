@@ -7,11 +7,8 @@
         public string ValidationFunction { get; set; } = "ForceTrue";
         public LogUserLogin? LogUserLogins { get; set; }
         public OtpConfigs? Otp { get; set; }
-        public string? HomePageUrl { get; set; } = "dashboard/home.aspx";
-        public SidebarProfileUrl? SidebarProfileUrl { get; set; } = new()
-        {
-            Default = "/person/%EMAIL%"
-        };
+        public HomePageUrl? HomePageUrl { get; set; }
+        public SidebarProfileUrl? SidebarProfileUrl { get; set; }
 
         public string? SupportEmail { get; set; }
         public string? LoginUrl { get; set; } = "/login";

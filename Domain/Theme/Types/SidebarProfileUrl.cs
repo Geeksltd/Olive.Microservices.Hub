@@ -1,15 +1,12 @@
-﻿namespace Olive.Microservices.Hub.Domain.Theme.Types
+namespace Olive.Microservices.Hub.Domain.Theme.Types
 {
-    using System.Collections.Generic;
+    using System.ComponentModel;
 
-    public class SidebarProfileUrl
+    /// <summary>The url of the profile link in the sidebar and footer, optionally varying by the
+    /// user's role. It can be configured either as an object (Default + Roles) or as a plain
+    /// string which is read as the Default.</summary>
+    [TypeConverter(typeof(RoleBasedUrlConverter<SidebarProfileUrl>))]
+    public class SidebarProfileUrl : RoleBasedUrl
     {
-        public string Default { get; set; }
-        public Dictionary<string, string>? Roles { get; set; }
-
-        public override string ToString()
-        {
-            return Default + $" ({Roles?.Count ?? 0} roles)";
-        }
     }
 }

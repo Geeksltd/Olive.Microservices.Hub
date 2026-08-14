@@ -10,7 +10,7 @@ public interface IThemeProvider
     Task<Types.Theme> GetCurrentTheme();
     Task<string> GetRootPath(bool withCurrentTheme);
     Task<string> GetPrimaryColor();
-    Task<string> GetHomePageUrl();
+    Task<string> GetHomePageUrl(string[] userRoles);
     Task<string> GetSupportEmail();
     Task<string> GetSidebarProfileUrl(string[] userRoles, Dictionary<string, string> parameters);
     Task<string> GetUserImage(UserInfo user);

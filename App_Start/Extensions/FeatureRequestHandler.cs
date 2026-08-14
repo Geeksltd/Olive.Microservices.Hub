@@ -33,7 +33,9 @@ namespace ViewModel
             if (Path.IsEmpty())
             {
                 var themeProvider = Context.Current.GetOptionalService<IThemeProvider>();
-                RequestPath = Path = (themeProvider == null ? "dashboard/home.aspx" : await themeProvider.GetHomePageUrl());
+                RequestPath = Path = (themeProvider == null
+                    ? "dashboard/home.aspx"
+                    : await themeProvider.GetHomePageUrl(Context.Current.User()?.GetRoles().ToArray() ?? new string[0]));
                 HostAndPath = request.RootUrl() + Path.TrimStart("/");
             }
         }
