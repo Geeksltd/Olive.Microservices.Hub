@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Olive.Microservices.Hub.Domain.Theme
 {
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
     using Olive;
     using Olive.Microservices.Hub.Domain.Theme.Contracts;
@@ -19,14 +20,17 @@ namespace Olive.Microservices.Hub.Domain.Theme
         private readonly IThemeValidations _themeValidations;
         private readonly IThemeLoginLoggers _loginLoggers;
         private readonly IWebHostEnvironment _environment;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private Theme _currentTheme = new();
         private bool _initialized;
 
-        public ThemeProvider(IThemeValidations themeValidations, IThemeLoginLoggers loginLoggers, IWebHostEnvironment environment)
+        public ThemeProvider(IThemeValidations themeValidations, IThemeLoginLoggers loginLoggers, IWebHostEnvironment environment,
+            IHttpContextAccessor httpContextAccessor)
         {
             _themeValidations = themeValidations;
             _loginLoggers = loginLoggers;
             _environment = environment;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public static T? GetConfig<T>(string sectionName)
@@ -113,14 +117,14 @@ namespace Olive.Microservices.Hub.Domain.Theme
             return GetConfig<HomePageUrl>(nameof(HomePageUrl));
         }
 
-        public async Task<string> GetHomePageUrl(string[] userRoles)
+        public async Task<string> GetHomePageUrl()
         {
             var home = await GetHomePage();
 
             string? homePageUrl = "";
 
             if (home?.Roles != null)
-                homePageUrl = TryGetUrlByRole(home.Roles, userRoles);
+                homePageUrl = TryGetUrlByRole(home.Roles);
 
             if (homePageUrl.IsEmpty())
                 homePageUrl = home?.Default;
@@ -146,18 +150,18 @@ namespace Olive.Microservices.Hub.Domain.Theme
             return GetConfig<SidebarProfileUrl>(nameof(SidebarProfileUrl));
         }
 
-        public async Task<string> GetSidebarProfileUrl(string[] userRoles, Dictionary<string, string> parameters)
+        public async Task<string> GetSidebarProfileUrl(Dictionary<string, string> parameters)
         {
             var profile = await GetSidebarProfile();
-            return GetSidebarProfileUrl(profile, userRoles, parameters);
+            return GetSidebarProfileUrl(profile, parameters);
         }
 
-        private string GetSidebarProfileUrl(SidebarProfileUrl? profile, string[] userRoles, Dictionary<string, string> parameters)
+        private string GetSidebarProfileUrl(SidebarProfileUrl? profile, Dictionary<string, string> parameters)
         {
             string? sidebarProfileUrl = "";
 
             if (profile?.Roles != null)
-                sidebarProfileUrl = TryGetUrlByRole(profile.Roles, userRoles);
+                sidebarProfileUrl = TryGetUrlByRole(profile.Roles);
 
             if (sidebarProfileUrl.IsEmpty())
                 sidebarProfileUrl = profile?.Default;
@@ -176,13 +180,27 @@ namespace Olive.Microservices.Hub.Domain.Theme
             return sidebarProfileUrl;
         }
 
-        private string? TryGetUrlByRole(Dictionary<string, string> roles, string[] userRoles)
+        private string? TryGetUrlByRole(Dictionary<string, string> roles)
         {
             foreach (var keyValue in roles)
-                if (userRoles.Any(a => a.OrEmpty().Trim().Equals(keyValue.Key.OrEmpty().Trim(), false)))
+                if (IsInRole(keyValue.Key))
                     return keyValue.Value;
 
             return null;
+        }
+
+        /// <summary>Checks the current user against a role name from configuration. IsInRole()
+        /// compares role claims ordinally, so a case insensitive scan backs it up to keep
+        /// configuration whose casing differs from the claim working as it did before.</summary>
+        private bool IsInRole(string role)
+        {
+            var user = _httpContextAccessor.HttpContext?.User;
+            if (user is null) return false;
+
+            role = role.OrEmpty().Trim();
+            if (role.IsEmpty()) return false;
+
+            return user.IsInRole(role) || user.GetRoles().Any(x => x.OrEmpty().Trim().Equals(role, false));
         }
 
         public async Task LogLoginStatus(string email, LoginLogStatus status, string? message = null)
