@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Olive.Microservices.Hub.Domain.Theme.Contracts;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,7 @@ namespace ViewComponents
             var email = Context.Current.User().GetEmail();
             if (user is null) return Content("User not recognised: " + email);
 
-            var userRoles = user.Roles.Split(',');
+            var userRoles = user.Roles.OrEmpty().Split(',').Trim().ToArray();
 
 			var sidebarProfileUrl = await _themeProvider.GetSidebarProfileUrl(userRoles, new Dictionary<string, string>
 			{

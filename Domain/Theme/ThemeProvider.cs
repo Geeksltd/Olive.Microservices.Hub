@@ -179,7 +179,7 @@ namespace Olive.Microservices.Hub.Domain.Theme
         private string? TryGetUrlByRole(Dictionary<string, string> roles, string[] userRoles)
         {
             foreach (var keyValue in roles)
-                if (userRoles.Any(a => a.Equals(keyValue.Key, false)))
+                if (userRoles.Any(a => a.OrEmpty().Trim().Equals(keyValue.Key.OrEmpty().Trim(), false)))
                     return keyValue.Value;
 
             return null;
