@@ -95,7 +95,7 @@ namespace Olive.Microservices.Hub.Domain.Theme
         public async Task<string?> GetLoginUrl()
         {
             if (!_initialized) await GetCurrentTheme();
-            return _currentTheme.LoginUrl.Or(Config.Get<string>("LoginUrl"));
+            return _currentTheme.LoginUrl;
         }
 
         public async Task<string> ExtraStylesTag()
@@ -113,8 +113,7 @@ namespace Olive.Microservices.Hub.Domain.Theme
         public async Task<HomePageUrl?> GetHomePage()
         {
             if (!_initialized) await GetCurrentTheme();
-            if (_currentTheme.HomePageUrl != null) return _currentTheme.HomePageUrl;
-            return GetConfig<HomePageUrl>(nameof(HomePageUrl));
+            return _currentTheme.HomePageUrl;
         }
 
         public async Task<string> GetHomePageUrl()
@@ -146,8 +145,7 @@ namespace Olive.Microservices.Hub.Domain.Theme
         public async Task<SidebarProfileUrl?> GetSidebarProfile()
         {
             if (!_initialized) await GetCurrentTheme();
-            if (_currentTheme.SidebarProfileUrl != null) return _currentTheme.SidebarProfileUrl;
-            return GetConfig<SidebarProfileUrl>(nameof(SidebarProfileUrl));
+            return _currentTheme.SidebarProfileUrl;
         }
 
         public async Task<string> GetSidebarProfileUrl(Dictionary<string, string> parameters)
