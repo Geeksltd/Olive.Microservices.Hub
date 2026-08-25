@@ -135,7 +135,7 @@ namespace Olive.Microservices.Hub.Domain.Theme
         {
             if (!_initialized) await GetCurrentTheme();
 
-            var configured = (_currentTheme.SupportEmail).Or(Config.Get<string>("SupportEmail", ""));
+            var configured = _currentTheme.SupportEmail.OrEmpty();
             if (configured.HasValue()) return configured;
 
             var domain = Config.Get("Authentication:Cookie:Domain").Or("app.geeks.ltd").RemoveBefore(".").Trim('.');
