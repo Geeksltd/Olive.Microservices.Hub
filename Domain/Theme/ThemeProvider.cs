@@ -33,29 +33,18 @@ namespace Olive.Microservices.Hub.Domain.Theme
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public static T? GetConfig<T>(string sectionName)
-        {
-            var section = Config.GetSection(sectionName);
-            var data = section.Get<T>();
-            return data;
-
-        }
-
         public async Task<Theme> GetCurrentTheme()
         {
             if (_initialized) return _currentTheme;
 
-            var themes = GetConfig<Theme[]>("Themes");
-
-            if (themes != null)
+            foreach (var section in Config.GetSection("Themes").GetChildren())
             {
-                foreach (var item in themes)
-                {
-                    if (!await _themeValidations.IsValid(item)) continue;
+                var theme = ReadTheme(section);
 
-                    _currentTheme = item;
-                    break;
-                }
+                if (!await _themeValidations.IsValid(theme)) continue;
+
+                _currentTheme = theme;
+                break;
             }
 
             _initialized = true;
@@ -63,6 +52,18 @@ namespace Olive.Microservices.Hub.Domain.Theme
             _currentTheme.Copyright = _currentTheme.Copyright?.Replace("%Year%", DateTime.Now.Year.ToString());
 
             return _currentTheme;
+        }
+
+        /// <summary>Binds one Themes entry. HomePageUrl and SidebarProfileUrl are read explicitly
+        /// rather than bound, for the reason set out in <see cref="RoleBasedUrlReader"/>.</summary>
+        static Theme ReadTheme(IConfigurationSection section)
+        {
+            var theme = section.Get<Theme>() ?? new Theme();
+
+            theme.HomePageUrl = RoleBasedUrlReader.Read<HomePageUrl>(section.GetSection(nameof(Theme.HomePageUrl)));
+            theme.SidebarProfileUrl = RoleBasedUrlReader.Read<SidebarProfileUrl>(section.GetSection(nameof(Theme.SidebarProfileUrl)));
+
+            return theme;
         }
 
         public async Task<string> GetRootPath(bool withCurrentTheme)
@@ -178,11 +179,14 @@ namespace Olive.Microservices.Hub.Domain.Theme
             return sidebarProfileUrl;
         }
 
-        private string? TryGetUrlByRole(Dictionary<string, string> roles)
+        /// <summary>Returns the url of the highest ranking configured role that the user holds.
+        /// Configuration cannot preserve the order the roles were written in - the binder sorts the
+        /// keys - so ranking is by Priority, and entries left at the default 0 keep key order.</summary>
+        private string? TryGetUrlByRole(Dictionary<string, RoleUrl> roles)
         {
-            foreach (var keyValue in roles)
+            foreach (var keyValue in roles.OrderBy(x => x.Value?.Priority ?? 0))
                 if (IsInRole(keyValue.Key))
-                    return keyValue.Value;
+                    return keyValue.Value?.Url;
 
             return null;
         }
