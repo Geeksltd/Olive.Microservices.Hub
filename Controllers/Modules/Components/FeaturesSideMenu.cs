@@ -33,8 +33,8 @@ namespace Controllers
         [NonAction, OnBound]
         public async Task OnBound(vm.FeaturesSideMenu info)
         {
-            var theme = await _themeProvider.GetCurrentTheme();
-            info.Markup = (AuthroziedFeatureInfo.RenderMenu(FeatureContext.ViewingFeature, !theme.HideEveryThingMenuItem)).ToString();
+            var hidden = await _themeProvider.IsEverythingMenuItemHidden();
+            info.Markup = AuthroziedFeatureInfo.RenderMenu(FeatureContext.ViewingFeature, !hidden).ToString();
         }
     }
 }

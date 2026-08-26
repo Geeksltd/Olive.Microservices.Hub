@@ -54,14 +54,15 @@ namespace Olive.Microservices.Hub.Domain.Theme
             return _currentTheme;
         }
 
-        /// <summary>Binds one Themes entry. HomePageUrl and SidebarProfileUrl are read explicitly
-        /// rather than bound, for the reason set out in <see cref="RoleBasedUrlReader"/>.</summary>
+        /// <summary>Binds one Themes entry. The role based settings are read explicitly rather
+        /// than bound, for the reason set out in <see cref="RoleBasedReader"/>.</summary>
         static Theme ReadTheme(IConfigurationSection section)
         {
             var theme = section.Get<Theme>() ?? new Theme();
 
-            theme.HomePageUrl = RoleBasedUrlReader.Read<HomePageUrl>(section.GetSection(nameof(Theme.HomePageUrl)));
-            theme.SidebarProfileUrl = RoleBasedUrlReader.Read<SidebarProfileUrl>(section.GetSection(nameof(Theme.SidebarProfileUrl)));
+            theme.HomePageUrl = RoleBasedReader.Read<HomePageUrl, string>(section.GetSection(nameof(Theme.HomePageUrl)));
+            theme.SidebarProfileUrl = RoleBasedReader.Read<SidebarProfileUrl, string>(section.GetSection(nameof(Theme.SidebarProfileUrl)));
+            theme.HideEveryThingMenuItem = RoleBasedReader.Read<HideEveryThingMenuItem, bool?>(section.GetSection(nameof(Theme.HideEveryThingMenuItem)));
 
             return theme;
         }
@@ -99,6 +100,14 @@ namespace Olive.Microservices.Hub.Domain.Theme
             return _currentTheme.LoginUrl;
         }
 
+        /// <summary>Whether the Everything item is left out of the side menu for the current user.
+        /// Unconfigured means it is shown, which is how the setting behaved as a plain bool.</summary>
+        public async Task<bool> IsEverythingMenuItemHidden()
+        {
+            if (!_initialized) await GetCurrentTheme();
+            return ResolveByRole(_currentTheme.HideEveryThingMenuItem) ?? false;
+        }
+
         public async Task<string> ExtraStylesTag()
         {
             var root = await GetRootPath(true);
@@ -121,15 +130,7 @@ namespace Olive.Microservices.Hub.Domain.Theme
         {
             var home = await GetHomePage();
 
-            string? homePageUrl = "";
-
-            if (home?.Roles != null)
-                homePageUrl = TryGetUrlByRole(home.Roles);
-
-            if (homePageUrl.IsEmpty())
-                homePageUrl = home?.Default;
-
-            return homePageUrl.Or("dashboard/home.aspx");
+            return ResolveByRole(home).Or("dashboard/home.aspx");
         }
 
         public async Task<string> GetSupportEmail()
@@ -157,15 +158,7 @@ namespace Olive.Microservices.Hub.Domain.Theme
 
         private string GetSidebarProfileUrl(SidebarProfileUrl? profile, Dictionary<string, string> parameters)
         {
-            string? sidebarProfileUrl = "";
-
-            if (profile?.Roles != null)
-                sidebarProfileUrl = TryGetUrlByRole(profile.Roles);
-
-            if (sidebarProfileUrl.IsEmpty())
-                sidebarProfileUrl = profile?.Default;
-
-            return RenderSidebarProfileUrl(sidebarProfileUrl.Or(
+            return RenderSidebarProfileUrl(ResolveByRole(profile).Or(
                 $"https://hub.{Config.Get("Authentication:Cookie:Domain").EnsureEndsWith("/")}person/%EMAIL%"), parameters);
         }
 
@@ -179,17 +172,32 @@ namespace Olive.Microservices.Hub.Domain.Theme
             return sidebarProfileUrl;
         }
 
-        /// <summary>Returns the url of the highest ranking configured role that the user holds.
-        /// Configuration cannot preserve the order the roles were written in - the binder sorts the
-        /// keys - so ranking is by Priority, and entries left at the default 0 keep key order.</summary>
-        private string? TryGetUrlByRole(Dictionary<string, RoleUrl> roles)
+        /// <summary>Returns the value configured for the highest ranking role that the user holds,
+        /// or Default when no configured role matched or the matched entry left the value unset.</summary>
+        private TValue? ResolveByRole<TValue>(RoleBased<TValue>? setting)
+        {
+            if (setting is null) return default;
+
+            var byRole = setting.Roles is null ? default : TryGetByRole(setting.Roles);
+
+            return IsSet(byRole) ? byRole : setting.Default;
+        }
+
+        /// <summary>Configuration cannot preserve the order the roles were written in - the binder
+        /// sorts the keys - so ranking is by Priority, and entries left at the default 0 keep key
+        /// order.</summary>
+        private TValue? TryGetByRole<TValue>(Dictionary<string, RoleValue<TValue>> roles)
         {
             foreach (var keyValue in roles.OrderBy(x => x.Value?.Priority ?? 0))
                 if (IsInRole(keyValue.Key))
-                    return keyValue.Value?.Url;
+                    return keyValue.Value is null ? default : keyValue.Value.Value;
 
-            return null;
+            return default;
         }
+
+        /// <summary>An empty url counts as unset, which is how the url settings behaved before they
+        /// were generalised.</summary>
+        static bool IsSet<TValue>(TValue? value) => value is string url ? url.HasValue() : value is not null;
 
         /// <summary>Checks the current user against a role name from configuration. IsInRole()
         /// compares role claims ordinally, so a case insensitive scan backs it up to keep

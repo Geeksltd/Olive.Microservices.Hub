@@ -14,7 +14,7 @@
         public string? LoginUrl { get; set; } = "/login";
         public string? LoginTitle { get; set; }
         public string? Copyright { get; set; }
-        public bool HideEveryThingMenuItem { get; set; }
+        public HideEveryThingMenuItem? HideEveryThingMenuItem { get; set; }
         public string? UserImageUrlTemplate { get; set; }
 
 

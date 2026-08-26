@@ -15,6 +15,7 @@ public interface IThemeProvider
     Task<string> GetSidebarProfileUrl(Dictionary<string, string> parameters);
     Task<string> GetUserImage(UserInfo user);
     Task<string?> GetLoginUrl();
+    Task<bool> IsEverythingMenuItemHidden();
     Task<string> ExtraStylesTag();
     Task LogLoginStatus(string email, LoginLogStatus status, string? message = null);
     Task<int> OtpExpirationMinutes();
