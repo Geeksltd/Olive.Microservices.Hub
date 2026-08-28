@@ -146,7 +146,7 @@ namespace Olive.Microservices.Hub
         {
             if (Icon.HasValue()) return Icon;
             else if (Children.Any()) return "fas fa-folder-open";
-            else return "fa-window-maximize";
+            else return "fas fa-window-maximize";
         }
 
         public string GetColour() => ColourPalette.GetColourCode();

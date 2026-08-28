@@ -1,18 +1,319 @@
-﻿@model ViewModel.EverythingPage_Everything
+@model ViewModel.EverythingPage_Everything
+@{
+    // Deterministic per-group accent. Deliberately not ColourPalette: that is a
+    // process-wide mutable Stack, so concurrent requests interleave and a group's
+    // colour changes on every render.
+    var palette = new[] { "#CC3542", "#FA7902", "#FAB320", "#2CC6D2", "#0A98CF", "#065280" };
+
+    // Cards are dealt into fixed columns here, rather than left to a css multi
+    // column layout, because multi column reads top to bottom and this page is
+    // scanned left to right: the first group of each column starts a column, so
+    // the top of the page reads groups 1, 2, 3. Each column then stacks flush,
+    // so there is no gap under a card shorter than its neighbours.
+    // Css cannot redistribute these, so the count is fixed here and must match
+    // the breakpoint in fullMenu.scss.
+    const int columns = 3;
+
+    // Greedy longest-processing-time packing: walk the groups largest first and
+    // drop each into whichever column is currently shortest. Dealing them round
+    // robin instead would give column one the largest of every triple, so it
+    // would always finish tallest. The script in this view repeats this exact
+    // algorithm when it re-deals, so both agree.
+    var packed = new List<ViewModel.EverythingPage_Everything.Node>[columns];
+    var packedWeight = new int[columns];
+    for (var c = 0; c < columns; c++) packed[c] = new List<ViewModel.EverythingPage_Everything.Node>();
+
+    foreach (var group in Model.Groups)
+    {
+        var shortest = 0;
+        for (var c = 1; c < columns; c++)
+        {
+            if (packedWeight[c] < packedWeight[shortest]) shortest = c;
+        }
+
+        packed[shortest].Add(group);
+        packedWeight[shortest] += group.Weight;
+    }
+}
 <!-- «Start| EverythingPage_Everything» -->
-<form data-module="EverythingPage_Everything" method="post" action="@Url.Current()">
+<form data-module="EverythingPage_Everything" method="post" action="@Url.Current()" class="everything">
     @Html.AntiForgeryToken()
     @Html.StartupActionsJson()
     <h2>What are you looking for?</h2>
-    <div class="search d-none d-lg-block">
-        <div class="form-group row">
-            <div class="group-control">
-                <input type="text" asp-for="InstantSearch" class="form-control" placeholder="Search..." />
+
+    @if (Model.Groups.Any())
+    {
+        <div class="everything-search">
+            @* The clear button overlays the input rather than sitting in an
+               input-group-append: an empty append would still be :last-child and
+               would square off the input's right corners whenever it is hidden. *@
+            <div class="everything-search-box">
+                <div class="input-group input-group-lg">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-search" aria-hidden="true"></i></span>
+                    </div>
+                    <input type="text" asp-for="FeatureSearch" class="form-control" autocomplete="off"
+                           placeholder="Search all features..." aria-label="Search all features" />
+                </div>
+                <button type="button" class="btn everything-clear" aria-label="Clear search" hidden>
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
             </div>
+            <p class="everything-count text-muted" aria-live="polite"></p>
         </div>
-    </div>
-    <div class="grid-wrapper full-menu-container">
-        @info.Markup.TrustedRaw()
-    </div>
+
+        <div class="full-menu-container">
+            @foreach (var column in packed)
+            {
+            <div class="everything-column">
+                @foreach (var group in column)
+                {
+                var i = group.Index;
+                <div class="everything-group" data-weight="@group.Weight" data-url="@group.SearchUrl"
+                     style="--group-colour:@palette[i % palette.Length]; order:@i">
+                    <div class="full-menu-item card">
+                        <div class="card-header d-flex align-items-center">
+                            <i class="@group.Item.GetIcon() everything-group-icon" aria-hidden="true"></i>
+                            @if (group.IsDisabled)
+                            {
+                                <span class="everything-group-title" data-title="@group.Item.Title">@group.Item.Title</span>
+                            }
+                            else
+                            {
+                                <a class="everything-group-title" href="@group.Url" data-title="@group.Item.Title">@group.Item.Title</a>
+                            }
+                            @if (group.TotalCount > 0)
+                            {
+                                <span class="badge badge-pill badge-light ml-auto" data-total="@group.TotalCount">@group.TotalCount</span>
+                            }
+                        </div>
+                        @if (group.Children.Any())
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var node in group.Descendants())
+                                {
+                                    <li class="list-group-item everything-item everything-depth-@(Math.Min(node.Depth - 1, 2))"
+                                        data-path="@node.Path" data-url="@node.SearchUrl">
+                                        @if (node.IsDisabled)
+                                        {
+                                            <span class="everything-link disabled">
+                                                <i class="@node.Item.GetIcon()" aria-hidden="true"></i>
+                                                <span class="everything-title" data-title="@node.Item.Title">@node.Item.Title</span>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            @* Deliberately no badge-number / data-badgeurl here. hubPage binds
+                                               BadgeNumber to $("a[data-badgeurl]") page-wide on load and again
+                                               every 5 minutes; this page lists every feature the side menu
+                                               already lists, so carrying badge urls would double the
+                                               cross-service badge traffic on the app's home page. *@
+                                            <a class="everything-link" href="@node.Url"
+                                               @("data-redirect='ajax'".OnlyWhen(!node.Item.UseIframe && !node.Item.NoNav).TrustedRaw())>
+                                                <i class="@node.Item.GetIcon()" aria-hidden="true"></i>
+                                                <span class="everything-title" data-title="@node.Item.Title">@node.Item.Title</span>
+                                            </a>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+
+        <div class="empty-list everything-empty text-center" hidden>
+            <i class="fas fa-search fa-2x d-block mb-3 text-muted" aria-hidden="true"></i>
+            No features match <strong class="everything-empty-term"></strong>.
+            <button type="button" class="btn btn-link everything-clear p-0 align-baseline">Clear the search</button>
+        </div>
+    }
+    else
+    {
+        <div class="empty-list">
+            There are no features to display.
+        </div>
+    }
+
+    <script type="text/javascript">
+        // Boot by polling for jQuery rather than assuming it: the hub app's layout
+        // loads only require.js synchronously and pulls jQuery in later from the
+        // olive.microservices.hubjs bundle, while this package's own layout loads
+        // the bundle with a plain script tag. This works under both.
+        (function boot(attempt) {
+            if (typeof window.jQuery === 'undefined') {
+                if (attempt < 200) setTimeout(function () { boot(attempt + 1); }, 50);
+                return;
+            }
+
+            var $ = window.jQuery;
+
+            // Re-runs on every olive ajax re-render of this module, so handlers are
+            // namespaced and torn down first to keep re-entry idempotent.
+            var NS = '.everythingSearch';
+            var $doc = $(document);
+            $doc.off(NS);
+
+            // Urls are kebab-case ("/people/absence-requests") while titles are spaced
+            // ("Absence Requests"), and the logical path is separated by ">". Fold all
+            // of those to spaces on both sides of the comparison so that any of
+            // "absence requests", "absence-requests" and "people/absence" match.
+            var SEPARATORS = /[\s\-_\/>]+/g;
+
+            function normalise(text) {
+                return text.toLowerCase().replace(SEPARATORS, ' ');
+            }
+
+            function terms() {
+                return normalise($('#FeatureSearch').val() || '').trim().split(' ').filter(Boolean);
+            }
+
+            function matches(hay, words) {
+                return words.every(function (w) { return hay.indexOf(w) !== -1; });
+            }
+
+            // Searchable text for a card or a row: its logical path (or title) plus
+            // its url, so "people/absence" and "absence" both find the same feature.
+            function haystack(el, title) {
+                return normalise((title || el.getAttribute('data-path') || '') + ' ' +
+                                 (el.getAttribute('data-url') || ''));
+            }
+
+            function highlight(el, words) {
+                var text = el.getAttribute('data-title') || el.textContent;
+                if (!words.length) { el.textContent = text; return; }
+
+                var pattern = words.map(function (w) { return w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|');
+                var re = new RegExp('(' + pattern + ')', 'ig');
+
+                el.textContent = '';
+                var last = 0, match;
+                while ((match = re.exec(text)) !== null) {
+                    if (re.lastIndex === match.index) { re.lastIndex++; continue; }
+                    el.appendChild(document.createTextNode(text.slice(last, match.index)));
+                    el.appendChild($('<mark/>').text(match[0])[0]);
+                    last = match.index + match[0].length;
+                }
+                el.appendChild(document.createTextNode(text.slice(last)));
+            }
+
+            function apply() {
+                var words = terms();
+                var $items = $('.everything-item');
+                var $cols = $('.everything-group');
+                var shownItems = 0;
+
+                $items.each(function () {
+                    var hit = matches(haystack(this), words);
+                    this.hidden = !hit;
+                    if (hit) shownItems++;
+                });
+
+                $cols.each(function () {
+                    var $col = $(this);
+                    var title = $col.find('.everything-group-title').attr('data-title') || '';
+                    var visible = $col.find('.everything-item:not([hidden])').length;
+
+                    this.hidden = !(!words.length || visible > 0 || matches(haystack(this, title), words));
+
+                    // Otherwise a filtered card claims "6" while showing one row.
+                    var $badge = $col.find('.card-header .badge[data-total]');
+                    if ($badge.length) $badge.text(words.length ? visible : $badge.attr('data-total'));
+                });
+
+                $('.everything-title, .everything-group-title').each(function () { highlight(this, words); });
+
+                // A top level group is itself a feature, so it counts alongside the rows.
+                var total = $items.length + $cols.length;
+                var shown = shownItems + $cols.not('[hidden]').length;
+
+                $('.everything-count').text(words.length
+                    ? 'Showing ' + shown + ' of ' + total + ' features'
+                    : total + ' features');
+                $('.everything-clear').prop('hidden', !words.length);
+                $('.everything-empty-term').text('"' + $('#FeatureSearch').val() + '"');
+                $('.everything-empty').prop('hidden', !(words.length && shown === 0));
+            }
+
+            // Column layout. The view deals the cards into three columns, which is
+            // what a viewer without javascript gets. Below xl we want two, and css
+            // cannot move a card from one column wrapper into another, so re-deal
+            // them here. This only moves nodes - nothing is measured, so there is
+            // no dependency on webfonts or icons having loaded - and if it never
+            // runs, the served three column deal is still a valid layout.
+            function targetColumns() {
+                // Keep these in step with the breakpoints in fullMenu.scss.
+                if (window.matchMedia('(min-width: 1200px)').matches) return 3;
+                if (window.matchMedia('(min-width: 768px)').matches) return 2;
+                return 0; // css stacks it below md; leave the wrappers alone
+            }
+
+            function redeal() {
+                var container = document.querySelector('.full-menu-container');
+                if (!container) return;
+
+                var target = targetColumns();
+                if (!target) return;
+                if (container.querySelectorAll('.everything-column').length === target) return;
+
+                var cards = Array.prototype.slice
+                    .call(container.querySelectorAll('.everything-group'))
+                    .sort(function (a, b) {
+                        return (parseInt(a.style.order, 10) || 0) - (parseInt(b.style.order, 10) || 0);
+                    });
+
+                var columns = [], weights = [];
+                for (var c = 0; c < target; c++) {
+                    var column = document.createElement('div');
+                    column.className = 'everything-column';
+                    columns.push(column);
+                    weights.push(0);
+                }
+
+                // The same greedy packing the view uses: largest first (the cards are
+                // already in that order) into whichever column is currently shortest.
+                // appendChild moves each card out of its old wrapper.
+                cards.forEach(function (card) {
+                    var shortest = 0;
+                    for (var c = 1; c < target; c++) {
+                        if (weights[c] < weights[shortest]) shortest = c;
+                    }
+
+                    columns[shortest].appendChild(card);
+                    weights[shortest] += parseInt(card.getAttribute('data-weight'), 10) || 1;
+                });
+
+                container.innerHTML = '';
+                columns.forEach(function (column) { container.appendChild(column); });
+            }
+
+            var resizeTimer;
+            $(window).off(NS).on('resize' + NS, function () {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(redeal, 150);
+            });
+
+            var timer;
+            $doc.on('input' + NS, '#FeatureSearch', function () {
+                clearTimeout(timer);
+                timer = setTimeout(apply, 120);
+            });
+
+            // Stop Enter from posting the form, as olive's own InstantSearch plugin does.
+            $doc.on('keydown' + NS, '#FeatureSearch', function (e) { if (e.keyCode === 13) e.preventDefault(); });
+
+            $doc.on('click' + NS, '.everything-clear', function () {
+                clearTimeout(timer);
+                $('#FeatureSearch').val('');
+                apply();
+            });
+
+            redeal();
+            apply();
+        })(0);
+    </script>
 </form>
 <!-- «End| EverythingPage_Everything» -->

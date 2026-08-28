@@ -43,85 +43,6 @@
                    new XAttribute("value", jsonMenu));
         }
 
-        public static async Task<string> RenderFullMenu()
-        {
-            ColourPalette.Reset();
-            var items = FeatureSecurityFilter.GetAuthorizedFeatures(Context.Current.User());
-            var menuItems = await GetAllMenuItems(items);
-
-            var sorted = menuItems
-                .OrderBy(x => x.Children == null ? 0 : x.Children.Sum(c => c.Children == null ? 1 : c.Children.Count() + 1))
-                .ToList();
-
-            var container = new XElement("div");
-
-            sorted.ForEach(item =>
-            {
-                var div = new XElement("div");
-                div.Add(new XAttribute("class", "full-menu-item"));
-
-                if (item.Children != null && item.Children.Any())
-                {
-                    var ul = new XElement("ul");
-
-                    item.Children.ToList().ForEach(subItem =>
-                    {
-                        var li = new XElement("li", CreateSubLink(subItem, ColourPalette.GetColourCode()));
-                        ul.Add(li);
-                        AddChildItems(subItem, ColourPalette.GetColourCode(), li);
-                    });
-
-                    div.Add(ul);
-
-                    div.Add(new XElement("h3", new XAttribute("class", "full-menu-text"),
-                        new XElement("a", item.Title, new XAttribute("href", item.LoadUrl))));
-                }
-                else
-                {
-                    div.Add(new XElement("ul", new XElement("li", CreateSubLink(item, ColourPalette.GetColourCode()))));
-                }
-
-                container.Add(div);
-            });
-
-            return container.ToString().TrimStart("<div>").TrimEnd("</div>");
-        }
-
-        static void AddChildItems(JsonMenu subItem, string color, XElement parent)
-        {
-            if (subItem.Children == null || subItem.Children.None()) return;
-            var ul2 = new XElement("ul");
-
-            subItem.Children
-                .ToList()
-                .ForEach(subItem2 =>
-            {
-                var li2 = new XElement("li");
-                var subLink2 = CreateSubLink(subItem2, color);
-
-                li2.Add(subLink2);
-                ul2.Add(li2);
-            });
-
-            parent.Add(ul2);
-        }
-
-        static XElement CreateSubLink(JsonMenu subItem, string color)
-        {
-            var subLink = new XElement("a", subItem.Title,
-               new XAttribute("id", subItem.LogicalPath),
-               new XAttribute("href", subItem.LoadUrl));
-
-            var subIcon = new XElement("i", string.Empty);
-            subIcon.Add(new XAttribute("style", $"color:{color};"));
-
-            if (subItem.Icon != null)
-                subIcon.Add(new XAttribute("class", subItem.Icon));
-
-            subLink.Add(subIcon);
-            return subLink;
-        }
-
         static XElement RenderMenu(Feature currentFeature, AuthroziedFeatureInfo[] items)
         {
             if (items.None()) return null;
@@ -186,7 +107,7 @@
             return ul;
         }
 
-        string AddQueryString()
+        public string AddQueryString()
         {
             if (IsDisabled) return string.Empty;
 
