@@ -35,10 +35,6 @@ namespace Controllers
                 .OrderByDescending(x => x.TotalCount)
                 .ThenBy(x => x.Item.Title)
                 .ToList();
-
-            // Largest first, so that the greedy column packing in the view has the
-            // big groups to place while every column is still nearly empty.
-            for (var i = 0; i < info.Groups.Count; i++) info.Groups[i].Index = i;
         }
 
         [NonAction]
@@ -100,15 +96,10 @@ namespace ViewModel
             /// <summary>0 for a top level group, 1 for its children, and so on.</summary>
             public int Depth { get; set; }
 
-            /// <summary>Position in the rendered sequence, before the cards are dealt
-            /// into columns. Drives the accent colour and the css `order` that puts
-            /// the cards back into this sequence when they collapse to one stack.</summary>
-            public int Index { get; set; }
-
             /// <summary>Rough card height in list row units, for balancing the columns:
             /// one unit per row, plus about two for the header and the gap beneath.
-            /// Deliberately estimated rather than measured, so that the server and the
-            /// re-deal script in the view always agree on the layout.</summary>
+            /// Estimated rather than measured so the script can deal the cards before
+            /// the first paint, without reading back layout.</summary>
             public int Weight => TotalCount + 2;
 
             public List<Node> Children = new List<Node>();

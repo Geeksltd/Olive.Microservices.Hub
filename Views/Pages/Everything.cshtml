@@ -5,35 +5,6 @@
     // colour changes on every render.
     var palette = new[] { "#CC3542", "#FA7902", "#FAB320", "#2CC6D2", "#0A98CF", "#065280" };
 
-    // Cards are dealt into fixed columns here, rather than left to a css multi
-    // column layout, because multi column reads top to bottom and this page is
-    // scanned left to right: the first group of each column starts a column, so
-    // the top of the page reads groups 1, 2, 3. Each column then stacks flush,
-    // so there is no gap under a card shorter than its neighbours.
-    // Css cannot redistribute these, so the count is fixed here and must match
-    // the breakpoint in fullMenu.scss.
-    const int columns = 3;
-
-    // Greedy longest-processing-time packing: walk the groups largest first and
-    // drop each into whichever column is currently shortest. Dealing them round
-    // robin instead would give column one the largest of every triple, so it
-    // would always finish tallest. The script in this view repeats this exact
-    // algorithm when it re-deals, so both agree.
-    var packed = new List<ViewModel.EverythingPage_Everything.Node>[columns];
-    var packedWeight = new int[columns];
-    for (var c = 0; c < columns; c++) packed[c] = new List<ViewModel.EverythingPage_Everything.Node>();
-
-    foreach (var group in Model.Groups)
-    {
-        var shortest = 0;
-        for (var c = 1; c < columns; c++)
-        {
-            if (packedWeight[c] < packedWeight[shortest]) shortest = c;
-        }
-
-        packed[shortest].Add(group);
-        packedWeight[shortest] += group.Weight;
-    }
 }
 <!-- «Start| EverythingPage_Everything» -->
 <form data-module="EverythingPage_Everything" method="post" action="@Url.Current()" class="everything">
@@ -62,15 +33,17 @@
             <p class="everything-count text-muted" aria-live="polite"></p>
         </div>
 
+        @* One column, in source order. The script below deals these into as many
+           columns as the viewport allows, before the first paint. Rendering them
+           pre-dealt would mean writing the same packing twice, in two languages,
+           that had to stay identical. *@
         <div class="full-menu-container">
-            @foreach (var column in packed)
-            {
             <div class="everything-column">
-                @foreach (var group in column)
+                @for (var i = 0; i < Model.Groups.Count; i++)
                 {
-                var i = group.Index;
+                var group = Model.Groups[i];
                 <div class="everything-group" data-weight="@group.Weight" data-url="@group.SearchUrl"
-                     style="--group-colour:@palette[i % palette.Length]; order:@i">
+                     style="--group-colour:@palette[i % palette.Length]">
                     <div class="full-menu-item card">
                         <div class="card-header d-flex align-items-center">
                             <i class="@group.Item.GetIcon() everything-group-icon" aria-hidden="true"></i>
@@ -122,7 +95,6 @@
                 </div>
                 }
             </div>
-            }
         </div>
 
         <div class="empty-list everything-empty text-center" hidden>
@@ -139,10 +111,85 @@
     }
 
     <script type="text/javascript">
-        // Boot by polling for jQuery rather than assuming it: the hub app's layout
-        // loads only require.js synchronously and pulls jQuery in later from the
-        // olive.microservices.hubjs bundle, while this package's own layout loads
-        // the bundle with a plain script tag. This works under both.
+    (function () {
+        var container = document.querySelector('.full-menu-container');
+
+        // The view renders every card in one column, largest first. Dealing them
+        // into the final columns here rather than in razor keeps one copy of the
+        // packing instead of two, in two languages, that had to stay identical.
+        // Only the number of column wrappers decides the layout - each one is
+        // flex: 1 1 0 - so the stylesheet never needs to know the count.
+        var COLUMN_BREAKPOINTS = [
+            { width: 2200, columns: 6 },
+            { width: 1600, columns: 4 },
+            { width: 1200, columns: 3 },
+            { width: 768, columns: 2 }
+        ];
+
+        // Source order, captured before the first deal: once the cards are spread
+        // across columns their dom order is column by column, which is not the
+        // order the packing has to see.
+        var ordered = container
+            ? Array.prototype.slice.call(container.querySelectorAll('.everything-group'))
+            : [];
+
+        function targetColumns() {
+            for (var i = 0; i < COLUMN_BREAKPOINTS.length; i++) {
+                if (window.matchMedia('(min-width: ' + COLUMN_BREAKPOINTS[i].width + 'px)').matches) {
+                    return COLUMN_BREAKPOINTS[i].columns;
+                }
+            }
+
+            return 1;
+        }
+
+        function redeal() {
+            if (!container) return;
+
+            // An empty column still takes its share of the width, which would
+            // bunch the cards up on the left.
+            var target = Math.min(targetColumns(), ordered.length);
+            if (!target) return;
+            if (container.querySelectorAll('.everything-column').length === target) return;
+
+            var columns = [], weights = [];
+            for (var c = 0; c < target; c++) {
+                var column = document.createElement('div');
+                column.className = 'everything-column';
+                columns.push(column);
+                weights.push(0);
+            }
+
+            // Greedy longest-processing-time packing: the cards arrive largest
+            // first, so drop each into whichever column is currently shortest.
+            // Dealing them round robin would give column one the largest of every
+            // group, so it would always finish tallest. The weight is estimated
+            // from the row count rather than measured, so this never reads back
+            // layout and never waits on webfonts or icons.
+            // appendChild moves each card out of its old column.
+            ordered.forEach(function (card) {
+                var shortest = 0;
+                for (var c = 1; c < target; c++) {
+                    if (weights[c] < weights[shortest]) shortest = c;
+                }
+
+                columns[shortest].appendChild(card);
+                weights[shortest] += parseInt(card.getAttribute('data-weight'), 10) || 1;
+            });
+
+            container.innerHTML = '';
+            columns.forEach(function (column) { container.appendChild(column); });
+        }
+
+        // Deal now, synchronously. This needs no jQuery, only the dom, and the
+        // cards above are already parsed, so the columns are right before the
+        // first paint. Waiting for the bundle would show one tall stack that
+        // then snapped into columns.
+        redeal();
+
+        // The filter does need jQuery, which the hub layout loads asynchronously
+        // through requirejs while this package's own layout uses a plain script
+        // tag. Polling for it works under both.
         (function boot(attempt) {
             if (typeof window.jQuery === 'undefined') {
                 if (attempt < 200) setTimeout(function () { boot(attempt + 1); }, 50);
@@ -156,6 +203,12 @@
             var NS = '.everythingSearch';
             var $doc = $(document);
             $doc.off(NS);
+
+            var resizeTimer;
+            $(window).off(NS).on('resize' + NS, function () {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(redeal, 150);
+            });
 
             // Urls are kebab-case ("/people/absence-requests") while titles are spaced
             // ("Absence Requests"), and the logical path is separated by ">". Fold all
@@ -238,64 +291,6 @@
                 $('.everything-empty').prop('hidden', !(words.length && shown === 0));
             }
 
-            // Column layout. The view deals the cards into three columns, which is
-            // what a viewer without javascript gets. Below xl we want two, and css
-            // cannot move a card from one column wrapper into another, so re-deal
-            // them here. This only moves nodes - nothing is measured, so there is
-            // no dependency on webfonts or icons having loaded - and if it never
-            // runs, the served three column deal is still a valid layout.
-            function targetColumns() {
-                // Keep these in step with the breakpoints in fullMenu.scss.
-                if (window.matchMedia('(min-width: 1200px)').matches) return 3;
-                if (window.matchMedia('(min-width: 768px)').matches) return 2;
-                return 0; // css stacks it below md; leave the wrappers alone
-            }
-
-            function redeal() {
-                var container = document.querySelector('.full-menu-container');
-                if (!container) return;
-
-                var target = targetColumns();
-                if (!target) return;
-                if (container.querySelectorAll('.everything-column').length === target) return;
-
-                var cards = Array.prototype.slice
-                    .call(container.querySelectorAll('.everything-group'))
-                    .sort(function (a, b) {
-                        return (parseInt(a.style.order, 10) || 0) - (parseInt(b.style.order, 10) || 0);
-                    });
-
-                var columns = [], weights = [];
-                for (var c = 0; c < target; c++) {
-                    var column = document.createElement('div');
-                    column.className = 'everything-column';
-                    columns.push(column);
-                    weights.push(0);
-                }
-
-                // The same greedy packing the view uses: largest first (the cards are
-                // already in that order) into whichever column is currently shortest.
-                // appendChild moves each card out of its old wrapper.
-                cards.forEach(function (card) {
-                    var shortest = 0;
-                    for (var c = 1; c < target; c++) {
-                        if (weights[c] < weights[shortest]) shortest = c;
-                    }
-
-                    columns[shortest].appendChild(card);
-                    weights[shortest] += parseInt(card.getAttribute('data-weight'), 10) || 1;
-                });
-
-                container.innerHTML = '';
-                columns.forEach(function (column) { container.appendChild(column); });
-            }
-
-            var resizeTimer;
-            $(window).off(NS).on('resize' + NS, function () {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(redeal, 150);
-            });
-
             var timer;
             $doc.on('input' + NS, '#FeatureSearch', function () {
                 clearTimeout(timer);
@@ -311,9 +306,9 @@
                 apply();
             });
 
-            redeal();
             apply();
         })(0);
+    })();
     </script>
 </form>
 <!-- «End| EverythingPage_Everything» -->
