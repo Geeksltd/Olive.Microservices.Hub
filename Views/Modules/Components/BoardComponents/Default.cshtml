@@ -13,7 +13,15 @@
 
     <div data-module-inner>
         <div class="row board-header pane" style="display:none">
-            <div class="col-md-2 board-image"></div><div class="col-md-10">
+            <div class="col-md-2 board-image">
+                @if (Model.EditImageUrl.HasValue())
+                {                    
+                    <a href="@Model.EditImageUrl" target="$modal" class="edit-user-image"
+                       title="Update profile image" aria-label="Update profile image">
+                        <i class="fas fa-camera" aria-hidden="true"></i>
+                    </a>
+                }
+            </div><div class="col-md-10">
                 <div class="board-info">
                 </div><div class="board-links"></div>
             </div>

@@ -32,6 +32,7 @@ namespace ViewModel
         public string FeatureId { get; set; }
         public string Type { get; set; }
         public string Title { get; set; }
-        public int MinColumnWidth { get; set; } = 350;
+        public int MinColumnWidth { get; set; } = 350;      
+        public string EditImageUrl { get; set; }
     }
 }
