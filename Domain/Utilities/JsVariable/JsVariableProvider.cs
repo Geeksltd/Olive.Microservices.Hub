@@ -1,4 +1,5 @@
-﻿using Olive.Microservices.Hub.Domain.Theme.Contracts;
+﻿using Newtonsoft.Json;
+using Olive.Microservices.Hub.Domain.Theme.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
