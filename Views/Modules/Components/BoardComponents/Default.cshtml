@@ -5,6 +5,7 @@
     <div data-module="BoardComponents" class="no-print board-components "
          data-id="@Model.FeatureId"
          data-boardtype="@Model.Type"
+         data-image-url="@Model.ImageUrl"
          data-board-source="@Model.GetBoardSources(Model.Type)">
         @Html.StartupActionsJson()
     </div>
