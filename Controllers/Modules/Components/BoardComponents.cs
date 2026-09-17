@@ -34,6 +34,7 @@ namespace ViewModel
         public string Title { get; set; }
         public int MinColumnWidth { get; set; } = 350;      
         public string EditImageUrl { get; set; }     
-        public string ImageUrl { get; set; }
+        public string ImageUrl { get; set; }         
+        public string DefaultImageUrl { get; set; }
     }
 }
