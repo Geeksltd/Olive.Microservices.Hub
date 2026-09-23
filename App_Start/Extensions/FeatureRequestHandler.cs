@@ -86,7 +86,9 @@ namespace Controllers
                 else
                     JavaScript(new JavascriptService("hub", "go", service.GetHubImplementationUrl(actualRelativeUrl), service.UseIframe));
             }
-            else if (!User.CanSee(info.Item))
+            // Ajax features are authorised by the microservice itself (its 403 shows as HubJs's access denied card).
+            // Iframe and server side loads cannot surface that 403 properly, so the hub checks them here.
+            else if ((info.Item.UseIframe || info.Path.Contains("/serverside")) && !User.CanSee(info.Item))
             {
                 return Redirect("/Unauthorized/" + info.Item.ID);
             }
