@@ -39,7 +39,7 @@ namespace ViewModel
             }
             catch (Exception ex)
             {
-                Log.For(typeof(GlobalSearch)).Warning(" failed to read board sources:\n" + ex.ToString());
+                Log.For(typeof(BoardComponents)).Warning(ex, "Failed to read board sources. Rebuilding them.");
                 await BoardSources.SetBoardSourceTxt();
             }
         }

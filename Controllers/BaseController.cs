@@ -29,7 +29,7 @@ namespace Controllers
         {
             base.OnActionExecuted(context);
             var start = (DateTime)ViewData["ExecutionStart"];
-            Log.Info("Finished executing " + context.ActionDescriptor.DisplayName + " in " + LocalTime.Now.Subtract(start).ToNaturalTime());
+            Log.Debug("Finished executing " + context.ActionDescriptor.DisplayName + " in " + LocalTime.Now.Subtract(start).ToNaturalTime());
         }
     }
 }

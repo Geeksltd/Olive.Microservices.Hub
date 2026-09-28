@@ -107,7 +107,7 @@ namespace Olive.Microservices.Hub
             }
             catch (Exception ex)
             {
-                Log.For(typeof(Features)).Warning(url + " failed:\n" + ex.ToString());
+                Log.For(typeof(Service)).Warning(ex, url + " failed. The features of " + Name + " are not refreshed.");
             }
         }
 
@@ -130,7 +130,7 @@ namespace Olive.Microservices.Hub
             }
             catch (Exception ex)
             {
-                Log.For(typeof(Service)).Warning(url + " failed:\n" + ex.ToString());
+                Log.For(typeof(Service)).Warning(ex, url + " failed. Board sources of " + Name + " are left out.");
             }
         }
 
@@ -147,7 +147,7 @@ namespace Olive.Microservices.Hub
             }
             catch (Exception ex)
             {
-                Log.For(typeof(Service)).Warning(url + " failed:\n" + ex.ToString());
+                Log.For(typeof(Service)).Warning(ex, url + " failed. Search sources of " + Name + " are left out.");
             }
         }
     }

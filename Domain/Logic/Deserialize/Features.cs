@@ -61,7 +61,7 @@ namespace Olive.Microservices.Hub
                 }
                 catch (Exception ex)
                 {
-                    Log.For(typeof(Features)).Warning(ex.ToString());
+                    Log.For(typeof(Features)).Warning(ex, "Failed to load the features of " + service.Name + ". They are left out.");
                 }
             }
 
@@ -79,7 +79,7 @@ namespace Olive.Microservices.Hub
             }
             catch (Exception ex)
             {
-                Log.For(typeof(Feature)).Error(ex.ToString());
+                Log.For(typeof(Features)).Warning(ex, "Failed to read features.json. Rebuilding it.");
                 await RefreshFeatures();
             }
 

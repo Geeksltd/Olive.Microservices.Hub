@@ -18,7 +18,7 @@ namespace ViewModel
             }
             catch (Exception ex)
             {
-                Log.For(typeof(GlobalSearch)).Warning(" failed to read search sources:\n" + ex.ToString());
+                Log.For(typeof(GlobalSearch)).Warning(ex, "Failed to read search sources. Rebuilding them.");
                 await SearchSources.SetSearchSourceTxt();
             }
         }
