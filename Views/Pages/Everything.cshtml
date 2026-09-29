@@ -66,7 +66,7 @@
                                 @foreach (var node in group.Descendants())
                                 {
                                     <li class="list-group-item everything-item everything-depth-@(Math.Min(node.Depth - 1, 2))"
-                                        data-path="@node.Path" data-url="@node.SearchUrl">
+                                        data-path="@node.Path" data-url="@node.SearchUrl" data-depth="@node.Depth">
                                         @if (node.IsDisabled)
                                         {
                                             <span class="everything-link disabled">
@@ -257,38 +257,57 @@
                 var words = terms();
                 var $items = $('.everything-item');
                 var $cols = $('.everything-group');
-                var shownItems = 0;
 
-                $items.each(function () {
-                    var hit = matches(haystack(this), words);
-                    this.hidden = !hit;
-                    if (hit) shownItems++;
-                });
+                // Rows and groups that match the search themselves. A parent kept visible
+                // only for context is shown but not counted, so the count and the badges
+                // report results rather than rows on screen.
+                var hits = 0;
 
                 $cols.each(function () {
                     var $col = $(this);
+                    var cardHits = 0;
+
+                    // The rows are one flat list in depth first order, so the rows still
+                    // held in `ancestors` when a row is reached are exactly its parents.
+                    // A hit keeps them visible, otherwise a match deep in the tree would
+                    // show up detached from the branch it belongs to.
+                    var ancestors = [];
+                    $col.find('.everything-item').each(function () {
+                        var depth = parseInt(this.getAttribute('data-depth'), 10) || 1;
+                        ancestors.length = depth - 1;
+
+                        var hit = matches(haystack(this), words);
+                        this.hidden = !hit;
+                        if (hit) {
+                            cardHits++;
+                            ancestors.forEach(function (parent) { parent.hidden = false; });
+                        }
+
+                        ancestors.push(this);
+                    });
+
                     var title = $col.find('.everything-group-title').attr('data-title') || '';
-                    var visible = $col.find('.everything-item:not([hidden])').length;
+                    var groupHit = matches(haystack(this, title), words);
 
-                    this.hidden = !(!words.length || visible > 0 || matches(haystack(this, title), words));
+                    this.hidden = !(cardHits > 0 || groupHit);
+                    hits += cardHits + (groupHit ? 1 : 0);
 
-                    // Otherwise a filtered card claims "6" while showing one row.
+                    // Otherwise a filtered card claims "6" while showing one match.
                     var $badge = $col.find('.card-header .badge[data-total]');
-                    if ($badge.length) $badge.text(words.length ? visible : $badge.attr('data-total'));
+                    if ($badge.length) $badge.text(words.length ? cardHits : $badge.attr('data-total'));
                 });
 
                 $('.everything-title, .everything-group-title').each(function () { highlight(this, words); });
 
                 // A top level group is itself a feature, so it counts alongside the rows.
                 var total = $items.length + $cols.length;
-                var shown = shownItems + $cols.not('[hidden]').length;
 
                 $('.everything-count').text(words.length
-                    ? 'Showing ' + shown + ' of ' + total + ' features'
+                    ? 'Showing ' + hits + ' of ' + total + ' features'
                     : total + ' features');
                 $('.everything-clear').prop('hidden', !words.length);
                 $('.everything-empty-term').text('"' + $('#FeatureSearch').val() + '"');
-                $('.everything-empty').prop('hidden', !(words.length && shown === 0));
+                $('.everything-empty').prop('hidden', !(words.length && hits === 0));
             }
 
             var timer;
