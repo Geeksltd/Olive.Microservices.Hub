@@ -50,20 +50,24 @@ namespace Olive.Microservices.Hub
         {
             var features = new List<FeatureDefinition>();
 
-            foreach (var service in Service.All)
+            // Read at the same time, but added in the services' order, as before.
+            var batches = await Task.WhenAll(Service.All.Select(async service =>
             {
                 try
                 {
                     var batch = JsonConvert.DeserializeObject<FeatureDefinition[]>(await Repository.Read(service.FeaturesJsonPath()));
-                    if (batch == null) continue;
-                    batch.Do(x => x.For(service));
-                    features.AddRange(batch);
+                    batch?.Do(x => x.For(service));
+                    return batch;
                 }
                 catch (Exception ex)
                 {
                     Log.For(typeof(Features)).Warning(ex, "Failed to load the features of " + service.Name + ". They are left out.");
+                    return null;
                 }
-            }
+            }));
+
+            foreach (var batch in batches)
+                if (batch != null) features.AddRange(batch);
 
             await Repository.Write("/features/features.json", JsonConvert.SerializeObject(features));
             await Load();
@@ -80,7 +84,11 @@ namespace Olive.Microservices.Hub
             catch (Exception ex)
             {
                 Log.For(typeof(Features)).Warning(ex, "Failed to read features.json. Rebuilding it.");
+
+                // RefreshFeatures rebuilds features.json and loads it, so it is done. Falling through
+                // with no json used to rebuild it a second time, from every service over HTTP.
                 await RefreshFeatures();
+                return;
             }
 
             if (json.HasValue())

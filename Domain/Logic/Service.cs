@@ -15,6 +15,9 @@ namespace Olive.Microservices.Hub
     public partial class Service
     {
         public static IEnumerable<Service> All { get; internal set; }
+
+        /// <summary>Guards the board and search source collections, which the services fill in concurrently.</summary>
+        static readonly object SourcesLock = new();
         public string FeaturesJsonPath() => $"/features/services/{Name}.json";
         public string GetBoardSourceUrl() => GetAbsoluteImplementationUrl("olive/board/features/");
         public string GetGlobalSearchUrl()
@@ -119,6 +122,7 @@ namespace Olive.Microservices.Hub
             {
                 var sources = JsonConvert.DeserializeObject<string[]>(await url.Download(timeOutSeconds: 10));
                 if (sources != null)
+                lock (SourcesLock)
                 {
                     foreach (var source in sources.Select(x => x.ToLower()))
                     {
@@ -143,7 +147,7 @@ namespace Olive.Microservices.Hub
             try
             {
                 var respone = await url.AsUri().Download(timeOutSeconds: 10);
-                SearchSources.Urls.Add(GetGlobalSearchUrl());
+                lock (SourcesLock) SearchSources.Urls.Add(GetGlobalSearchUrl());
             }
             catch (Exception ex)
             {

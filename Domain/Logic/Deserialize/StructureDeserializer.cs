@@ -15,12 +15,15 @@ namespace Olive.Microservices.Hub
         public static void Load()
         {
             LoadServices();
+
+            // The sources and the features are independent reads (each needing only the services),
+            // so they are fetched at the same time rather than one after another.
+            var sources = Context.Current.Environment().EnvironmentName == "Development"
+                ? Task.CompletedTask
+                : Task.WhenAll(ViewModel.BoardComponents.SetBoardSources(), ViewModel.GlobalSearch.SetSearchSources());
+
             LoadFeatures();
-            if (Context.Current.Environment().EnvironmentName != "Development")
-            {
-                Task.Factory.RunSync(ViewModel.BoardComponents.SetBoardSources);
-                Task.Factory.RunSync(ViewModel.GlobalSearch.SetSearchSources);
-            }
+            Task.Factory.RunSync(() => sources);
 
         }
 

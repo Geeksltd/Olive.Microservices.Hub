@@ -81,9 +81,8 @@ namespace Olive.Microservices.Hub
             {
                 app.Use(StructureDeserializer.ReloadFeatures);
                 app.Use(StructureDeserializer.ReloadSources);
-                Task.Factory.RunSync(Features.Load);
-                Task.Factory.RunSync(ViewModel.BoardComponents.SetBoardSources);
-                Task.Factory.RunSync(ViewModel.GlobalSearch.SetSearchSources);
+                // The features and the sources are already loaded, by StructureDeserializer.Load()
+                // in ConfigureRequestHandlers. Loading them again here doubled the S3 reads at startup.
             }
 
             Feature.DataProvider.Register();

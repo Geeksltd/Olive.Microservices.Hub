@@ -15,7 +15,7 @@ namespace Olive.Microservices.Hub
             { "project",new List<string>()},
             };
 
-            await Task.WhenAll(Service.All.Do(s => s.GetBoardComponentSources()));
+            await Task.WhenAll(Service.All.Select(s => s.GetBoardComponentSources()));
             foreach (var source in BoardComponentSources)
             {
                 BoardComponentSources[source.Key] = source.Value.OrderBy(x=>Service.GetServiceFromURL(x).Name).ToList();

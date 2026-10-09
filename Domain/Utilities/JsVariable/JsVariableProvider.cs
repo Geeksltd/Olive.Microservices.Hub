@@ -13,9 +13,13 @@ namespace Olive.Microservices.Hub.Domain.Utilities.JsVariable
     {
         readonly IThemeProvider ThemeProvider;
 
+        // The boards are the website's compiled types, so they cannot change while it runs. Scanning them
+        // used to happen on every page render.
+        static readonly Lazy<string[]> Boards = new(FindBoards);
+
         public JsVariableProvider(IThemeProvider themeProvider) => ThemeProvider = themeProvider;
 
-        public async Task<string> Render()
+        static string[] FindBoards()
         {
             var boardsAssemblyName =
                 AppDomain.CurrentDomain
@@ -24,13 +28,18 @@ namespace Olive.Microservices.Hub.Domain.Utilities.JsVariable
                     .SingleOrDefault(f => f.Name.Equals("website.dll", false))?
                     .FullName;
 
-            var boards = boardsAssemblyName.IsEmpty()
+            return boardsAssemblyName.IsEmpty()
                 ? Array.Empty<string>()
                 : Assembly.LoadFrom(boardsAssemblyName!)
                     .GetTypes()
                     .Where(a => typeof(IBoardController).IsAssignableFrom(a))
                     .Select(a => a.Name.Replace("BoardController", "").ToLower())
                     .ToArray();
+        }
+
+        public async Task<string> Render()
+        {
+            var boards = Boards.Value;
 
             var user = Context.Current.User();
 
