@@ -149,10 +149,25 @@ namespace Olive.Microservices.Hub
                 var respone = await url.AsUri().Download(timeOutSeconds: 10);
                 lock (SourcesLock) SearchSources.Urls.Add(GetGlobalSearchUrl());
             }
+            catch (Exception ex) when (IsNotFound(ex))
+            {
+                // The service has no search source: most search through the GlobalSearch service instead, and
+                // answer this anonymous probe with 404. Left out as before, but it is not a failure to log on
+                // every refresh. Anything else (a timeout, a 500) still is.
+            }
             catch (Exception ex)
             {
                 Log.For(typeof(Service)).Warning(ex, url + " failed. Search sources of " + Name + " are left out.");
             }
+        }
+
+        static bool IsNotFound(Exception ex)
+        {
+            for (; ex != null; ex = ex.InnerException)
+                if (ex is System.Net.WebException { Response: System.Net.HttpWebResponse { StatusCode: System.Net.HttpStatusCode.NotFound } })
+                    return true;
+
+            return false;
         }
     }
 }
